@@ -25,7 +25,8 @@
 	ex : <package name="com.kh.spring08.entity"/>
 	-->
 	<typeAliases>
-		
+		<package name="com.kh.mars.entity"/>
 	</typeAliases>
 	
 </configuration>
+
