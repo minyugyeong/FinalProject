@@ -40,6 +40,9 @@
 		order by b.board_no desc
 	</select>
 	
+	<select id="selectOne" resultType="BoardDto" parameterType="int">
+		select * from board where board_no = #{boardNo}
+	</select>
 
 
 
@@ -47,10 +50,9 @@
 
 
 	<insert id="insert" parameterType="BoardDto">
-		insert into board (board_no, member_no, board_date, board_content, board_is_reply) 
-		values (#{boardNo}, #{memberNo}, sysdate, #{boardContent}, #{boardIsReply})
+		insert into board (board_no, member_no, board_date, board_content) 
+		values (#{boardNo}, #{memberNo}, sysdate, #{boardContent})
 	</insert>
-	
 	
 	
  </mapper>
