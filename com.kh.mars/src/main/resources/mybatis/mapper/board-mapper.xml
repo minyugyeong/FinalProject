@@ -26,14 +26,32 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  <mapper namespace="board">
  
+ <!-- select 구문 -->
+ 
  	<select id="sequence" resultType="int">
  		select board_seq.nextval from dual
  	</select>
 	
+	<select id="recentlist"><!-- 팔로워들의 최근 게시글 조회 구문 -->
+		select * from board B 
+			inner join 
+				(select follow_target from follow where follow_who = #{memberNo})"A" 
+			on b.member_no = a.follow_target 
+		order by b.board_no desc
+	</select>
+	
+
+
+
+<!-- insert 구문 -->	
+
+
 	<insert id="insert" parameterType="BoardDto">
 		insert into board (board_no, member_no, board_date, board_content, board_is_reply) 
 		values (#{boardNo}, #{memberNo}, sysdate, #{boardContent}, #{boardIsReply})
 	</insert>
+	
+	
 	
  </mapper>
  
