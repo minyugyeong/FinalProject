@@ -9,6 +9,10 @@
     <title>mars</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/journal/bootstrap.min.css"/>
+    
+    <!-- jquery cdn -->
+ 		<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+ 		
     <style>
         @media screen and (max-width: 768px) {
             .search0503 {
@@ -74,7 +78,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/board/insert">
                                     <i class="fa-solid fa-square-plus fa-lg"></i>
                                 </a>
                             </li>

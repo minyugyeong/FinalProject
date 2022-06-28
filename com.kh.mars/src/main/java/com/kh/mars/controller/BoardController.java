@@ -1,6 +1,7 @@
 package com.kh.mars.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -39,12 +40,12 @@ public class BoardController {
 			@ModelAttribute BoardDto boardDto, 
 			HttpSession session, 
 			RedirectAttributes attr,
-			@RequestParam MultipartFile boardAttach) throws IllegalStateException, IOException {
+			@RequestParam("boardAttach") List<MultipartFile> boardAttach) throws IllegalStateException, IOException {
 		
 		Integer memberNo = (Integer)session.getAttribute("login");
 		boardDto.setMemberNo(memberNo);
-		
-		boardService.insert(boardDto, boardAttach);
+	
+			boardService.insert(boardDto, boardAttach);
 		
 		attr.addAttribute("memberNo", memberNo);
 		

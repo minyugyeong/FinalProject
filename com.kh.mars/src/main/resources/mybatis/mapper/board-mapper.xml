@@ -50,8 +50,8 @@
 
 
 	<insert id="insert" parameterType="BoardDto">
-		insert into board (board_no, member_no, board_date, board_content) 
-		values (#{boardNo}, #{memberNo}, sysdate, #{boardContent})
+		insert into board (board_no, member_no, board_date, board_content, board_is_reply) 
+		values (#{boardNo}, #{memberNo}, sysdate, #{boardContent}, #{boardIsReply})
 	</insert>
 	
 	
