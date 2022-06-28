@@ -11,7 +11,7 @@
     
     <script>
         //div[id=app]을 제어할 수 있는 Vue instance를 생성
-        const app = Vue.createApp({
+        const navi = Vue.createApp({
             //data : 화면을 구현하는데 필요한 데이터를 작성해둔다
             data(){
                 return {
@@ -41,7 +41,7 @@
             updated(){},
             
         });
-        app.mount("#navi");
+        navi.mount("#navi");
     </script>
 </body>
 </html>
