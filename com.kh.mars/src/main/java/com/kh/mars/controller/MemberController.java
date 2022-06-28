@@ -52,6 +52,6 @@ public class MemberController {
 	@PostMapping("/join")
 	public String join(@ModelAttribute MemberDto memberDto) {
 		memberDao.join(memberDto);
-		return "member/join";
+		return "member/login";
 	}
 }

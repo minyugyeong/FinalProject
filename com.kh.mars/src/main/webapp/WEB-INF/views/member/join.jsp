@@ -31,7 +31,7 @@
                 <div class="mb-4 text-center">또는</div>
         
                 <div class="row form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="memberId" v-model="memberId">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="memberEmail" v-model="memberEmail">
                     <label for="floatingInput">이메일 주소</label>
                 </div>
         
@@ -113,7 +113,7 @@
         const app = Vue.createApp({
             data(){
                 return {
-                    memberId:"",
+                    memberEmail:"",
                     memberName:"",
                     memberNick:"",
                     memberPw:"",
@@ -123,9 +123,9 @@
                 };
             },
             computed:{
-                memberIdJudge(){
+                memberEmailJudge(){
                     const regex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-                    return regex.test(this.memberId);
+                    return regex.test(this.memberEmail);
                 },
                 memberNameJudge(){},
                 memberNickJudge(){

@@ -34,11 +34,11 @@
  	<!-- 회원가입 -->
  	<insert id="join" parameterType="MemberDto">
 		insert into member(
-			member_email, member_password, member_gender, member_nick,
-			member_phone, member_intrest)
+			member_no, member_email, member_password, member_gender, member_nick,
+			member_phone, member_interest)
 		values(
-			#{memberEmail}, #{memberPassword}, #{memberGender}, #{memberNick},
-			#{memberPhone}, #{memberInterst})
+			#{memberNo}, #{memberEmail}, #{memberPassword}, #{memberGender}, #{memberNick},
+			#{memberPhone}, #{memberInterest})
 	</insert>
 	
 	<!-- 로그인 -->
