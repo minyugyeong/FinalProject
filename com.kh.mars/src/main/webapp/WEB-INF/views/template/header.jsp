@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/journal/bootstrap.min.css"/>
     <style>
         @media screen and (max-width: 768px) {
-            .search {
+            .search0503 {
                 display: none!important;
             }
             .navbar-brand{
@@ -27,7 +27,7 @@
             margin-right: 100px!important;
         }
 
-        .search{
+        .search0503{
             margin-right: 100px!important;
         }
 
@@ -57,7 +57,7 @@
                     
                     <div class="collapse navbar-collapse" id="navbarColor03">
                         
-                        <form class="d-flex search">
+                        <form class="d-flex search0503">
                             <input class="form-control me-sm-2" type="text" placeholder="Search">
                         </form>
                         
@@ -95,5 +95,10 @@
     </nav>
         
     <main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+        
         <section>
         
