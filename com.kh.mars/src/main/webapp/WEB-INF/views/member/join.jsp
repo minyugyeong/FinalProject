@@ -16,7 +16,7 @@
 <body>
     <!-- 화면 영역 -->
     
-<form action="join3" method="post" novalidate autocomplete="off" class="require-validation">
+<form action="join" method="post" novalidate autocomplete="off" class="require-validation">
     <div class="container col-lg-4 card p-5 mt-5 page">
         <div class="img p-4 text-center">
             <div>로고 자리</div>
