@@ -26,6 +26,11 @@ public class MemberController {
 	public String join() {
 		return "member/join";
 	}
+	@PostMapping("/join")
+	public String join(@ModelAttribute MemberDto memberDto) {
+		memberDao.join(memberDto);
+		return "member/login";
+	}
 	
 	//로그인 페이지
 	@GetMapping("/login")
@@ -49,9 +54,4 @@ public class MemberController {
 	}
 	
 	
-	@PostMapping("/join")
-	public String join(@ModelAttribute MemberDto memberDto) {
-		memberDao.join(memberDto);
-		return "member/login";
-	}
 }

@@ -6,143 +6,186 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VueJS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/journal/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+    <title>Document</title>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/journal/bootstrap.min.css" integrity="sha512-jt3EWRy/gs+PmzhhDm8quZeSrR/RaXSYeuYEo5bFz9W2uZ1hqh01VVn/dBvqEWgfNZaa0Zg7GJ1L92pTRbbHFg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        
+
     </style>
 </head>
 <body>
+    <!-- 화면 영역 -->
+    
+<form action="join3" method="post" novalidate autocomplete="off" class="require-validation">
+    <div class="container col-lg-4 card p-5 mt-5 page">
+        <div class="img p-4 text-center">
+            <div>로고 자리</div>
+        </div>
 
-    <div id="app">
-        <form action="join" method="post" novalidate autocomplete="off" class="require-validation">
-            <div class="container col-lg-4 card p-5 mt-5 page">
-                <div class="img p-4 text-center">
-                    <div>로고 자리</div>
-                </div>
-        
-                <div class="mb-2 text-center">
-                    <h4>친구들의 사진과 동영상을 보려면 가입하세요.</h4>
-                </div>
-        
-                <div class="mb-2 text-center"><a href="#">facebook로그인</a></div>
-        
-                <div class="mb-4 text-center">또는</div>
-        
-                <div class="row form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="memberEmail" v-model="memberEmail">
-                    <label for="floatingInput">이메일 주소</label>
-                </div>
-        
-                <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="nickName" name="memberNick" v-model="memberNick" v-on:input="memberNick = $event.target.value">
-                    <label for="floatingInput">닉네임</label>
-                </div>
-        
-                <div class="row form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="memberPassword" v-model="memberPassword">
-                    <label for="floatingPassword">비밀번호</label>
-                    <div class="invalid-feedback">영문 대/소문자, 특수문자, 숫자가 반드시 포함된 8~16자로 작성하세요</div>
-                </div>
+        <div class="mb-2 text-center">
+            <h4>친구들의 사진과 동영상을 보려면 가입하세요.</h4>
+        </div>
 
-                <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingNumber" placeholder="PhoneNumber" name="memberPhone" v-model="memberPhone">
-                    <label for="floatingNumber">전화번호</label>
-                </div>
-                
-                <div class="row">
-                    <button type="button" class="btn btn-primary btn-next">가입</button>
-                </div>
-            </div>  
-        
-            <div class="container col-lg-4 card p-5 mt-5 page">
+        <div class="mb-2 text-center"><a href="#">facebook로그인</a></div>
 
-                <label>성별</label>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="memberGender" id="inlineRadio1" value="0">
-                    <label class="form-check-label" for="inlineRadio1">남</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="memberGender" id="inlineRadio2" value="1">
-                    <label class="form-check-label" for="inlineRadio2">여</label>
-                  </div>
-                
-                <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberHigh" name="memberHigh" v-model="memberHigh">
+        <div class="mb-4 text-center">또는</div>
+
+        <div class="row form-floating mb-3">
+            <input type="email" class="form-control member-email" id="floatingInput" placeholder="name@example.com" name="memberEmail">
+            <label for="floatingInput">이메일 주소</label>
+        </div>
+
+        <div class="row form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" placeholder="memberNick" name="memberNick">
+            <label for="floatingInput">닉네임</label>
+        </div>
+        
+        <div class="row form-floating mb-3">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="memberPassword">
+            <label for="floatingPassword">비밀번호</label>
+            <div class="invalid-feedback">영문 대/소문자, 특수문자, 숫자가 반드시 포함된 8~16자로 작성하세요</div>
+        </div>
+
+        <div class="row form-floating mb-3">
+            <input type="text" class="form-control" id="floatingNumber" placeholder="PhoneNumber" name="memberPhone">
+            <label for="floatingNumber">전화번호</label>
+        </div>
+        
+        <div class="row">
+            <button type="button" class="btn btn-primary btn-next">가입</button>
+        </div>
+    </div>  
+
+    <div class="container col-lg-4 card p-5 mt-5 page">
+
+		<label>성별</label>
+	          <div class="form-check form-check-inline">
+	              <input class="form-check-input" type="radio" name="memberGender" id="inlineRadio1" value="0">
+	              <label class="form-check-label" for="inlineRadio1">남</label>
+	            </div>
+	            <div class="form-check form-check-inline">
+	              <input class="form-check-input" type="radio" name="memberGender" id="inlineRadio2" value="1">
+	              <label class="form-check-label" for="inlineRadio2">여</label>
+	            </div>
+    
+       <div class="row form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberHigh" name="memberHigh" >
                     <label for="floatingNumber">고등학교</label>
                 </div>
 
                 <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberUniv" name="memberUniv" v-model="memberUniv">
+                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberUniv" name="memberUniv" >
                     <label for="floatingNumber">대학교</label>
                 </div>
 
                 <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberInterest" name="memberInterest" v-model="memberInterest">
+                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberInterest" name="memberInterest" >
                     <label for="floatingNumber">관심사</label>
                 </div>
 
-
-        
-                <div class="row">
-                    <button type="button" class="btn btn-primary btn-next mb-2">다음</button>
-                    <button type="button" class="btn btn-secondary btn-prev">돌아가기</button>
-                </div>
-            </div>
-        
-            <div class="container col-lg-4 card p-5 mt-5 page">
-                <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingCertNum" placeholder="certNum" name="certNum" v-model="certNum">
-                    <label for="floatingCertNum">인증번호</label>
-                    <button type="submit" class="btn btn-primary mt-3">가입</button>
-                </div>
-            </div>
-        </form>
-        
-        <div class="container col-lg-4 card p-4 mt-3 mb-3">
-            <div class="text-center">
-                계정이 있으신가요 ?  <a href="#">로그인</a>
-            </div>
+        <div class="row">
+            <button type="button" class="btn btn-primary btn-next mb-2 btn-send-mail">다음</button>
+            <button type="button" class="btn btn-secondary btn-prev">돌아가기</button>
         </div>
     </div>
 
-    <script src="https://unpkg.com/vue@next"></script>
+    <div class="container col-lg-4 card p-5 mt-5 page">
+        <div class="row form-floating mb-3">
+            <input type="text" class="form-control cert-number" id="floatingCertNum" placeholder="certNum" name="certNum">
+            <label for="floatingCertNum">인증번호</label>
+            <input type="button" value="인증하기" class="btn-cert-check mt-3 btn btn-secondary">
+            <button type="submit" class="btn btn-primary mt-3 btn-join">가입</button>
+        </div>
+    </div>
+</form>
+
+<div class="container col-lg-4 card p-4 mt-3 mb-3">
+    <div class="text-center">
+        계정이 있으신가요 ?  <a href="#">로그인</a>
+    </div>
+</div>
+    <!-- lazy loading 배치 - 기능은 다소 늦게 돌아가지만 화면을 먼저 띄울 수 있다 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script>
-        const app = Vue.createApp({
-            data(){
-                return {
-                    memberEmail:"",
-                    memberName:"",
-                    memberNick:"",
-                    memberPw:"",
-                    memberBirth:"",
-                    memberPhone:"",
-                    certNum:""
-                };
-            },
-            computed:{
-                memberEmailJudge(){
-                    const regex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-                    return regex.test(this.memberEmail);
-                },
-                memberNameJudge(){},
-                memberNickJudge(){
-                    const regex = /^[0-9a-zA-Z가-힣-_]{3,13}$/;
-                    return regex.test(this.memberNick);
-                },
-                memberPwJudge(){},
-                memberBirthJudge(){},
-                memberPhoneJudge(){},
-                certNumJudge(){},
-            },
-            methods:{
-                
-            },
+        $(function(){
+        	$(".btn-join").prop("disabled", true);
+            var index=0;
+            var object = {
+            		memberEmail:"",
+            		cert:false,
+            };
+
+           /*  $(".page:gt(0)").hide(); */
+
+            $(".btn-send-mail").click(function(){
+                var memberEmail = $(".member-email").val();
+
+                $.ajax({
+                    url:"${pageContext.request.contextPath}/sendMail",
+                    type:"post",
+                    data:{
+                        memberEmail:memberEmail
+                    }, 
+                    success:function(resp){
+                       object.memberEmail = memberEmail;
+                    }
+                });
+            });
+
+            $(".btn-cert-check").click(function(){
+                var memberEmail = object.memberEmail;
+                var number = $(".cert-number").val();
+
+                $.ajax({
+                    url:"${pageContext.request.contextPath}/certCheck",
+                    type:"post",
+                    data:{
+                        memberEmail:memberEmail,
+                        certNumber:number
+                    },
+                    success:function(resp){
+                        if(resp){
+                            $(".btn-cert-check").prop("disabled", true);
+                            $(".member-email").prop("readonly", true);
+                            $(".cert-number").prop("disabled", true);
+                            $(".btn-join").prop("disabled", false);
+                            object.cert = true;
+                            alert("인증 성공");
+                        }
+                        else{
+                            alert("인증번호가 일치하지 않습니다");
+                        }
+                    },
+                    error:function(){
+    					console.log("통신 오류");	
+    				}
+                });
+            });
+
+           /*  $(".btn-next").click(function(){
+                index++;
+                $(".page").hide();
+                $(".page").eq(index).show();
+            });
+
+            $(".btn-prev").click(function(){
+                index--;
+                $(".page").hide();
+                $(".page").eq(index).show();
+            }); */
+
+            $("input[name=memberPassword]").blur(function(){
+                var regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$])[a-zA-Z0-9!@#$]{8,16}$/;
+                var memberPw = regex.test($(this).val());
+
+                $(this).removeClass("is-valid is-invalid");
+                $(this).addClass(memberPw ? "is-valid" : "is-invalid")
+            });
         });
-        app.mount("#app");
-        
+
+
+
     </script>
 </body>
 </html>

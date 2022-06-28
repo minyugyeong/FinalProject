@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class CertDto {
 
-	private String certTarget;
+	private String memberEmail;
 	private String certNumber;
 	private Date cerTime;
 }
