@@ -1,6 +1,7 @@
 package com.kh.mars.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,15 +29,18 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Transactional
 	@Override
-	public void insert(BoardDto boardDto, MultipartFile boardAttach) throws IllegalStateException, IOException {
+	public void insert(BoardDto boardDto, List<MultipartFile> boardAttach) throws IllegalStateException, IOException {
 		
 		boardDao.insert(boardDto);
-		int attachNo = attachDao.save(boardAttach);
 		
-		boardAttachDao.insert(BoardAttachDto.builder()
-															.boardNo(boardDto.getBoardNo())
-															.attachNo(attachNo)
-														.build());
+		for(MultipartFile file : boardAttach) {
+			int attachNo = attachDao.save(file);
+			
+			boardAttachDao.insert(BoardAttachDto.builder()
+																.boardNo(boardDto.getBoardNo())
+																.attachNo(attachNo)
+															.build());
+		}
 		
 	}
 	

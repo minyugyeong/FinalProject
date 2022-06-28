@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class AttachDto {
 	private int attachNo;
-	private String attachUploadName;
+	private String attachUploadname;
 	private String attachType;
 	private long attachSize;
 }

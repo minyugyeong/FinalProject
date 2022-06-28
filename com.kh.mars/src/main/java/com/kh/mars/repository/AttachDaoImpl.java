@@ -2,6 +2,7 @@ package com.kh.mars.repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +26,19 @@ public class AttachDaoImpl implements AttachDao {
 	@Override
 	public int save(MultipartFile attach) throws IllegalStateException, IOException {
 		
-		int attachNo = sqlSession.selectOne("attach.sequence");
-		
-		String fileName = String.valueOf(attachNo);
-		File target = new File(directory, fileName);
-		attach.transferTo(target);
-		
-		sqlSession.insert("attach.insert", AttachDto.builder()
-														.attachNo(attachNo)
-														.attachUploadName(attach.getOriginalFilename())
-														.attachType(attach.getContentType())
-														.attachSize(attach.getSize())
-													.build());
+			int attachNo = sqlSession.selectOne("attach.sequence");
+			
+			String fileName = String.valueOf(attachNo);
+			File target = new File(directory, fileName);
+			attach.transferTo(target);
+			
+			sqlSession.insert("attach.insert", AttachDto.builder()
+					.attachNo(attachNo)
+					.attachUploadname(attach.getOriginalFilename())
+					.attachType(attach.getContentType())
+					.attachSize(attach.getSize())
+					.build());
+			
 		
 		return attachNo;
 	}
