@@ -33,8 +33,8 @@
 	<insert id="insert" parameterType="BoardAttachDto">
 		insert into board_attach (board_attach_no, board_no, attach_no) 
 		values (#{boardAttachNo}, #{boardNo}, #{attachNo})
-		
 	</insert>
+
 	
  </mapper> 
  
