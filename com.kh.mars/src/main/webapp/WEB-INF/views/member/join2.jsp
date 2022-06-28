@@ -112,42 +112,42 @@
         	$(".btn-join").prop("disabled", true);
             var index=0;
             var object = {
-            		memberEmail:"",
+            		email:"",
             		cert:false,
             };
 
-           /*  $(".page:gt(0)").hide(); */
+            $(".page:gt(0)").hide();
 
             $(".btn-send-mail").click(function(){
-                var memberEmail = $(".member-email").val();
+                var email = $(".member-email").val();
 
                 $.ajax({
                     url:"${pageContext.request.contextPath}/sendMail",
                     type:"post",
                     data:{
-                        memberEmail:memberEmail
-                    }, 
+                        memberEmail:email
+                    },
                     success:function(resp){
-                       object.memberEmail = memberEmail;
+                       object.email = email;
                     }
                 });
             });
 
             $(".btn-cert-check").click(function(){
-                var memberEmail = object.memberEmail;
+                var email = object.email;
                 var number = $(".cert-number").val();
 
                 $.ajax({
                     url:"${pageContext.request.contextPath}/certCheck",
                     type:"post",
                     data:{
-                        memberEmail:memberEmail,
+                        memberEmail:email,
                         certNumber:number
                     },
                     success:function(resp){
                         if(resp){
                             $(".btn-cert-check").prop("disabled", true);
-                            $(".member-email").prop("readonly", true);
+                            $(".member-email").prop("disabled", true);
                             $(".cert-number").prop("disabled", true);
                             $(".btn-join").prop("disabled", false);
                             object.cert = true;
@@ -163,7 +163,7 @@
                 });
             });
 
-           /*  $(".btn-next").click(function(){
+            $(".btn-next").click(function(){
                 index++;
                 $(".page").hide();
                 $(".page").eq(index).show();
@@ -173,7 +173,7 @@
                 index--;
                 $(".page").hide();
                 $(".page").eq(index).show();
-            }); */
+            });
 
             $("input[name=memberPassword]").blur(function(){
                 var regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$])[a-zA-Z0-9!@#$]{8,16}$/;
