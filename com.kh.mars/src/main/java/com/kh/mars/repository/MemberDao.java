@@ -1,5 +1,12 @@
 package com.kh.mars.repository;
 
-public class MemberDao {
+import com.kh.mars.entity.MemberDto;
+
+public interface MemberDao {
+
+	void join(MemberDto memberDto);
+
+	MemberDto login(String memberEmail, String memberPassword);
+
 
 }

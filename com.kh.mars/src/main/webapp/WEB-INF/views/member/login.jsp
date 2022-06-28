@@ -15,8 +15,8 @@
 </head>
 <body>
     <div id="app">
-        
         <div class="container col-lg-4 card p-5 mt-5">
+    <form action="login" method="post">
             <div class="img p-4 text-center">
                 <div>로고 자리</div>
             </div>
@@ -31,7 +31,7 @@
             <div class="row">
                 <button class="btn btn-primary">로그인</button>
             </div>
-    
+    </form>
             <div class="row text-center m-3">
                 <a href="#">비밀번호를 잊으셨나요?</a>
             </div>
