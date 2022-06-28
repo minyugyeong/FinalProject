@@ -8,4 +8,6 @@ public interface CertDao {
 
 	boolean check(CertDto certDto);
 
+	void clear();
+
 }
