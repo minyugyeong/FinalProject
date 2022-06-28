@@ -74,7 +74,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/board/insert">
                                     <i class="fa-solid fa-square-plus fa-lg"></i>
                                 </a>
                             </li>
