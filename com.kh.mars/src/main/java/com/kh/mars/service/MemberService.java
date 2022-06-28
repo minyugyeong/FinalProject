@@ -1,5 +1,5 @@
 package com.kh.mars.service;
 
-public class MemberService {
+public interface MemberService {
 
 }
