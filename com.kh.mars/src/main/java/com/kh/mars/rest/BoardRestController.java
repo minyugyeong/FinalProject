@@ -21,14 +21,6 @@ public class BoardRestController {
 	@Autowired
 	private BoardDao boardDao;
 	
-	@PostMapping("/")
-	public BoardDto insert(@RequestBody BoardDto boardDto, @ApiIgnore HttpSession session) {
-		Integer memberNo = (Integer)session.getAttribute("login");
-		boardDto.setMemberNo(memberNo);
-		
-		return boardDao.insert(boardDto);
-	}
-	
 	
 
 }
