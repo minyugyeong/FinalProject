@@ -8,17 +8,13 @@
 
     </footer>
     <!-- vue js도 lazy loading을 사용한다 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/vue@next"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    
     <script>
         //div[id=app]을 제어할 수 있는 Vue instance를 생성
-        const app = Vue.createApp({
+        const navi = Vue.createApp({
             //data : 화면을 구현하는데 필요한 데이터를 작성해둔다
             data(){
                 return {
-
                 };
             },
             //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
@@ -45,7 +41,7 @@
             updated(){},
             
         });
-        app.mount("#navi");
+        navi.mount("#navi");
     </script>
 </body>
 </html>
