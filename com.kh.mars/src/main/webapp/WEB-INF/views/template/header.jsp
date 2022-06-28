@@ -40,6 +40,11 @@
             position: fixed;
             top: 100px;
         }
+        
+        main{
+        	position: absolute;
+        	top: 100px;
+        }
     </style>
 </head>
 <body>
@@ -47,7 +52,7 @@
         <div class="container-fluid">
 
                     <a class="navbar-brand" href="#">
-                        <img src="./image/logo.png" width="150">
+                        <img src="${pageContext.request.contextPath}/image/logo.png" width="150">
                     </a>
                     
                     <div class="collapse navbar-collapse" id="navbarColor03">
@@ -91,3 +96,4 @@
         
     <main>
         <section>
+        
