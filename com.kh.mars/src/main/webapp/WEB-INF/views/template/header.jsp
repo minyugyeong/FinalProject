@@ -41,12 +41,6 @@
         .fa-solid{
             width: 30px;
         }
-
-        .deco{
-            z-index: 999;
-            position: fixed;
-            top: 100px;
-        }
         
         main{
         	position: absolute;

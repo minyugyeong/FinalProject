@@ -33,13 +33,11 @@
         <div class="row form-floating mb-3">
             <input type="email" class="form-control member-email" id="floatingInput" placeholder="name@example.com" name="memberEmail">
             <label for="floatingInput">이메일 주소</label>
-            <div class="invalid-feedback">올바른 이메일 주소가 아닙니다</div>
         </div>
 
         <div class="row form-floating mb-3">
             <input type="text" class="form-control" id="floatingInput" placeholder="memberNick" name="memberNick">
             <label for="floatingInput">닉네임</label>
-            <div class="invalid-feedback">영문 대/소문자,특수문자(-_.) 4~16글자로 작성해주세요</div>
         </div>
         
         <div class="row form-floating mb-3">
@@ -51,7 +49,6 @@
         <div class="row form-floating mb-3">
             <input type="text" class="form-control" id="floatingNumber" placeholder="PhoneNumber" name="memberPhone">
             <label for="floatingNumber">전화번호</label>
-            <div class="invalid-feedback">올바른 형식이 아닙니다</div>
         </div>
         
         <div class="row">
@@ -72,12 +69,12 @@
 	            </div>
     
        <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberHighschool" name="memberHighschool" >
+                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberHigh" name="memberHigh" >
                     <label for="floatingNumber">고등학교</label>
                 </div>
 
                 <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberUniversity" name="memberUniversity" >
+                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberUniv" name="memberUniv" >
                     <label for="floatingNumber">대학교</label>
                 </div>
 
@@ -104,7 +101,7 @@
 
 <div class="container col-lg-4 card p-4 mt-3 mb-3">
     <div class="text-center">
-        계정이 있으신가요 ?  <a href="login">로그인</a>
+        계정이 있으신가요 ?  <a href="#">로그인</a>
     </div>
 </div>
     <!-- lazy loading 배치 - 기능은 다소 늦게 돌아가지만 화면을 먼저 띄울 수 있다 -->
@@ -115,42 +112,42 @@
         	$(".btn-join").prop("disabled", true);
             var index=0;
             var object = {
-            		memberEmail:"",
+            		email:"",
             		cert:false,
             };
 
-           /*  $(".page:gt(0)").hide(); */
+            $(".page:gt(0)").hide();
 
             $(".btn-send-mail").click(function(){
-                var memberEmail = $(".member-email").val();
+                var email = $(".member-email").val();
 
                 $.ajax({
                     url:"${pageContext.request.contextPath}/sendMail",
                     type:"post",
                     data:{
-                        memberEmail:memberEmail
-                    }, 
+                        memberEmail:email
+                    },
                     success:function(resp){
-                       object.memberEmail = memberEmail;
+                       object.email = email;
                     }
                 });
             });
 
             $(".btn-cert-check").click(function(){
-                var memberEmail = object.memberEmail;
+                var email = object.email;
                 var number = $(".cert-number").val();
 
                 $.ajax({
                     url:"${pageContext.request.contextPath}/certCheck",
                     type:"post",
                     data:{
-                        memberEmail:memberEmail,
+                        memberEmail:email,
                         certNumber:number
                     },
                     success:function(resp){
                         if(resp){
                             $(".btn-cert-check").prop("disabled", true);
-                            $(".member-email").prop("readonly", true);
+                            $(".member-email").prop("disabled", true);
                             $(".cert-number").prop("disabled", true);
                             $(".btn-join").prop("disabled", false);
                             object.cert = true;
@@ -166,7 +163,7 @@
                 });
             });
 
-           /*  $(".btn-next").click(function(){
+            $(".btn-next").click(function(){
                 index++;
                 $(".page").hide();
                 $(".page").eq(index).show();
@@ -176,38 +173,14 @@
                 index--;
                 $(".page").hide();
                 $(".page").eq(index).show();
-            }); */
-
-            $("input[name=memberEmail]").blur(function(){
-                var regex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-                var memberEmail = regex.test($(this).val());
-
-                $(this).removeClass("is- valid is-invalid");
-                $(this).addClass(memberEmail ? "is-valid" : "is-invalid")
             });
 
             $("input[name=memberPassword]").blur(function(){
                 var regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$])[a-zA-Z0-9!@#$]{8,16}$/;
-                var memberPassword = regex.test($(this).val());
+                var memberPw = regex.test($(this).val());
 
                 $(this).removeClass("is-valid is-invalid");
-                $(this).addClass(memberPassword ? "is-valid" : "is-invalid")
-            });
-
-            $("input[name=memberPhone]").blur(function(){
-                var regex = /^01([0|1|6|7|8|9]?)?([0-9]{3,4})?([0-9]{4})$/;
-                var memberPhone = regex.test($(this).val());
-
-                $(this).removeClass("is-valid is-invalid");
-                $(this).addClass(memberPhone ? "is-valid" : "is-invalid");
-            });
-
-            $("input[name=memberNick").blur(function(){
-                var regex = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{4,16}$/;
-                var memberNick = regex.test($(this).val());
-
-                $(this).removeClass("is-valid is-invalid");
-                $(this).addClass(memberNick ? "is-valid" : "is-invalid");
+                $(this).addClass(memberPw ? "is-valid" : "is-invalid")
             });
         });
 
