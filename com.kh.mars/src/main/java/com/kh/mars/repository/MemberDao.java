@@ -8,5 +8,7 @@ public interface MemberDao {
 
 	MemberDto login(String memberEmail, String memberPassword);
 
+	MemberDto info(int memberNo);
+
 
 }

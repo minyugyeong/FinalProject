@@ -45,4 +45,9 @@ public class MemberDaoImpl implements MemberDao{
 		}
 	}
 
+	@Override
+	public MemberDto info(int memberNo) {
+		return sqlSession.selectOne("member.info", memberNo);
+	}
+
 }
