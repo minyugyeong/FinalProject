@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class MessageVO {
-	private String memberId;
+	private int memberNo;
 	private String text;
 	private String memberAuth;
 	private Date time;
