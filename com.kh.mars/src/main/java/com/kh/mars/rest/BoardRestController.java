@@ -48,7 +48,6 @@ public class BoardRestController {
 						@RequestParam int boardNo,
 						@ApiIgnore HttpSession session
 						) {
-		session.setAttribute("login", 1);//준엽지우기
 		int memberNo = (Integer) session.getAttribute("login");
 		return boardLikeService.boardLike(memberNo, boardNo);
 		
