@@ -57,5 +57,9 @@ public class MemberDaoImpl implements MemberDao{
 		int attachNo = sqlSession.selectOne("member.myProfile", memberNo);
 		return attachNo;
 	}
+	@Override
+	public MemberDto info(int memberNo) {
+		return sqlSession.selectOne("member.info", memberNo);
+	}
 
 }

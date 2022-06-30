@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,16 @@ public class MemberController {
 			session.setAttribute("auth", memberDto.getMemberGrade());
 		}
 		return "redirect:/";
+	}
+	
+	@GetMapping("/edit")
+	public String edit(HttpSession session, Model model) {
+		int memberNo = (Integer)session.getAttribute("login");
+		
+		MemberDto memberDto = memberDao.info(memberNo);
+		model.addAttribute("memberDto", memberDto);
+		
+		return "member/edit";
 	}
 	
 	

@@ -35,10 +35,10 @@
  	<insert id="join" parameterType="MemberDto">
 		insert into member(
 			member_no, member_email, member_password, member_gender, member_nick,
-			member_phone, member_interest)
+			member_phone, member_interest, member_highschool, member_university)
 		values(
 			#{memberNo}, #{memberEmail}, #{memberPassword}, #{memberGender}, #{memberNick},
-			#{memberPhone}, #{memberInterest})
+			#{memberPhone}, #{memberInterest}, #{memberHighschool}, #{memberUniversity})
 	</insert>
 	
 	<!-- 로그인 -->
@@ -56,4 +56,10 @@
 	<select id="myProfile" resultType="int" parameterType="int">
 		select attach_no from member_profile where member_no = #{memberNo}
 	</select>
+	
+	<!-- 회원번호로 상세조회 -->
+	<select id="info" resultType="MemberDto" parameterType="int">
+		select * from member where member_no = #{memberNo}
+	</select>
+	
  </mapper> 

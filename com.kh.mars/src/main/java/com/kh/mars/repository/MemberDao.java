@@ -13,4 +13,7 @@ public interface MemberDao {
 	//프로필 사진조회
 	int memberProfile(int memberNo);
 
+	MemberDto info(int memberNo);
+
+
 }
