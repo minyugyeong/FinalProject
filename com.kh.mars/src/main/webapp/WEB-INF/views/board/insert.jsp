@@ -3,6 +3,7 @@
 
 <%-- <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> --%>
 
+
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <style>
@@ -12,7 +13,10 @@
 	}
 
 	.img {
-		border: 2px solid transparent;
+		
+		width: 45px;
+		height: 45px;
+		
 	}
 	
 	.img.img-circle {
@@ -42,7 +46,87 @@
 	  color: white;
 	  cursor: pointer;
 	}
-
+	
+	.input-uploadPlus{
+		padding: 10px 30px;
+	  background-color:white;
+	  border-radius: 4px;
+	  color: #eb6864;
+	  cursor: pointer;
+	  
+	}
+	
+	.form-switch{
+		padding: 0em;
+	}
+	
+	.ppp{
+		position: relative;
+	}
+	
+	.xxx{
+		position: absolute;
+		top: 100px;
+		right: 80px;
+		z-index: 999;
+	}
+	
+	.file-preview-container {
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+ 	}
+  
+	.file-preview-wrapper {
+    padding: 10px;
+    position: relative;
+	}
+        
+  .file-close-button {
+    position: absolute;
+    line-height: 18px;
+    z-index: 99;
+    font-size: 18px;
+    right: 5px;
+    top: 10px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #666666;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    cursor: pointer;
+	}
+        
+  .file-preview-wrapper-upload {
+    margin: 10px;
+    padding-top: 20px;
+    background-color: white;
+    width: 150px;
+    border: 1px soild #eb6864;
+    
+	}
+        
+        
+  .image-box {
+    margin-top: 30px;
+    padding-bottom: 30px;
+    text-align: center;
+	}
+	
+	.file-preview-wrapper>img {
+     position: relative;
+     width: 150px;
+     height: 200px;
+     z-index: 10;
+ 	}
+ 	
+ 	.nickname{
+ 		font-weight: bold;
+ 		font-size: large;
+ 		margin-left: 20px;
+ 	}
+ 	
 
 </style>
 
@@ -58,28 +142,37 @@
 
 //내용 글자 수 카운트
 $(function(){
-	/* if($("#input_check").prop("checked", true) {
-		$("#input_check_hidden").attr("disabled", true);
-	} */
+
 	$(".content").on("input", function(){
 		
 		const size = $(this).val().length;
 		
 		if(size <= 10){
-		const target = $(this).next().children(".length").children(".count");
-		target.text(size);
-			}
+			const target = $(this).next().children(".length").children(".count");
+			target.text(size);
+		}
 		
-		if(size > 10){
-			$(this).val($(this).val().substring(0, 10));
+		if(size > 1000){
+			$(this).val($(this).val().substring(0, 1000));
 		}
 		
 	});
+	
+	$(".cancel").click(function(){
+		const text = confirm("게시물을 삭제하시겠어요?\n지금 나가면 수정 내용이 저장되지 않습니다.");
+		
+		if(text){
+			location.replace("/mars/")
+		}
+	});
+	
 });
 
 </script>
 
 <!------------------------------------------------------------------------------------->
+
+<div id="app" class="vue-container">
 
 <form action="insert" method="post" enctype="multipart/form-data">
 
@@ -95,7 +188,7 @@ $(function(){
 		      <div class="card-header">
 		        <div class="row">
 		          <div class="col-md-2">
-		            <button type="button" class="btn btn-secondary" style="float:left;">취소</button>
+		            <button type="button" class="btn btn-secondary cancel" style="float:left;">취소</button>
 		          </div>
 		          <div class="col-md-8">
 		            <h4 class="text-primary text-center" style="margin-top: 1%;">새 게시물 만들기</h4>
@@ -105,12 +198,44 @@ $(function(){
 		          </div>
 		        </div>
 		      </div>
-		      <div class="card-body text-center" style="margin-top: 20%;">
-		        <h1 class="card-title" ><i class="fa-regular fa-images"></i></h1>
-		        <p class="card-text fs-5">사진을 선택하세요.</p>
-		        <label for="upload" class="input-upload">업로드</label>
-		        <input type="file" name="boardAttach" accept=".png, .jpg" id="upload" style="display:none;" multiple>
+		      
+		      
+		      <div>
+		      	
+		      	<!-- 1-1. 사진 첨부전, 업로드 버튼 영역 -->
+			      <div v-if="!files.length">
+				      <div class="card-body text-center" style="margin-top: 20%;">
+				        <h1 class="card-title" ><i class="fa-regular fa-images"></i></h1>
+				        <p class="card-text fs-5">사진을 선택하세요.</p>
+				        <label for="upload" class="input-upload">업로드</label>
+				        <input type="file" name="boardAttach" accept=".png, .jpg" id="upload" ref="files" @change="imageUpload" style="display:none;" multiple>
+				        <p style="margin-top: 20px;">* 이미지는 최대 5개까지 선택 가능합니다.</p>
+				      </div>
+			      </div>
+			      
+			      <!-- 1-2. 사진 첨부했을 때, 미리보기 영역 -->
+			      <div v-else>
+				      <div class="file-preview-container">
+				        <div v-for="(file, index) in files" :key="index" class="file-preview-wrapper">
+				        	<div class="file-close-button" @click="fileDeleteButton" :name="file.number">
+				        		X
+				        	</div>
+				        	<img :src="file.preview"/>
+				        </div>
+				        <div class="file-preview-wrapper-upload">
+				        	<div class="image-box" v-show="files.length < 5">
+						        <label for="upload" class="input-uploadPlus">
+						        	<i class="fa-solid fa-plus fa-3x"></i>
+						        </label>
+						        <input type="file" name="boardAttach" accept=".png, .jpg" id="upload" ref="files" @change="imageAddUpload" style="display:none;" multiple/>				        	
+				        	</div>
+				        </div>
+				      </div>
+			      </div>
+		      
 		      </div>
+		      
+
 		    </div>
 		
 		  </div>
@@ -118,7 +243,7 @@ $(function(){
 		
 		
 		<!-- 2. 게시물 등록 영역 -->
-		<div class="row w-50 mt-5" style="float: none; margin: 0 auto;">
+		<div v-if="files.length" class="row w-50 mt-5" style="float: none; margin: 0 auto;">
 		  <div class="col">
 		
 		    <div class="card border-primary mb-3" style="height: 600px;">
@@ -147,17 +272,15 @@ $(function(){
 								    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
 								    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
 								  </div>
+								  
 								  <div class="carousel-inner">
-								    <div class="carousel-item active">
-								      <img src="${pageContext.request.contextPath}/image/picture.jpg" class="d-block w-100" height="500px">
-								    </div>
-								    <div class="carousel-item">
-								      <img src="${pageContext.request.contextPath}/image/logo.png" class="d-block w-100" height="500px">
-								    </div>
-								    <div class="carousel-item">
-								      <img src="${pageContext.request.contextPath}/image/favicon.png" class="d-block w-100" height="500px">
-								    </div>
+									  <div v-for="(file, index) in files" :key="index">
+									  	<div class="carousel-item active">
+									  		<img :src="file.preview" />
+									  	</div>
+									  </div>
 								  </div>
+								  
 								  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
 								    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
 								    <span class="visually-hidden">Previous</span>
@@ -173,10 +296,10 @@ $(function(){
 		      		<div class="col-5">
 					    	<div class="row">
 					    		<div class="col-2 right">
-						    		<img src="${pageContext.request.contextPath}/image/picture.jpg" width="45px" height="45px" class="img img-circle">		    		
+						    		<img src="${pageContext.request.contextPath}/image/picture.jpg" class="img img-circle">		    		
 					    		</div>
 					    		<div class="col-10 left bottom">
-					    			<h5>ugyeonggg</h5>
+					    			<span class="nickname">ugyeonggg</span>
 					    		</div>
 					    	</div>
 					    	
@@ -188,7 +311,7 @@ $(function(){
 										<span class="length">
 											<span class="count">0</span>
 											/
-											<span class="total">10</span>
+											<span class="total">1000</span>
 										</span>
 									</div>
 					    	</div>
@@ -197,16 +320,15 @@ $(function(){
 					    		<h4>태그자리</h4>
 					    	</div>
 					    	
-					    	<div class="row mt-4 form-check form-switch">
-					    		<div class="row">
-										<div class="col-6 left" style="margin-left: 0px;">
-											<label class="fs-5" for="input_check">댓글 기능 해제</label>
+					    	<div class="row mt-4 form-check form-switch" style="display: flex;">
+					    		
+										<div class="col-9 left" style="margin-left: 0px;">
+											<label class="fs-5" for="replyCheck">댓글 기능 해제</label>
 										</div>
-										<div class="col-6">
-											<input type="checkbox" name="boardIsReply" value="1"  id="input_check" class="form-check-input fs-5">
-											<!-- <input type="hidden" name="boardIsReply" value="0" id="input_check_hidden"> -->
+										<div class="col-3">
+											<input type="checkbox" name="boardIsReply" value="1" class="form-check-input fs-5" style="margin-left: 0;" id="replyCheck">
 										</div>
-									</div>
+									
 					    	</div>
 					    	
 					    	<div class="row">
@@ -230,6 +352,7 @@ $(function(){
 
 </form>
 
+</div>
 <!------------------------------------------------------------------------------------->
 
 
@@ -237,27 +360,61 @@ $(function(){
   //div[id=app]을 제어할 수 있는 Vue instance를 생성
   const app = Vue.createApp({
     //data 영역 : 화면을 구현하는데 필요한 데이터를 작성해둔다.
+    el: ".vue-container",
     data(){
       return {
+    	  
+    	  files : [],
+    	  filesPreview: [],
+    	  uploadImageIndex: 0
         
-      };
-    },
-
-    //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
-    //- 3줄보다 많다면 사용하지 않는 것을 권장한다.(복잡한 계산 시 성능 저하가 발생)
-    computed:{
-      
+      }
     },
 
     //methods : 애플리케이션 내에서 언제든 호출 가능한 코드 집합이 필요한 경우 작성한다.
     methods:{
+    	
+    	imageUpload(){
+    		
+    		let num = -1;
+    		for(let i = 0; i < this.$refs.files.files.length; i++){
+    			this.files = [
+    				...this.files,
+    				{
+    					file: this.$refs.files.files[i],
+    					preview: URL.createObjectURL(this.$refs.files.files[i]),
+    					number: i
+    				}
+    			];
+    			num = i;
+    		}
+    		this.uploadImageIndex = num + 1;
+    	},
+    	
+    	imageAddUpload(){
+    		
+    		let num = -1;
+    		for(let i = 0; i < this.$refs.files.files.length; i++){
+    			this.files = [
+    				...this.files,
+    				{
+    					file: this.$refs.files.files[i],
+    					preview: URL.createObjectURL(this.$refs.files.files[i]),
+    					number: i + this.uploadImageIndex
+    				}
+    			];
+    			num = i;
+    		}
+    		this.uploadImageIndex = this.uploadImageIndex + num + 1;
+    		
+    	},
+    	fileDeleteButton(e){
+    		const name = e.target.getAttribute('name');
+    		this.files = this.files.filter(data => data.number != Number(name));
+    	},
      
     },
-
-    //watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다.
-    watch:{
-      
-    },
+    
 
   });
   app.mount("#app");
