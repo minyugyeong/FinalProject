@@ -64,5 +64,40 @@ public class MemberController {
 		return "member/edit";
 	}
 	
+	@PostMapping("/edit")
+	public String edit(HttpSession session, @ModelAttribute MemberDto memberDto) {
+		int memberNo = (Integer)session.getAttribute("login");
+		memberDto.setMemberNo(memberNo);
+		
+		boolean success = memberDao.edit(memberDto);
+		if(success) {
+			return "redirect:edit";
+		}
+		else {
+			return "redirect:edit?error";
+		}
+	}
+	
+	@RequestMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("login");
+		session.removeAttribute("auth");
+		return "member/login";
+	}
+	
+	@PostMapping("/changePassword")
+	public String password(
+			@RequestParam String currentPassword,
+			@RequestParam String changePassword,
+			HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		boolean success = memberDao.changePassword(memberNo, currentPassword, changePassword);
+		if(success) {
+			return "redirect:edit";
+		}
+		else {
+			return "redirect:edit?error";
+		}
+	}
 	
 }

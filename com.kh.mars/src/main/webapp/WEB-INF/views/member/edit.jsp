@@ -12,36 +12,36 @@
             <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">Profile</a>
           </div>
         </div>
-
         <div class="col-8">
           <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
 
+	<form action="edit" method="post">
                 <div class="mb-3 row">
                     <label for="inputmemberNick" class="col-sm-5 col-form-label">닉네임</label>
                     <div class="col-sm-5">
-                      <input type="text" class="form-control" id="inputmemberNick" value="${memberDto.memberNick }">
+                      <input type="text" name="memberNick" class="form-control" id="inputmemberNick" value="${memberDto.memberNick }">
                     </div>
                 </div>
 
                 <div class="mb-3 row">
                     <label for="inputmemberPhone" class="col-sm-5 col-form-label">전화번호</label>
                     <div class="col-sm-5">
-                      <input type="tel" class="form-control" id="inputmemberPhone" value="${memberDto.memberPhone }">
+                      <input type="tel" name="memberPhone" class="form-control" id="inputmemberPhone" value="${memberDto.memberPhone }">
                     </div>
                 </div>
 
                 <div class="mb-3 row">
                     <label for="inputmemberHighschool" class="col-sm-5 col-form-label">고등학교</label>
                     <div class="col-sm-5">
-                      <input type="text" class="form-control" id="inputmemberHighschool" value="${memberDto.memberHighschool }">
+                      <input type="text" name="memberHighschool" class="form-control" id="inputmemberHighschool" value="${memberDto.memberHighschool }">
                     </div>
                 </div>
 
                 <div class="mb-3 row">
                     <label for="inputmemberUniversity" class="col-sm-5 col-form-label">대학교</label>
                     <div class="col-sm-5">
-                      <input type="text" class="form-control" id="inputmemberUniversity" value="${memberDto.memberHighschool }">
+                      <input type="text" name="memberUniversity" class="form-control" id="inputmemberUniversity" value="${memberDto.memberHighschool }">
                     </div>
                 </div>
                 
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="mb-3 row">
-                    <label for="inputPassword" class="col-sm-5 col-form-label">관심사</label>
+                    <label for="inputmemberInterest" class="col-sm-5 col-form-label">관심사</label>
                     <div class="col-sm-5">
                         <select class="form-select" name="memberInterest">
                             <option value="" <c:if test="${memberDto.memberInterest == null }">selected</c:if>>선택</option>
@@ -71,32 +71,40 @@
                         </select>
                     </div>
                 </div>
+                
+                <div class="row">
+		            <button type="submit" class="btn btn-primary mt-3">변경</button>
+		        </div>
+	</form>
 
             </div>
-
             <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-                
+                <form action="changePassword" method="post">
                 <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-2 col-form-label">이전 비밀번호</label>
                     <div class="col-sm-5">
-                      <input type="password" class="form-control" id="inputPassword">
+                      <input type="password" class="form-control" id="inputPassword" name="currentPassword">
                     </div>
                 </div>
 
                 <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-2 col-form-label">새 비밀번호</label>
                     <div class="col-sm-5">
-                      <input type="password" class="form-control" id="inputPassword">
+                      <input type="password" class="form-control" id="inputPassword" name="changePassword">
                     </div>
                 </div>
 
                 <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-2 col-form-label">새 비밀번호 확인</label>
                     <div class="col-sm-5">
-                      <input type="password" class="form-control" id="inputPassword">
+                      <input type="password" class="form-control" id="inputPassword" name="checkPassword">
                     </div>
                 </div>
                 
+                <div class="row">
+		            <button type="submit" class="btn btn-primary mt-3">변경</button>
+		        </div>
+                </form>
             </div>
           </div>
         </div>

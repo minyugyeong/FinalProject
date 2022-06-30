@@ -50,4 +50,22 @@ public class MemberDaoImpl implements MemberDao{
 		return sqlSession.selectOne("member.info", memberNo);
 	}
 
+	@Override
+	public boolean edit(MemberDto memberDto) {
+		return sqlSession.update("member.edit", memberDto) >0;
+	}
+
+	@Override
+	public boolean changePassword(int memberNo, String currentPassword, String changePassword) {
+		MemberDto memberDto = this.info(memberNo);
+		if(currentPassword == memberDto.getMemberPassword());
+		String encodePassword = passwordEncoder.encode(changePassword);
+		
+		int count = sqlSession.update("member.changePassword", MemberDto.builder().memberNo(memberNo).memberPassword(encodePassword).build());
+			
+		
+		return count >0;
+		
+	}
+
 }

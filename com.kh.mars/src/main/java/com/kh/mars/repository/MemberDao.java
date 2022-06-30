@@ -10,5 +10,9 @@ public interface MemberDao {
 
 	MemberDto info(int memberNo);
 
+	boolean edit(MemberDto memberDto);
+
+	boolean changePassword(int memberNo, String currentPassword, String changePassword);
+
 
 }
