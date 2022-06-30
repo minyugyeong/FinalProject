@@ -26,6 +26,7 @@
 	-->
 	<typeAliases>
 		<package name="com.kh.mars.entity"/>
+		<package name="com.kh.mars.vo"/>
 	</typeAliases>
 	
 </configuration>
