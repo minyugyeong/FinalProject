@@ -32,7 +32,7 @@
  		select board_seq.nextval from dual
  	</select>
 	
-	<select id="mainList2" resultType="BoardListVO" parameterType="map"><!-- 팔로워들의 최근 게시글 조회 구문 -->
+	<select id="mainList" resultType="BoardListVO" parameterType="map"><!-- 팔로워들의 최근 게시글 조회 구문 -->
 		select * from (
 		        select rownum rn, TMP.* from(
 		            select final.*, member.member_nick"REPLY_NICK" from (
@@ -73,6 +73,8 @@
 			<result column="reply_content" property="replyContent"/>
 			<result column="reply_member_no" property="replyMemberNo"/>
 			<result column="reply_nick" property="replyNick"/>
+			<result column="writer_profile" property="writerProfile"/>
+			<result column="is_like" property="isLike"/>
 		</association>
 		<!-- 
 			컬렉션(List<PaymentDetailDto>)에 대한 매핑 설정
@@ -99,6 +101,8 @@
 	<select id="boardTreeSearch" resultMap="boardMap">
 		select * from (
 		        select rownum rn, TMP.* from(
+		        	select abcde.*, bl.member_no "is_like" from (
+		        	select abcd.*, mp.attach_no "writer_profile" from (
 		            select final.*, member.member_nick"REPLY_NICK" from (
 		            select abmbr.board_no, abmbr.member_no, abmbr.board_date, abmbr.board_content, abmbr.board_is_reply, abmbr.follow_target, abmbr.member_nick, rpy.reply_no, rpy.reply_content, rpy.reply_member_no  from (
 		            select abm.*, max(br.reply_no)"reply_no" from (
@@ -115,35 +119,18 @@
 		            )abm  left outer join board_reply br on br.board_no = abm.board_no group by abm.board_no, abm.member_no, abm.board_date, abm.board_content, abm.board_is_reply, abm.follow_target, abm.member_nick
 		            )abmbr left outer join reply rpy on rpy.reply_no = abmbr."reply_no"
 		            )final left outer join member on member.member_no = final.reply_member_no order by final.board_no desc 
+		            )abcd left outer join member_profile mp on abcd.follow_target = mp.member_no
+		            )abcde left outer join (
+					    select * from board_like where member_no =  #{memberNo}
+					)bl on abcde.board_no = bl.board_no
 		        )TMP
 		)where rn between ((#{pageCount}-1) * 3 + 1) and (#{pageCount} * 3)
 	</select>
 	<select id="treeSearchSubquery" resultType="BoardAttachVO" parameterType="int">
-		select * from (
-		    select rownum "ATTACH_NO", TMP.board_no, TMP.ATTACH_uploadname, tmp.attach_type, tmp.attach_size from(
-		        select ba.board_no, attach.* from (
-		        select * from board_attach where board_no = ${board_no})ba inner join attach on ba.attach_no = attach.attach_no
-		    )TMP
-		)
+		select ba.board_no, attach.* from (
+		      select * from board_attach where board_no = #{board_no}
+		)ba inner join attach on ba.attach_no = attach.attach_no
 	</select>
-	
-	
-	
-	
-	<select id="mainList" resultType="boardDto" parameterType="map">
-		select * from (
-	        select rownum rn, TMP.* from(
-	            select * from board B inner join (select follow_target from follow where follow_who = #{memberNo})"A" on b.member_no = a.follow_target 
-	            	<if test="uptoNo != 0">
-	            	<![CDATA[
-	            	where b.board_no <= #{uptoNo} 
-	            	]]>
-	            	</if>
-	            	order by b.board_no desc
-	        )TMP
-	    )where rn between ((#{pageCount}-1) * 3 + 1) and (#{pageCount} * 3)
-	</select>
-	
 	
 	
 	<select id="selectOne" resultType="BoardDto" parameterType="int">

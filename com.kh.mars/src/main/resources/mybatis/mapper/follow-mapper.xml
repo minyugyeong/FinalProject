@@ -24,42 +24,36 @@
  <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- <mapper namespace="member">
- 
- 	<!-- 회원 시퀀스 -->
- 	<select id="sequence" resultType="int">
- 		select member_seq.nextval from dual
- 	</select>
- 
- 	<!-- 회원가입 -->
- 	<insert id="join" parameterType="MemberDto">
-		insert into member(
-			member_no, member_email, member_password, member_gender, member_nick,
-			member_phone, member_interest, member_highschool, member_university)
-		values(
-			#{memberNo}, #{memberEmail}, #{memberPassword}, #{memberGender}, #{memberNick},
-			#{memberPhone}, #{memberInterest}, #{memberHighschool}, #{memberUniversity})
-	</insert>
-	
-	<!-- 로그인 -->
-	<select id="one" resultType="MemberDto" parameterType="String">
-		select * from member where member_email = #{memberEmail}
+ <mapper namespace="follow">
+
+	<select id="recommend" resultType="FollowRecommendVO" parameterType="int">
+		select * from(
+		    select * from (
+		        select abcd.*, mp.attach_no "target_attach" from (
+		        select abc.follow_target, abc."target_nick", abc."followcount", mm.member_nick "who_nick" from (
+		        select ab.*, m.member_nick"target_nick" from (
+		        select a.follow_target, b."followcount", min(a.follow_who) "who_no" from (
+		        select follow.* from (
+		        select follow_target from follow where follow_who = #{memberNo})a inner join follow on a.follow_target = follow.follow_who 
+		        where not follow.follow_target in (select follow_target from follow where follow_who = #{memberNo}) and not follow.follow_target in #{memberNo}
+		        )a
+		        inner join (
+		        select follow.follow_target, (count(*)-1) "followcount" from (
+		        select follow_target from follow where follow_who = #{memberNo})a inner join follow on a.follow_target = follow.follow_who 
+		        where not follow.follow_target in (select follow_target from follow where follow_who = #{memberNo}) and not follow.follow_target in #{memberNo}
+		        group by follow.follow_target
+		        )b 
+		        on a.follow_target = b.follow_target 
+		        group by a.follow_target, b."followcount"
+		        )ab
+		        inner join member m on m.member_no = ab.follow_target
+		        )abc
+		        inner join member mm on mm.member_no = abc."who_no"
+				)abcd left outer join member_profile mp on abcd.follow_target = mp.member_no    
+		    ) order by DBMS_RANDOM.value
+		    <![CDATA[
+		) where rownum <= 5
+		    ]]>
 	</select>
-	
-	<!-- 내정보 조회 -->
-	<select id="myInfo" resultType="MemberDto" parameterType="int">
-		select member_no, member_email, member_gender, member_nick, member_phone, 
-				member_grade, member_private, member_interest, member_highschool, member_university
-		 from member where member_no = #{memberNo}
-	</select>
-	
-	<select id="myProfile" resultType="int" parameterType="int">
-		select attach_no from member_profile where member_no = #{memberNo}
-	</select>
-	
-	<!-- 회원번호로 상세조회 -->
-	<select id="info" resultType="MemberDto" parameterType="int">
-		select * from member where member_no = #{memberNo}
-	</select>
-	
+
  </mapper> 
