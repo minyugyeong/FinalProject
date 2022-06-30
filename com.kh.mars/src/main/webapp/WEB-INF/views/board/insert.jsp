@@ -3,6 +3,7 @@
 
 <%-- <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> --%>
 
+
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <style>
@@ -10,234 +11,410 @@
 		display: inline-block;
 		text-align: center;
 	}
-	
-	.card-size1 {
-		width: 650px;
-		height: 600px;
-	}
-	
-	.card-size2 {
-		width: 1000px;
-		height: 600px;
-	}
-	
-	.card {
-    margin: 0 auto;
-    float: none;
-    margin-bottom: 10px;
-	}
 
 	.img {
-		border: 2px solid transparent;
+		
+		width: 45px;
+		height: 45px;
+		
 	}
 	
 	.img.img-circle {
 		border-radius: 50%;
 	}
 	
-	.right {
-		text-align: right;
-	}
-	
-	.center {
-		text-align: center;
-	}
-	
-	.left {
-		text-align: left;
-	}
 	
 	textarea {
     border: none;
     resize: none;
   }
+  
+  .left {
+  	text-align: left;
+  	vertical-align: middle;
+  }
+  
+  .right{
+  	text-align: right;
+  	vertical-align: middle;
+  }
+  
+  .input-upload{
+	  padding: 10px 30px;
+	  background-color:#eb6864;
+	  border-radius: 4px;
+	  color: white;
+	  cursor: pointer;
+	}
 	
+	.input-uploadPlus{
+		padding: 10px 30px;
+	  background-color:white;
+	  border-radius: 4px;
+	  color: #eb6864;
+	  cursor: pointer;
+	  
+	}
+	
+	.form-switch{
+		padding: 0em;
+	}
+	
+	.ppp{
+		position: relative;
+	}
+	
+	.xxx{
+		position: absolute;
+		top: 100px;
+		right: 80px;
+		z-index: 999;
+	}
+	
+	.file-preview-container {
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+ 	}
+  
+	.file-preview-wrapper {
+    padding: 10px;
+    position: relative;
+	}
+        
+  .file-close-button {
+    position: absolute;
+    line-height: 18px;
+    z-index: 99;
+    font-size: 18px;
+    right: 5px;
+    top: 10px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #666666;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    cursor: pointer;
+	}
+        
+  .file-preview-wrapper-upload {
+    margin: 10px;
+    padding-top: 20px;
+    background-color: white;
+    width: 150px;
+    border: 1px soild #eb6864;
+    
+	}
+        
+        
+  .image-box {
+    margin-top: 30px;
+    padding-bottom: 30px;
+    text-align: center;
+	}
+	
+	.file-preview-wrapper>img {
+     position: relative;
+     width: 150px;
+     height: 200px;
+     z-index: 10;
+ 	}
+ 	
+ 	.nickname{
+ 		font-weight: bold;
+ 		font-size: large;
+ 		margin-left: 20px;
+ 	}
+ 	
 
 </style>
 
 <script type="text/javascript">
 	
-	//내용 글자 수 카운트
-	$(function(){
-		$(".content").on("input", function(){
-			
-			const size = $(this).val().length;
-			
-			const target = $(this).next().children(".length").children(".count");
-			target.text(size);
-			
-			if(size > 1000){
-				alert("dd");
-				$(this).val(desc.substring(0,1000));
-			}
-			
-		});
-	});
 	
+
+	
+	//댓글 기능 해제 checkbox 값 보내기
 </script>
 
-<div id="app" class="container-fluid div-center">
+<script type="text/javascript">
 
-	<div class="row mt-4 center">
-		<div class="col-md-8 offset-md-2 ">
-			<h1 class="text-primary text-center">새 게시물 만들기</h1>
-		</div>
-	</div>
+//내용 글자 수 카운트
+$(function(){
 
-	<form action="insert" method="post" enctype="multipart/form-data">
-
-		<div class="row mt-4">
-			<div class="col-md-8 offset-md-2">
-				<label>첨부파일</label>
-				<input type="file" name="boardAttach" accept=".png, .jpg">
-				<input type="file" name="boardAttach" accept=".png, .jpg">
-				
-			</div>
-		</div>
+	$(".content").on("input", function(){
 		
-		<div class="row mt-4">
-			<div class="col-md-8 offset-md-2">
-				<label>게시물 내용</label>
-				<textarea class="form-control" rows="5" name="boardContent"></textarea>
-			</div>
-		</div>
+		const size = $(this).val().length;
 		
-		<div class="row mt-4 form-check form-switch">
-			<div class="col-md-8 offset-md-2">
-				<input type="checkbox" name="boardIsReply" class="form-check-input replyCheck" id="mySwitch" value="0">
-				<label class="form-check-label" for="mySwitch">댓글 기능 해제</label>
-			</div>
-		</div>
+		if(size <= 10){
+			const target = $(this).next().children(".length").children(".count");
+			target.text(size);
+		}
 		
-		<div class="row mt-4">
-			<div class="col-md-8 offset-md-2">
-				<button type="submit" class="btn btn-block btn-primary">공유하기</button>
-			</div>
-		</div>
+		if(size > 1000){
+			$(this).val($(this).val().substring(0, 1000));
+		}
+		
+	});
+	
+	$(".cancel").click(function(){
+		const text = confirm("게시물을 삭제하시겠어요?\n지금 나가면 수정 내용이 저장되지 않습니다.");
+		
+		if(text){
+			location.replace("/mars/")
+		}
+	});
+	
+});
 
-	</form>
-
-</div>
+</script>
 
 <!------------------------------------------------------------------------------------->
 
-<div class="container-fluid">
+<div id="app" class="vue-container">
 
-	<!-- 1. 사진 첨부 영역 -->
-	<div class="card border-primary mb-3 card-size1 text-center">
-	  <div class="card-header">
-	  	<button type="button" class="btn btn-secondary" style="float:left;">취소</button>
-	  	<button type="button" class="btn btn-secondary" style="float:right;">다음</button>
-	  </div>
-	  <div class="card-body">
-	  <div class="card-title"><i class="fa-thin fa-images"></i></div>
-	  <div class="row text-align">
-    	<h4 class="card-text">사진을 여기에 끌어다 놓으세요</h4>
-    </div>
-	  </div>
-	</div>
+<form action="insert" method="post" enctype="multipart/form-data">
+
+	<div class="container-fluid">
 	
-	<!-- 2. 게시물 등록 영역 -->
-	<div class="card border-primary mb-3 card-size2">
-	  <div class="card-header">
-	  	<button type="button" class="btn btn-secondary" style="float:left;">이전</button>
-	  	<button type="button" class="btn btn-primary" style="float:right;">공유하기</button>
-	  </div>
-	  
-	  <div class="card-body">
-	  
-	  	<div class="row">
-	  	<!-- 왼쪽에 사진 출력 -->
-		    <div class="col-7 align-items-center">
-		    	
-					<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-					  <div class="carousel-indicators">
-					    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-					    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-					    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-					  </div>
-					  <div class="carousel-inner">
-					    <div class="carousel-item active">
-					      <img src="${pageContext.request.contextPath}/image/picture.jpg" class="d-block w-100" width="800px" height="500px">
-					    </div>
-					    <div class="carousel-item">
-					      <img src="${pageContext.request.contextPath}/image/logo.png" class="d-block w-100" width="800px" height="500px">
-					    </div>
-					    <div class="carousel-item">
-					      <img src="${pageContext.request.contextPath}/image/logo.png" class="d-block w-100" width="800px" height="500px">
-					    </div>
-					  </div>
-					  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-					    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					    <span class="visually-hidden">Previous</span>
-					  </button>
-					  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-					    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-					    <span class="visually-hidden">Next</span>
-					  </button>
-					</div>
-		    	
+		<div class="row mt-3"></div>
+		
+		<!-- 1. 사진 첨부 영역 -->
+		<div class="row w-50 mt-5" style="float: none; margin: 0 auto;">
+		  <div class="col">
+		
+		    <div class="card border-primary mb-3" style="height: 600px;">
+		      <div class="card-header">
+		        <div class="row">
+		          <div class="col-md-2">
+		            <button type="button" class="btn btn-secondary cancel" style="float:left;">취소</button>
+		          </div>
+		          <div class="col-md-8">
+		            <h4 class="text-primary text-center" style="margin-top: 1%;">새 게시물 만들기</h4>
+		          </div>
+		          <div class="col-md-2">
+		            <button type="button" class="btn btn-secondary" style="float:right;">다음</button>
+		          </div>
+		        </div>
+		      </div>
+		      
+		      
+		      <div>
+		      	
+		      	<!-- 1-1. 사진 첨부전, 업로드 버튼 영역 -->
+			      <div v-if="!files.length">
+				      <div class="card-body text-center" style="margin-top: 20%;">
+				        <h1 class="card-title" ><i class="fa-regular fa-images"></i></h1>
+				        <p class="card-text fs-5">사진을 선택하세요.</p>
+				        <label for="upload" class="input-upload">업로드</label>
+				        <input type="file" name="boardAttach" accept=".png, .jpg" id="upload" ref="files" @change="imageUpload" style="display:none;" multiple>
+				        <p style="margin-top: 20px;">* 이미지는 최대 5개까지 선택 가능합니다.</p>
+				      </div>
+			      </div>
+			      
+			      <!-- 1-2. 사진 첨부했을 때, 미리보기 영역 -->
+			      <div v-else>
+				      <div class="file-preview-container">
+				        <div v-for="(file, index) in files" :key="index" class="file-preview-wrapper">
+				        	<div class="file-close-button" @click="fileDeleteButton" :name="file.number">
+				        		X
+				        	</div>
+				        	<img :src="file.preview"/>
+				        </div>
+				        <div class="file-preview-wrapper-upload">
+				        	<div class="image-box" v-show="files.length < 5">
+						        <label for="upload" class="input-uploadPlus">
+						        	<i class="fa-solid fa-plus fa-3x"></i>
+						        </label>
+						        <input type="file" name="boardAttach" accept=".png, .jpg" id="upload" ref="files" @change="imageAddUpload" style="display:none;" multiple/>				        	
+				        	</div>
+				        </div>
+				      </div>
+			      </div>
+		      
+		      </div>
+		      
+
 		    </div>
-		    <div class="col-5">
-		    	<div class="row">
-		    		<div class="col-2 right">
-			    		<img src="${pageContext.request.contextPath}/image/picture.jpg" width="45px" height="45px" class="img img-circle">		    		
-		    		</div>
-		    		<div class="col-10 left bottom">
-		    			<h5>ugyeonggg</h5>
-		    		</div>
-		    	</div>
-		    	
-		    	<div class="row mb-2"></div>
-		    	
-		    	<div class="row">
-		    		<textarea class="form-control content" rows="10" name="boardContent" placeholder="문구 입력..."></textarea>
-		    		<div class="right">
-							<span class="length">
-								<span class="count">0</span>
-								/
-								<span class="total">1000</span>
-							</span>
-						</div>
-		    	</div>
-		    	
-		    </div>
+		
 		  </div>
-	  	
-	  </div>
-	  
-	</div>
+		</div>
+		
+		
+		<!-- 2. 게시물 등록 영역 -->
+		<div v-if="files.length" class="row w-50 mt-5" style="float: none; margin: 0 auto;">
+		  <div class="col">
+		
+		    <div class="card border-primary mb-3" style="height: 600px;">
+		      <div class="card-header">
+		        <div class="row">
+		          <div class="col-md-2">
+		            <button type="button" class="btn btn-secondary" style="float:left;">이전</button>
+		          </div>
+		          <div class="col-md-8">
+		            <h4 class="text-primary text-center" style="margin-top: 1%;">새 게시물 만들기</h4>
+		          </div>
+		          <div class="col-md-2">
+		            <button type="submit" class="btn btn-primary" style="float:right;">공유하기</button>
+		          </div>
+		        </div>
+		      </div>
+		      
+		      <div class="card-body text-center">
+		      
+		      	<div class="row">
+		      		<div class="col-7">
+		      			
+		      			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+								  <div class="carousel-indicators">
+								    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+								    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+								    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+								  </div>
+								  
+								  <div class="carousel-inner">
+									  <div v-for="(file, index) in files" :key="index">
+									  	<div class="carousel-item active">
+									  		<img :src="file.preview" />
+									  	</div>
+									  </div>
+								  </div>
+								  
+								  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+								    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+								    <span class="visually-hidden">Previous</span>
+								  </button>
+								  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+								    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+								    <span class="visually-hidden">Next</span>
+								  </button>
+								</div>
+		      			
+		      		</div>
+		      		
+		      		<div class="col-5">
+					    	<div class="row">
+					    		<div class="col-2 right">
+						    		<img src="${pageContext.request.contextPath}/image/picture.jpg" class="img img-circle">		    		
+					    		</div>
+					    		<div class="col-10 left bottom">
+					    			<span class="nickname">ugyeonggg</span>
+					    		</div>
+					    	</div>
+					    	
+					    	<div class="row mb-2"></div>
+					    	
+					    	<div class="row">
+					    		<textarea class="form-control content" rows="10" name="boardContent" placeholder="문구 입력..."></textarea>
+					    		<div class="right">
+										<span class="length">
+											<span class="count">0</span>
+											/
+											<span class="total">1000</span>
+										</span>
+									</div>
+					    	</div>
+					    	
+					    	<div class="row mt-4">
+					    		<h4>태그자리</h4>
+					    	</div>
+					    	
+					    	<div class="row mt-4 form-check form-switch" style="display: flex;">
+					    		
+										<div class="col-9 left" style="margin-left: 0px;">
+											<label class="fs-5" for="replyCheck">댓글 기능 해제</label>
+										</div>
+										<div class="col-3">
+											<input type="checkbox" name="boardIsReply" value="1" class="form-check-input fs-5" style="margin-left: 0;" id="replyCheck">
+										</div>
+									
+					    	</div>
+					    	
+					    	<div class="row">
+									<p class="left" style="font-size: small;">게시물 상단의 메뉴에서 이 설정을 변경할 수 있습니다.</p>
+					    	</div>
+					    	
+					    	</div>
+			    	
+			   			</div>
+		      	</div>
+		        
+		      </div>
+		      
+		    </div>
+		
+		  </div>
+		</div>
+		
+		<div class="row mb-5"></div>
 	
-	<div class="row mb-5"></div>
+
+</form>
 
 </div>
+<!------------------------------------------------------------------------------------->
 
 
 <script>
   //div[id=app]을 제어할 수 있는 Vue instance를 생성
   const app = Vue.createApp({
     //data 영역 : 화면을 구현하는데 필요한 데이터를 작성해둔다.
+    el: ".vue-container",
     data(){
       return {
+    	  
+    	  files : [],
+    	  filesPreview: [],
+    	  uploadImageIndex: 0
         
-      };
-    },
-
-    //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
-    //- 3줄보다 많다면 사용하지 않는 것을 권장한다.(복잡한 계산 시 성능 저하가 발생)
-    computed:{
-      
+      }
     },
 
     //methods : 애플리케이션 내에서 언제든 호출 가능한 코드 집합이 필요한 경우 작성한다.
     methods:{
+    	
+    	imageUpload(){
+    		
+    		let num = -1;
+    		for(let i = 0; i < this.$refs.files.files.length; i++){
+    			this.files = [
+    				...this.files,
+    				{
+    					file: this.$refs.files.files[i],
+    					preview: URL.createObjectURL(this.$refs.files.files[i]),
+    					number: i
+    				}
+    			];
+    			num = i;
+    		}
+    		this.uploadImageIndex = num + 1;
+    	},
+    	
+    	imageAddUpload(){
+    		
+    		let num = -1;
+    		for(let i = 0; i < this.$refs.files.files.length; i++){
+    			this.files = [
+    				...this.files,
+    				{
+    					file: this.$refs.files.files[i],
+    					preview: URL.createObjectURL(this.$refs.files.files[i]),
+    					number: i + this.uploadImageIndex
+    				}
+    			];
+    			num = i;
+    		}
+    		this.uploadImageIndex = this.uploadImageIndex + num + 1;
+    		
+    	},
+    	fileDeleteButton(e){
+    		const name = e.target.getAttribute('name');
+    		this.files = this.files.filter(data => data.number != Number(name));
+    	},
      
     },
-
-    //watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다.
-    watch:{
-      
-    },
+    
 
   });
   app.mount("#app");
