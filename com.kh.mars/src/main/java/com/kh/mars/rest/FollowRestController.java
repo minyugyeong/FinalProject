@@ -25,7 +25,6 @@ public class FollowRestController {
 	@GetMapping("/recommend_list")
 	public List<FollowRecommendVO> recommendList(
 										@ApiIgnore HttpSession session){
-		session.setAttribute("login", 1);//준엽지우기
 		int memberNo = (Integer) session.getAttribute("login");
 		return followDao.recommendList(memberNo);
 	}
