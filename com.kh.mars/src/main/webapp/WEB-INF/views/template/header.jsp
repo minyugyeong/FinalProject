@@ -10,17 +10,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/journal/bootstrap.min.css"/>
     
+    <!-- 파비콘 -->
+    <link rel="icon" href="${pageContext.request.contextPath}/image/favicon.png">
+    
     <!-- jquery cdn -->
  		<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
  		
-    <style>
+   <style>
         @media screen and (max-width: 768px) {
             .search0503 {
                 display: none!important;
             }
             .navbar-brand{
             margin-right: 300px!important;
-        }
+        		}
         }
 
         .container-fluid{
