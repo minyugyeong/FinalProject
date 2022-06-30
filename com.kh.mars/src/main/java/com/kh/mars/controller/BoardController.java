@@ -40,7 +40,7 @@ public class BoardController {
 			@ModelAttribute BoardDto boardDto, 
 			HttpSession session, 
 			RedirectAttributes attr,
-			@RequestParam("boardAttach") List<MultipartFile> boardAttach) throws IllegalStateException, IOException {
+			@RequestParam(value="boardAttach") List<MultipartFile> boardAttach) throws IllegalStateException, IOException {
 		
 		Integer memberNo = (Integer)session.getAttribute("login");
 		boardDto.setMemberNo(memberNo);
