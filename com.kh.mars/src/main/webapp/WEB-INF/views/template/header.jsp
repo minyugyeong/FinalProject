@@ -10,8 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/journal/bootstrap.min.css"/>
     
-    <!-- jquery cdn -->
- 		<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
  		
     <style>
         @media screen and (max-width: 768px) {
@@ -50,7 +49,7 @@
     <nav class="navbar navbar-expand fixed-top navbar-light bg-light" id="navi">
         <div class="container-fluid">
 
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="${pageContext.request.contextPath}">
                         <img src="${pageContext.request.contextPath}/image/logo.png" width="150">
                     </a>
                     
@@ -94,10 +93,13 @@
     </nav>
         
     <main>
+   	<!-- jquery cdn -->
+	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/vue@next"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
         
         <section>
         
