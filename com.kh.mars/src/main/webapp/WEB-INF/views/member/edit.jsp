@@ -16,7 +16,21 @@
           <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
 
+				<div class="mb-3 row">
+				<form action="profile" method="post" enctype="multipart/form-data">
+				<input type="file" name="memberProfile" class="form-input fill input-round" accept=".jpg, .png">
+				<button type="submit" class="btn btn-primary mt-3">변경</button>
+				</form>
+				<div>
+				<img src="${pageContext.request.contextPath}${profileUrl}"
+ 				width = "150">
+ 				</div>
+				프로필 사진 ${memberDto.memberNick }
+				
+				</div>
 	<form action="edit" method="post">
+	
+				
                 <div class="mb-3 row">
                     <label for="inputmemberNick" class="col-sm-5 col-form-label">닉네임</label>
                     <div class="col-sm-5">

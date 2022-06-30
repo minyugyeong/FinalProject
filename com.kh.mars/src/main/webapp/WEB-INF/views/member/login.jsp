@@ -18,7 +18,7 @@
         <div class="container col-lg-4 card p-5 mt-5">
     <form action="login" method="post">
             <div class="img p-4 text-center">
-                <div>로고 자리</div>
+                <div>로고 자리</div> 세션 = ${login }, ${auth}
             </div>
             <div class="form-floating mb-3 row">
                 <input type="text" class="form-control" id="floatingInput" placeholder="이메일" name="memberEmail">

@@ -1,5 +1,7 @@
 package com.kh.mars.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.repository.MemberDao;
+import com.kh.mars.repository.MemberProfileDao;
 
 @Controller
 @RequestMapping("/member")
@@ -21,6 +25,8 @@ public class MemberController {
 	@Autowired
 	private MemberDao memberDao;
 	
+	@Autowired
+	private MemberProfileDao memberProfileDao;
 
 	//회원가입 페이지
 	@GetMapping("/join")
@@ -61,6 +67,14 @@ public class MemberController {
 		MemberDto memberDto = memberDao.info(memberNo);
 		model.addAttribute("memberDto", memberDto);
 		
+		int attachNo = memberProfileDao.info(memberNo);
+		if(attachNo == 0) {
+			model.addAttribute("profileUrl", "/image/user.png");
+		}
+		else {
+			model.addAttribute("profileUrl", "/attach/download?attachNo=" + attachNo);
+		}
+		
 		return "member/edit";
 	}
 	
@@ -98,6 +112,13 @@ public class MemberController {
 		else {
 			return "redirect:edit?error";
 		}
+	}
+	
+	@PostMapping("/profile")
+	public String profile(@RequestParam MultipartFile memberProfile,HttpSession session) throws IllegalStateException, IOException {
+		int memberNo = (Integer)session.getAttribute("login");
+		memberDao.proFile(memberProfile, memberNo);
+		return "/member/edit";
 	}
 	
 }

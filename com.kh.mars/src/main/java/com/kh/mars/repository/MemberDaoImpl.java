@@ -1,9 +1,12 @@
 package com.kh.mars.repository;
 
+import java.io.IOException;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.mars.entity.MemberDto;
 
@@ -15,6 +18,12 @@ public class MemberDaoImpl implements MemberDao{
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private AttachDao attachDao;
+	
+	@Autowired
+	private MemberProfileDao memberProfileDao;
 
 	@Override
 	public void join(MemberDto memberDto) {
@@ -65,6 +74,13 @@ public class MemberDaoImpl implements MemberDao{
 			
 		
 		return count >0;
+		
+	}
+
+	@Override
+	public void proFile(MultipartFile memberProfile, int memberNo) throws IllegalStateException, IOException {
+		int attachNo = attachDao.save(memberProfile);
+		memberProfileDao.insert(memberNo,attachNo);
 		
 	}
 
