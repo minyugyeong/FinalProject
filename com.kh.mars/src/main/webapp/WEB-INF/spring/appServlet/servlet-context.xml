@@ -89,44 +89,13 @@
 	 <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"></mvc:resources>
 	 <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"></mvc:resources>
 	 
-	<!-- 
-		웹소켓 설정
-		- websocket namespace가 설정되어 있어야 한다
-		- 서버를 bean으로 등록하고 특정 경로에 웹소켓 할당을 수행한다
-		- (주의) http와 다른 ws라는 프로토콜을 사용하지만 주소가 겹치면 안된다(http 기반이므로)
-		- (주의) 다른 origin에서의 연결은 불가능하다
-	 -->
-	
-	<bean id="dmWebsocketServer" class="com.kh.mars.ws.DmWebsocketServer"></bean>
-	
-	
-	<websocket:handlers>
-		
-		<!-- 
-			ws://localhost:8080/spring19/ws/default 로 접속하면 
-			defaultWebsocketServer가 연결을 수신하도록 합시다! 
-		-->
-		<websocket:mapping handler="dmWebsocketServer" path="/ws/dm"/>
-		
-	</websocket:handlers>
-	
-	<!-- 
-		sockjs를 적용하면 (1) ws를 http로 사용할 수 있고 (2) 구버전 브라우저도 처리해준다 
-		- 하단에 작성하며, 작성 시 모든 웹소켓 연결이 변경되니 주의해야 한다.
-		
-		handshake-interceptor를 등록하면 HTTP가 종료되면서 WebSocket으로 넘길 정보들을 설정할 수 있다
-		- HttpSession의 회원정보를 WebSocketSession으로 넘길 수 있다
-	-->
-	<!-- <bean id="memberOnlyWebsocketServer" class="com.kh.spring19.ws.MemberOnlyWebsocketServer"></bean>
-	<bean id="channelWebsocketServer" class="com.kh.spring19.ws.ChannelWebsocketServer"></bean> -->
+	<bean id="dmWebsocketServer" class="com.kh.mars.ws.DMWebsocketServer"></bean>
 	
 	<websocket:handlers>
 		<websocket:mapping handler="dmWebsocketServer" path="/ws/dm"/>
-		
 		<websocket:handshake-interceptors>
 			<bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"></bean>
 		</websocket:handshake-interceptors>
-		<websocket:sockjs></websocket:sockjs>
 	</websocket:handlers>
 	
 </beans>
