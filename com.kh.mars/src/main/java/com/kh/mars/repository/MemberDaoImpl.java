@@ -54,6 +54,18 @@ public class MemberDaoImpl implements MemberDao{
 		}
 	}
 
+	//멤버 정보 조회 (비밀번호 정보 제외)
+	@Override
+	public MemberDto myInfo(int memberNo) {
+		return sqlSession.selectOne("member.myInfo", memberNo);
+	}
+	
+	//멤버 프로필사진 조회
+	public int memberProfile(int memberNo) {
+		if(sqlSession.selectOne("member.myProfile", memberNo) == null) return 0;
+		int attachNo = sqlSession.selectOne("member.myProfile", memberNo);
+		return attachNo;
+	}
 	@Override
 	public MemberDto info(int memberNo) {
 		return sqlSession.selectOne("member.info", memberNo);

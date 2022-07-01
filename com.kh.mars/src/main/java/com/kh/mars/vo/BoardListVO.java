@@ -22,4 +22,6 @@ public class BoardListVO {
 	private String replyContent;
 	private int replyMemberNo;
 	private String replyNick;
+	private int writerProfile;
+	private int isLike;
 }

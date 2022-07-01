@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.mars.entity.BoardDto;
 import com.kh.mars.repository.BoardDao;
+import com.kh.mars.repository.BoardLikeDao;
+import com.kh.mars.service.BoardLikeService;
 import com.kh.mars.vo.BoardListVO;
 import com.kh.mars.vo.BoardMainListVO;
 
@@ -27,22 +29,29 @@ public class BoardRestController {
 	
 	@Autowired
 	private BoardDao boardDao;
+	@Autowired
+	private BoardLikeService boardLikeService;
 	
 	@GetMapping("/main")
 	public List<BoardMainListVO> mainList(
-									@RequestParam int pageCount,
-									@RequestParam int uptoNo,
-									@ApiIgnore HttpSession session) {
-		session.setAttribute("login", 1);
-		if(session.getAttribute("login") != null) {
+										@RequestParam int pageCount,
+										@RequestParam int uptoNo,
+										@ApiIgnore HttpSession session
+										) {
 			int memberNo = (Integer)session.getAttribute("login");
 			List<BoardMainListVO> list =  boardDao.mainList(memberNo, pageCount, uptoNo);
 			return list;
-		}else {
-			return null;
-		}
 	}
 	
+	@PostMapping("/like")
+	public int boardLike(
+						@RequestParam int boardNo,
+						@ApiIgnore HttpSession session
+						) {
+		int memberNo = (Integer) session.getAttribute("login");
+		return boardLikeService.boardLike(memberNo, boardNo);
+		
+	}
 }
 
 
