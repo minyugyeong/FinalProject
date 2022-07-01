@@ -116,8 +116,8 @@
 	
 	.file-preview-wrapper>img {
      position: relative;
-     width: 150px;
-     height: 200px;
+     width: 200px;
+     height: 250px;
      z-index: 10;
  	}
  	
@@ -126,6 +126,11 @@
  		font-size: large;
  		margin-left: 20px;
  	}
+ 	.hidefile{
+ 		display:none;
+ 	}
+ 	
+
  	
 
 </style>
@@ -203,7 +208,7 @@ $(function(){
 		      <div>
 		      	
 		      	<!-- 1-1. 사진 첨부전, 업로드 버튼 영역 -->
-			      <div v-if="!files.length">
+			      <div :class="{'hidefile':files.length>0}">
 				      <div class="card-body text-center" style="margin-top: 20%;">
 				        <h1 class="card-title" ><i class="fa-regular fa-images"></i></h1>
 				        <p class="card-text fs-5">사진을 선택하세요.</p>
@@ -214,7 +219,7 @@ $(function(){
 			      </div>
 			      
 			      <!-- 1-2. 사진 첨부했을 때, 미리보기 영역 -->
-			      <div v-else>
+			      <div :class="{'hidefile':files.length==0}">
 				      <div class="file-preview-container">
 				        <div v-for="(file, index) in files" :key="index" class="file-preview-wrapper">
 				        	<div class="file-close-button" @click="fileDeleteButton" :name="file.number">
@@ -224,10 +229,10 @@ $(function(){
 				        </div>
 				        <div class="file-preview-wrapper-upload">
 				        	<div class="image-box" v-show="files.length < 5">
-						        <label for="upload" class="input-uploadPlus">
+						        <label for="upload2" class="input-uploadPlus">
 						        	<i class="fa-solid fa-plus fa-3x"></i>
 						        </label>
-						        <input type="file" name="boardAttach" accept=".png, .jpg" id="upload" ref="files" @change="imageAddUpload" style="display:none;" multiple/>				        	
+						        <input type="file" name="boardAttach" accept=".png, .jpg" id="upload2" ref="files2" @change="imageAddUpload" style="display:none;" multiple/>				        	
 				        	</div>
 				        </div>
 				      </div>
@@ -266,19 +271,15 @@ $(function(){
 		      	<div class="row">
 		      		<div class="col-7">
 		      			
-		      			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+		      			<div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false">
 								  <div class="carousel-indicators">
-								    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-								    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-								    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+								    <button v-for="(file, index) in files" :key="index" type="button" data-bs-target="#carouselExampleIndicators" :data-bs-slide-to="index" :class="{'active':index==0}" :aria-current="index==0" :aria-label="'Slide'+(index+1)"></button>
 								  </div>
 								  
-								  <div class="carousel-inner">
-									  <div v-for="(file, index) in files" :key="index">
-									  	<div class="carousel-item active">
-									  		<img :src="file.preview" />
+								  <div class="carousel-inner" >
+									  	<div  v-for="(file, index) in files" :key="index" class="carousel-item" v-bind:class="{'active':index==0}">
+									  		<img :src="file.preview" class="d-block w-100" style="height: 480px;" />
 									  	</div>
-									  </div>
 								  </div>
 								  
 								  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -296,17 +297,17 @@ $(function(){
 		      		<div class="col-5">
 					    	<div class="row">
 					    		<div class="col-2 right">
-						    		<img src="${pageContext.request.contextPath}/image/picture.jpg" class="img img-circle">		    		
+						    		<img src="${pageContext.request.contextPath}/file/download/${attachNo}" class="img img-circle">		    		
 					    		</div>
 					    		<div class="col-10 left bottom">
-					    			<span class="nickname">ugyeonggg</span>
+					    			<span class="nickname">${memberNick}</span>
 					    		</div>
 					    	</div>
 					    	
 					    	<div class="row mb-2"></div>
 					    	
 					    	<div class="row">
-					    		<textarea class="form-control content" rows="10" name="boardContent" placeholder="문구 입력..."></textarea>
+					    		<textarea class="form-control content" rows="10" name="boardContent" placeholder="문구를 입력하세요"></textarea>
 					    		<div class="right">
 										<span class="length">
 											<span class="count">0</span>
@@ -317,7 +318,7 @@ $(function(){
 					    	</div>
 					    	
 					    	<div class="row mt-4">
-					    		<h4>태그자리</h4>
+					    		<input type="text" name="hashtagName" class="form-control" placeholder="#해시태그">
 					    	</div>
 					    	
 					    	<div class="row mt-4 form-check form-switch" style="display: flex;">
@@ -363,7 +364,6 @@ $(function(){
     el: ".vue-container",
     data(){
       return {
-    	  
     	  files : [],
     	  filesPreview: [],
     	  uploadImageIndex: 0
@@ -394,12 +394,12 @@ $(function(){
     	imageAddUpload(){
     		
     		let num = -1;
-    		for(let i = 0; i < this.$refs.files.files.length; i++){
+    		for(let i = 0; i < this.$refs.files2.files.length; i++){
     			this.files = [
     				...this.files,
     				{
-    					file: this.$refs.files.files[i],
-    					preview: URL.createObjectURL(this.$refs.files.files[i]),
+    					file: this.$refs.files2.files[i],
+    					preview: URL.createObjectURL(this.$refs.files2.files[i]),
     					number: i + this.uploadImageIndex
     				}
     			];

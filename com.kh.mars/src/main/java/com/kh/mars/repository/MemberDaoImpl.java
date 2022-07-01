@@ -62,4 +62,21 @@ public class MemberDaoImpl implements MemberDao{
 		return sqlSession.selectOne("member.info", memberNo);
 	}
 
+	@Override
+	public String nick(int memberNo) {
+		
+		return sqlSession.selectOne("member.nick", memberNo);
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
