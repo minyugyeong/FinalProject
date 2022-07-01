@@ -62,4 +62,29 @@
 		select * from member where member_no = #{memberNo}
 	</select>
 	
+	<!-- 회원 정보 수정 -->
+	<update id="edit" parameterType="MemberDto">
+		update member
+			set
+				member_nick = #{memberNick},
+				member_phone = #{memberPhone},
+				member_highschool = #{memberHighschool},
+				member_university = #{memberUniversity},
+				member_gender = #{memberGender},
+				member_interest = #{memberInterest}
+			where
+				member_no = #{memberNo}
+	</update>
+	
+	<update id="changePassword" parameterType="MemberDto">
+		update member
+		set member_password = #{memberPassword}
+		where member_no = #{memberNo}
+	</update>
+	
+	<!-- 닉네임 조회 -->
+	<select id="nick" resultType="String" parameterType="int">
+		select member_nick from member where member_no = #{memberNo}
+	</select>
+	
  </mapper> 
