@@ -24,23 +24,34 @@
  <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- <mapper namespace="memberProfile">
+ <mapper namespace="hashtag">
  
- 	<select id="selectAttachNo" resultType="int" parameterType="Integer">
- 		select attach_no from member_profile where member_no = #{memberNo}
- 	</select>
- 	
- 	<insert id="insert" parameterType="Map">
- 		insert into member_profile(
- 			member_no, attach_no
- 		)
- 		values(
- 			#{memberNo}, #{attachNo}
- 		)
- 	</insert>
- 	
- 	<select id="one" resultType="Integer" parameterType="int">
- 		select attach_no from member_profile where member_no = #{memberNo}
- 	</select>
-
+ 	 <!-- 등록 -->
+	 <select id="sequence" resultType="int">
+	 		select hashtag_seq.nextval from dual
+	 </select>
+	 
+	 <insert id="insert" parameterType="HashtagDto">
+	 		insert into hashtag(hashtag_no, hashtag_name) values(#{hashtagNo}, #{hashtagName})
+	 </insert>
+	 
+	 <!-- 조회 -->
+	 <select id="one" resultType="HashtagDto" parameterType="String">
+	 		select * from hashtag where hashtag_name = #{hashtagName}
+	 </select>
+	 
+	 
+		
  </mapper> 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

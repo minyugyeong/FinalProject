@@ -82,4 +82,9 @@
 		where member_no = #{memberNo}
 	</update>
 	
+	<!-- 닉네임 조회 -->
+	<select id="nick" resultType="String" parameterType="int">
+		select member_nick from member where member_no = #{memberNo}
+	</select>
+	
  </mapper> 

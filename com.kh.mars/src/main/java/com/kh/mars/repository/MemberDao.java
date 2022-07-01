@@ -18,6 +18,8 @@ public interface MemberDao {
 	int memberProfile(int memberNo);
 
 	MemberDto info(int memberNo);
+	
+	String nick(int memberNo);
 
 	boolean edit(MemberDto memberDto);
 

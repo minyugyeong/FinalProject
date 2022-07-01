@@ -95,5 +95,22 @@ public class MemberDaoImpl implements MemberDao{
 		memberProfileDao.insert(memberNo,attachNo);
 		
 	}
+	
+	@Override
+	public String nick(int memberNo) {
+		
+		return sqlSession.selectOne("member.nick", memberNo);
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+

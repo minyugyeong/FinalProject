@@ -147,6 +147,10 @@
 		values (#{boardNo}, #{memberNo}, sysdate, #{boardContent}, #{boardIsReply})
 	</insert>
 	
+	<!-- 게시물 수 -->
+	<select id="boardCount" parameterType="int" resultType="int">
+		select count(*)board_no from board where member_no = #{memberNo}
+	</select>
 	
  </mapper>
  

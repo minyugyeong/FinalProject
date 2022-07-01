@@ -19,15 +19,16 @@ public class User {
 	public void setWebSocketSession(WebSocketSession webSocketSession) {
 		this.webSocketSession = webSocketSession;
 		Map<String, Object> attr = webSocketSession.getAttributes();
-		this.memberId = (String) attr.get("login");
-		this.memberGrade = (String) attr.get("auth");
+		this.memberNo = (Integer) attr.get("login");
 	}
 
 	@Getter
-	private String memberId;
-
+	private int memberNo;
+	
 	@Getter
-	private String memberGrade;
+	private String memberNick;
+
+
 
 	public User(WebSocketSession webSocketSession) {
 		this.setWebSocketSession(webSocketSession);
@@ -35,11 +36,9 @@ public class User {
 
 	//추가기능 
 	public boolean isMember() {
-		return this.memberId != null && this.memberGrade != null;
+		return this.memberNo >0;
 	}
-	public boolean isAdmin() {
-		return this.isMember() && this.memberGrade.equals("관리자");
-	}
+	
 	public void send(TextMessage message) throws IOException {
 		webSocketSession.sendMessage(message);
 	}

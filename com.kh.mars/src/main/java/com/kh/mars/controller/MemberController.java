@@ -1,6 +1,7 @@
 package com.kh.mars.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.mars.entity.MemberDto;
+import com.kh.mars.repository.BoardDao;
+import com.kh.mars.repository.FollowDao;
 import com.kh.mars.repository.MemberDao;
 import com.kh.mars.repository.MemberProfileDao;
 
@@ -27,6 +30,12 @@ public class MemberController {
 	
 	@Autowired
 	private MemberProfileDao memberProfileDao;
+	
+	@Autowired
+	private FollowDao followDao;
+	
+	@Autowired
+	private BoardDao boardDao;
 
 	//회원가입 페이지
 	@GetMapping("/join")
@@ -119,6 +128,23 @@ public class MemberController {
 		int memberNo = (Integer)session.getAttribute("login");
 		memberDao.proFile(memberProfile, memberNo);
 		return "/member/edit";
+	}
+	
+	@GetMapping("/page")
+	public String page(@RequestParam int memberNo, Model model) {
+		MemberDto memberDto = memberDao.info(memberNo);
+		model.addAttribute("memberDto",memberDto);
+		
+		int followCount = followDao.countFollow(memberNo);
+		model.addAttribute("follow",followCount);
+		
+		int followerCount = followDao.countFollower(memberNo);
+		model.addAttribute("follower", followerCount);
+		
+		int boardCount = boardDao.countBoard(memberNo);
+		model.addAttribute("boardNum", boardCount);
+		
+		return "member/page";
 	}
 	
 }

@@ -24,23 +24,8 @@
  <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- <mapper namespace="memberProfile">
- 
- 	<select id="selectAttachNo" resultType="int" parameterType="Integer">
- 		select attach_no from member_profile where member_no = #{memberNo}
- 	</select>
- 	
- 	<insert id="insert" parameterType="Map">
- 		insert into member_profile(
- 			member_no, attach_no
- 		)
- 		values(
- 			#{memberNo}, #{attachNo}
- 		)
- 	</insert>
- 	
- 	<select id="one" resultType="Integer" parameterType="int">
- 		select attach_no from member_profile where member_no = #{memberNo}
- 	</select>
-
+ <mapper namespace="admin">
+	<select id="list" resultType="memberDto">
+		select member_no, member_email, member_name, member_nick, member_phone, member_grade, member_gender from member order by member_name asc
+	</select>
  </mapper> 
