@@ -40,6 +40,12 @@ public class BoardDaoImpl implements BoardDao{
 		
 		return sqlSession.selectList("board.boardTreeSearch", param);
 	}
+
+
+	@Override
+	public int countBoard(int memberNo) {
+		return sqlSession.selectOne("board.boardCount", memberNo);
+	}
 	
 	
 	

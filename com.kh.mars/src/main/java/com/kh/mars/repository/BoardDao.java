@@ -12,6 +12,8 @@ public interface BoardDao {
 
 	List<BoardMainListVO> mainList(int memberNo, int pageCount, int uptoNo);
 
+	int countBoard(int memberNo);
+
 	
 
 }

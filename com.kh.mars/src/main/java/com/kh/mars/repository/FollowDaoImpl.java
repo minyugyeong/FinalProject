@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.vo.FollowRecommendVO;
+import com.kh.mars.vo.FollowVO;
+import com.kh.mars.vo.FollowerVO;
 
 @Repository
 public class FollowDaoImpl implements FollowDao {
@@ -21,5 +23,27 @@ public class FollowDaoImpl implements FollowDao {
 		return list;
 	}
 
+	@Override
+	public int countFollow(int memberNo) {
+		return sqlSession.selectOne("follow.followCount",memberNo);
+	}
+
+	@Override
+	public int countFollower(int memberNo) {
+		return sqlSession.selectOne("follow.followerCount", memberNo);
+	}
+
+	@Override
+	public List<FollowVO> followList(int memberNo) {
+		return sqlSession.selectList("follow.followList",memberNo);
+	}
+
+	@Override
+	public List<FollowerVO> followerList(int memberNo) {
+		return sqlSession.selectList("follow.followerList",memberNo);
+	}
+
+	
+	
 	
 }
