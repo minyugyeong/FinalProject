@@ -1,9 +1,7 @@
 package com.kh.mars.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,11 +17,18 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.mars.entity.BoardDto;
+import com.kh.mars.entity.BoardHashtagDto;
+import com.kh.mars.entity.HashtagDto;
 import com.kh.mars.repository.BoardDao;
+import com.kh.mars.repository.BoardHashtagDao;
+import com.kh.mars.repository.HashtagDao;
 import com.kh.mars.repository.MemberDao;
 import com.kh.mars.repository.MemberProfileDao;
 import com.kh.mars.service.BoardService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/board")
 public class BoardController {
@@ -39,6 +44,14 @@ public class BoardController {
 	
 	@Autowired
 	private MemberProfileDao memberProfileDao;
+	
+	@Autowired
+	private HashtagDao hashtagDao;
+	
+	@Autowired
+	private BoardHashtagDao boardHashtagDao;
+
+	
 	
 	//등록
 	@GetMapping("/insert")
@@ -60,13 +73,49 @@ public class BoardController {
 			@ModelAttribute BoardDto boardDto, 
 			HttpSession session, 
 			RedirectAttributes attr,
-			@RequestParam(value="boardAttach") List<MultipartFile> boardAttach,
-			Model model) throws IllegalStateException, IOException {
+			@RequestParam(value="boardAttach", required=false) List<MultipartFile> boardAttach,
+			Model model,
+			@ModelAttribute HashtagDto hashtagDto,
+			@ModelAttribute BoardHashtagDto boardHashtagDto) throws IllegalStateException, IOException {
 		
 		Integer memberNo = (Integer)session.getAttribute("login");
 		boardDto.setMemberNo(memberNo);
 	
-			boardService.insert(boardDto, boardAttach);
+		boardService.insert(boardDto, boardAttach);
+		
+		
+		//해시태그 저장하기
+		if(hashtagDto.getHashtagName() != null) {
+			
+			String inputHashtagName = hashtagDto.getHashtagName();
+			String[] array = inputHashtagName.split(" ");
+			
+			
+			
+			for(int i = 0; i < array.length; i++) {
+				String hashtagName = array[i];
+				
+				HashtagDto hashtagDtoFind = hashtagDao.selectOne(hashtagName);
+				if(hashtagDtoFind == null) {
+					
+					hashtagDto.setHashtagName(hashtagName);
+					hashtagDao.insert(hashtagDto);
+					
+					boardHashtagDto.setBoardNo(boardDto.getBoardNo());
+					boardHashtagDto.setHashtagNo(hashtagDto.getHashtagNo());
+					boardHashtagDao.insert(boardHashtagDto);
+				}
+				else {
+					boardHashtagDto.setBoardNo(boardDto.getBoardNo());
+					boardHashtagDto.setHashtagNo(hashtagDtoFind.getHashtagNo());
+					boardHashtagDao.insert(boardHashtagDto);
+				}
+				
+			}
+			
+		}
+		
+		
 		
 		attr.addAttribute("memberNo", memberNo);
 		
