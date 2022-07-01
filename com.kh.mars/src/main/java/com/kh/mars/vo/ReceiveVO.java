@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 public class ReceiveVO {
 	
 	private int type;
-	private String roomNo;
+	private int roomNo;
 	private String message;
 }

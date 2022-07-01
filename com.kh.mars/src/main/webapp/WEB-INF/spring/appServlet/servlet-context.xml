@@ -89,6 +89,13 @@
 	 <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"></mvc:resources>
 	 <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"></mvc:resources>
 	 
+	<bean id="dmWebsocketServer" class="com.kh.mars.ws.DMWebsocketServer"></bean>
 	
+	<websocket:handlers>
+		<websocket:mapping handler="dmWebsocketServer" path="/ws/dm"/>
+		<websocket:handshake-interceptors>
+			<bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"></bean>
+		</websocket:handshake-interceptors>
+	</websocket:handlers>
 	
 </beans>
