@@ -33,7 +33,7 @@ public class BoardRestController {
 									@RequestParam int pageCount,
 									@RequestParam int uptoNo,
 									@ApiIgnore HttpSession session) {
-//		session.setAttribute("login", 1);
+		session.setAttribute("login", 1);
 		if(session.getAttribute("login") != null) {
 			int memberNo = (Integer)session.getAttribute("login");
 			List<BoardMainListVO> list =  boardDao.mainList(memberNo, pageCount, uptoNo);
