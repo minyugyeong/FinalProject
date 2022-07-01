@@ -96,6 +96,7 @@
 		<websocket:handshake-interceptors>
 			<bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"></bean>
 		</websocket:handshake-interceptors>
+		<websocket:sockjs></websocket:sockjs>
 	</websocket:handlers>
 	
 </beans>
