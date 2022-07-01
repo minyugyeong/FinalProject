@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class MessageVO {
 	private int memberNo;
 	private String memberNick;
-	private String text;
+	private String content;
 	private Date time;
 }

@@ -72,7 +72,7 @@ public class RoomManager {
 		MessageVO messageVO = MessageVO.builder()
 																.memberNo(user.getMemberNo())
 																.memberNick(user.getMemberNick())
-																.text(message)
+																.content(message)
 																.time(new Date())
 															.build();
 		
