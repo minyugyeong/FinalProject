@@ -126,6 +126,7 @@
  		font-size: large;
  		margin-left: 20px;
  	}
+ 	
  	.hidefile{
  		display:none;
  	}
@@ -135,24 +136,16 @@
 
 </style>
 
-<script type="text/javascript">
-	
-	
-
-	
-	//댓글 기능 해제 checkbox 값 보내기
-</script>
 
 <script type="text/javascript">
 
 //내용 글자 수 카운트
 $(function(){
 
-	$(".content").on("input", function(){
-		
+	$("#contentCheck").on("input",function(){
 		const size = $(this).val().length;
 		
-		if(size <= 10){
+		if(size <= 1000){
 			const target = $(this).next().children(".length").children(".count");
 			target.text(size);
 		}
@@ -163,6 +156,8 @@ $(function(){
 		
 	});
 	
+	
+	
 	$(".cancel").click(function(){
 		const text = confirm("게시물을 삭제하시겠어요?\n지금 나가면 수정 내용이 저장되지 않습니다.");
 		
@@ -170,8 +165,31 @@ $(function(){
 			location.replace("/mars/")
 		}
 	});
+		
+
+	
+	$(".form-submit").submit(function(){
+		
+		if($("#upload2").val() == ""){
+			$("#upload2").attr("disabled", true);
+		}
+		else {
+			$("#upload2").attr("disabled", false);
+		}
+		
+		if($("#hashtag").val() == ""){
+			$("#hashtag").attr("disabled", true);
+		}
+		else{
+			$("#hashtag").attr("disabled", false);
+		}
+		
+	});
 	
 });
+
+	
+
 
 </script>
 
@@ -179,7 +197,7 @@ $(function(){
 
 <div id="app" class="vue-container">
 
-<form action="insert" method="post" enctype="multipart/form-data">
+<form action="insert" method="post" enctype="multipart/form-data" class="form-submit">
 
 	<div class="container-fluid">
 	
@@ -248,7 +266,7 @@ $(function(){
 		
 		
 		<!-- 2. 게시물 등록 영역 -->
-		<div v-if="files.length" class="row w-50 mt-5" style="float: none; margin: 0 auto;">
+		<div v-show="files.length > 0" class="row w-50 mt-5" style="float: none; margin: 0 auto;">
 		  <div class="col">
 		
 		    <div class="card border-primary mb-3" style="height: 600px;">
@@ -307,7 +325,7 @@ $(function(){
 					    	<div class="row mb-2"></div>
 					    	
 					    	<div class="row">
-					    		<textarea class="form-control content" rows="10" name="boardContent" placeholder="문구를 입력하세요"></textarea>
+					    		<textarea id="contentCheck" class="form-control content" rows="6" name="boardContent" placeholder="문구를 입력하세요"></textarea>
 					    		<div class="right">
 										<span class="length">
 											<span class="count">0</span>
@@ -318,8 +336,12 @@ $(function(){
 					    	</div>
 					    	
 					    	<div class="row mt-4">
-					    		<input type="text" name="hashtagName" class="form-control" placeholder="#해시태그">
+					    		<input type="text" name="hashtagName" class="form-control" placeholder="#해시태그" id="hashtag" autocomplete="off">
 					    	</div>
+					    	
+					    	<!-- <div class="row mt-4">
+					    		<input type="text" name="hashtagName" class="form-control" placeholder="@사람태그" id="hashtag" autocomplete="off">
+					    	</div> -->
 					    	
 					    	<div class="row mt-4 form-check form-switch" style="display: flex;">
 					    		

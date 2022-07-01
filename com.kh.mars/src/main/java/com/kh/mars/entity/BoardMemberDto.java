@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data@NoArgsConstructor@AllArgsConstructor@Builder
-public class BoardTagDto {
+public class BoardMemberDto {
 	private int boardAttachNo;
 	private int boardTagMemberNo;
 }
