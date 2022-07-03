@@ -72,7 +72,7 @@ CREATE TABLE board (
 	member_no	references member(member_no) on delete cascade,
 	board_date	date default sysdate	not NULL,
 	board_content	VARCHAR2(3000) not null,
-	board_is_reply	char(1) default 1 not null 
+	board_is_reply	char(1) default 0 not null 
 );
 
 create sequence board_seq;
@@ -137,11 +137,13 @@ CREATE TABLE board_ad (
 	board_ad_content	VARCHAR2(3000) not null,
 	board_ad_link	VARCHAR2(255),
 	board_ad_count	number not NULL
+	board_ad_check VARCHAR2(21) default '신청 완료' NOT NULL
+	board_ad_is_reply	char(1) default 0 not null
 	-- board_category	VARCHAR2(30) not NULL
 );
 
 create sequence board_ad_seq;
---- 게시물 사람 태그 테이블 -----------------------------------------
+--- 게시물 사람 태그 테이블 (0628 삭제) -----------------------------------------
 CREATE TABLE board_tag (
 	board_attach_no	references board_attach(board_attach_no) on delete cascade	NOT NULL,
 	board_tag_member_no	references member(member_no) on delete cascade not null
@@ -149,7 +151,7 @@ CREATE TABLE board_tag (
 	--Field3	VARCHAR(255)	NULL
 );
 
---- (0721) 수정 (board_tag 삭제, 아래 board_member_tag 생성)
+--- (0628) 수정 (board_tag 삭제, 아래 board_member_tag 생성)
 CREATE TABLE board_member_tag (
 	board_no references board(board_no) on delete cascade not null,
 	member_no references member(member_no) on delete cascade not null
@@ -166,6 +168,12 @@ create sequence hashtag_seq;
 --- 게시물-해시태그 ---------------------------------------
 create table board_hashtag(
     board_no references board(board_no) on delete cascade,
+    hashtag_no references hashtag(hashtag_no) on delete cascade
+);
+
+--- 광고게시물-해시태그(0703 생성)---------------------------------------
+create table board_ad_hashtag(
+    board_ad_no references board_ad(board_ad_no) on delete cascade,
     hashtag_no references hashtag(hashtag_no) on delete cascade
 );
 
