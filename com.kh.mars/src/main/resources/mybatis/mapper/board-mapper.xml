@@ -55,35 +55,22 @@
 		)where rn between ((#{pageCount}-1) * 3 + 1) and (#{pageCount} * 3)
  	</select>
 	
+	<!-- 메인 게시글 리스트용 -->
 	<resultMap type="BoardMainListVO" id="boardMap">
-		<!-- 
-			객체 : paymentDto 에 대한 매핑 설정 
-			- 자료형은 변수에 맞게 자동 변환되며 불가능할 경우 오류가 발생함
-			- 수동으로 자료형을 지정할 경우 javaType을 설정
-		-->
+	
 		<association property="boardListVO" javaType="BoardListVO">
 			<result column="board_no" property="boardNo"/>
 			<result column="member_no" property="memberNo"/>
 			<result column="board_date" property="boardDate"/>
 			<result column="board_content" property="boardContent"/>
 			<result column="board_is_reply" property="boardIsReply"/>
-			<result column="follow_target" property="followTarget"/>
 			<result column="member_nick" property="memberNick"/>
-			<result column="reply_no" property="replyNo"/>
-			<result column="reply_content" property="replyContent"/>
-			<result column="reply_member_no" property="replyMemberNo"/>
-			<result column="reply_nick" property="replyNick"/>
 			<result column="writer_profile" property="writerProfile"/>
 			<result column="is_like" property="isLike"/>
+			<result column="replycount" property="replycount"/>
+			<result column="likecount" property="likecount"/>
 		</association>
-		<!-- 
-			컬렉션(List<PaymentDetailDto>)에 대한 매핑 설정
-			- 컬렉션은 자료형을 두 가지로 설정해야 한다
-				- javaType : 컬렉션의 자료형
-				- ofType : 내용물의 자료형(Generic type)
-			- 내부에는 객체처럼 result를 이용하여 매핑을 수행한다
-			- (반드시) 해당 컬렉션을 채우기 위해 필요한 select 구문의 id를 지정해야 한다(select 속성)
-		 -->
+
 		 <collection property="attachList" javaType="list" ofType="BoardAttachVO" 
 		 	select="treeSearchSubquery" column="board_no">
 		 
@@ -97,32 +84,30 @@
 		 
 	</resultMap>
 	
-	
-	<select id="boardTreeSearch" resultMap="boardMap">
+	<!-- 메인 게시글들 조회 -->
+	<select id="boardTreeSearch" resultMap="boardMap" parameterType="map">
 		select * from (
 		        select rownum rn, TMP.* from(
-		        	select abcde.*, bl.member_no "is_like" from (
-		        	select abcd.*, mp.attach_no "writer_profile" from (
-		            select final.*, member.member_nick"REPLY_NICK" from (
-		            select abmbr.board_no, abmbr.member_no, abmbr.board_date, abmbr.board_content, abmbr.board_is_reply, abmbr.follow_target, abmbr.member_nick, rpy.reply_no, rpy.reply_content, rpy.reply_member_no  from (
-		            select abm.*, max(br.reply_no)"reply_no" from (
-		            select ab.*, m.member_nick from member m inner join(
-		            select * from board "B" inner join (
-		            select follow_target from follow where follow_who = #{memberNo}
-		            )"A" on b.member_no = a.follow_target 
+		        	select aabb.*, count(bli.board_no) "likecount" from (
+					select aacc.*, count(br.reply_no) "replycount" from (
+					select abcde.*, bl.member_no "is_like" from (
+					select abcd.*, mp.attach_no "writer_profile" from (
+					select ab.*, m.member_nick from member m inner join(
+					select b.* from board "B" inner join (
+					select follow_target from follow where follow_who = #{memberNo}
+					)"A" on b.member_no = a.follow_target
 					<if test="uptoNo != 0"> 
 					 <![CDATA[
-	            	where b.board_no <= #{uptoNo} 
+	            	where b.board_no <= #{uptoNo}
 	            	]]> 
 	            	</if>
-		            )ab on m.member_no = ab.member_no
-		            )abm  left outer join board_reply br on br.board_no = abm.board_no group by abm.board_no, abm.member_no, abm.board_date, abm.board_content, abm.board_is_reply, abm.follow_target, abm.member_nick
-		            )abmbr left outer join reply rpy on rpy.reply_no = abmbr."reply_no"
-		            )final left outer join member on member.member_no = final.reply_member_no order by final.board_no desc 
-		            )abcd left outer join member_profile mp on abcd.follow_target = mp.member_no
-		            )abcde left outer join (
+					)ab on m.member_no = ab.member_no 
+					)abcd left outer join member_profile mp on abcd.member_no = mp.member_no
+					)abcde left outer join (
 					    select * from board_like where member_no =  #{memberNo}
 					)bl on abcde.board_no = bl.board_no
+					)aacc left outer join board_reply br on aacc.board_no = br.board_no group by aacc.board_no, aacc.member_no, aacc.board_date, aacc.board_content, aacc.board_is_reply, aacc.member_nick, aacc."writer_profile", aacc."is_like"
+					)aabb left outer join board_like bli on aabb.board_no = bli.board_no group by aabb.BOARD_NO, aabb.MEMBER_NO, aabb.BOARD_DATE, aabb.BOARD_CONTENT, aabb.BOARD_IS_REPLY, aabb.MEMBER_NICK, aabb."writer_profile", aabb."is_like", aabb."replycount" order by aabb.board_no desc
 		        )TMP
 		)where rn between ((#{pageCount}-1) * 3 + 1) and (#{pageCount} * 3)
 	</select>
@@ -130,6 +115,24 @@
 		select ba.board_no, attach.* from (
 		      select * from board_attach where board_no = #{board_no}
 		)ba inner join attach on ba.attach_no = attach.attach_no
+	</select>
+	
+	
+	<select id="detailReply" resultType="BoardReplyVO" parameterType="map">
+		select c.*, mm.member_nick from (
+		select b.*, mp.attach_no "reply_member_profile" from (
+		select aa.*, rp."re_replycount" from (
+		select r.* from (
+		select * from board_reply where board_no = #{boardNo}
+		)a inner join reply r on a.reply_no = r.reply_no
+		)aa left outer join (
+		select super_no, count(*) "re_replycount" from reply group by super_no
+		)rp on aa.reply_no = rp.super_no
+		)b left outer join member_profile mp on b.reply_member_no = mp.member_no
+		)c inner join member mm on c.reply_member_no = mm.member_no
+		CONNECT BY PRIOR c.reply_no = c.super_no 
+		START WITH c.super_no = 0 
+		ORDER siblings BY c.reply_no desc
 	</select>
 	
 	
