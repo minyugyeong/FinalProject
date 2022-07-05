@@ -60,8 +60,18 @@
                     
                     <div class="collapse navbar-collapse" id="navbarColor03">
                         
-                        <form class="d-flex search0503">
-                            <input class="form-control me-sm-2" type="text" placeholder="Search">
+                        <form class="d-flex search0503" style="position: relative;"  @click.stop>
+                            <input class="form-control me-sm-2" type="text" placeholder="Search" @focus="searchOn" @blur="searchOff">
+                            <div v-if="searchValue" style="position: absolute; top: 50px; right: -70px; width: 350px; max-height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;" @click.stop>
+                                <div class="card border-light">
+                                    <div class="card-body">
+                                      <h5 class="card-title">Light card title</h5>
+                                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                    </div>
+                                  </div>
+                            </div>
                         </form>
                         
                         <ul class="navbar-nav align-right me-auto">
@@ -81,10 +91,20 @@
                                     <i class="fa-solid fa-square-plus fa-lg"></i>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
+                            <li class="nav-item" style="position: relative;">
+                                <a class="nav-link" style="cursor: pointer;" @click.stop="noticeOn()">
                                     <i class="fa-solid fa-rocket fa-lg"></i>
                                 </a>
+                                <div v-if="noticeValue" style="position: absolute; right: -150px; width: 450px; max-height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;" @click.stop>
+                                    <div class="card border-light">
+                                        <div class="card-body">
+                                          <h5 class="card-title">Light card title</h5>
+                                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                        </div>
+                                      </div>
+                                </div>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">
