@@ -265,8 +265,8 @@
 	                            <div class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
 	                                <span style="position: absolute; left:0; top: 6px; z-index: 999;">임티</span>
 	                                <div class="input-group">
-	                                    <input type="text" class="form-control" v-model="replyContent" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter">
-	                                    <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="replyEnter">작성</button>
+	                                    <input type="text" class="form-control" v-model="replyContent" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter(0)">
+	                                    <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="replyEnter(0)">작성</button>
 	                                  </div>
 	                            </div>
 	                        </div>
@@ -412,18 +412,23 @@
                             	});
                             },
                             //댓글 입력
-                            replyEnter(){
+                            replyEnter(boardNo2){
+                            	let boardNo3;
+                            	if(boardNo2 != 0){
+                            		boardNo3 = boardNo2;
+                            	}else{
+                            		boardNo3 = this.boardDetail.boardNo;
+                            	}
                             	axios({
                             		url : "${pageContext.request.contextPath}/rest/reply/insert",
                             		method : "post",
                             		params : {
                             			replyContent : this.replyContent,
                             			superNo : this.superNo,
-                            			boardNo : this.boardDetail.boardNo,
+                            			boardNo : boardNo3,
                             		}
                             	})
                             	.then(resp=>{
-                            		console.log("아하");
                             		this.boardDetailSearch();
                             		this.replyContent = "";
                             	});
@@ -446,7 +451,8 @@
                             },
                             
                             async promise(index){
-                            	await this.replyEnter();
+                            	const boardNo = this.boardList[index].boardListVO.boardNo;
+                            	await this.replyEnter(boardNo);
                             	await this.boardDetailSearch(index);
                             	await this.detailViewOn();
                             },
