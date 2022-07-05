@@ -102,6 +102,14 @@ public class MemberDaoImpl implements MemberDao{
 		return sqlSession.selectOne("member.nick", memberNo);
 	}
 
+	@Override
+	public String checkEmail(String memberEmail) {
+		sqlSession.selectOne("member.checkEmail",memberEmail);
+		return memberEmail;
+		
+	}
+
+
 }
 
 

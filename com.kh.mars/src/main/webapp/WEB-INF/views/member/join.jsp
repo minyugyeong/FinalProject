@@ -33,7 +33,7 @@
         <div class="row form-floating mb-3">
             <input type="email" class="form-control member-email" id="floatingInput" placeholder="name@example.com" name="memberEmail">
             <label for="floatingInput">이메일 주소</label>
-            <div class="invalid-feedback">올바른 이메일 주소가 아닙니다</div>
+            <div class="invalid-feedback">사용할 수 없는 이메일 입니다</div>
         </div>
 
         <div class="row form-floating mb-3">
@@ -82,8 +82,19 @@
                 </div>
 
                 <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberInterest" name="memberInterest" >
-                    <label for="floatingNumber">관심사</label>
+                    <div class="mb-2">
+                    <label>관심사</label>
+                    </div>
+                        <select class="form-select" name="memberInterest">
+                            <option>선택</option>
+                            <option>예술</option>
+                            <option>패션</option>
+                            <option>요리</option>
+                            <option>스포츠</option>
+                            <option>뷰티</option>
+                            <option>여행</option>
+                        </select>
+                    
                 </div>
 
         <div class="row">
@@ -181,10 +192,42 @@
             $("input[name=memberEmail]").blur(function(){
                 var regex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
                 var memberEmail = regex.test($(this).val());
+                
+                /* //형식검사
+                if(memberEmail == false){
+                	return;
+                } */
+                
+                //중복확인
+                /* $.ajax({
+                	url : "${pageContext.request.contextPath}/checkEmail",
+                	type:"get", 
+                }) */
 
                 $(this).removeClass("is- valid is-invalid");
                 $(this).addClass(memberEmail ? "is-valid" : "is-invalid")
             });
+            
+            /*  var that = this;
+            
+            $.ajax({
+            	url : "${pageContext.request.contextPath}/checkEmail",
+            	type:"get",
+            	data:{
+            		//<input type="hidden" name="memberEmail" value="데이터">
+            		memberEmail : 데이터
+            	},
+            	success:function(resp){
+            		if(resp === "Y"){
+            			$(that).next("spna").text("이미 사용중인 이메일입니다");
+            			object.memberEmail = false;
+            		}
+            		else if(resp === "N"){
+            			$(that).next("span").text("사용 가능한 이메일입니다");
+            			object.memberEmail = true;
+            		}
+            	}
+            });  */
 
             $("input[name=memberPassword]").blur(function(){
                 var regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$])[a-zA-Z0-9!@#$]{8,16}$/;

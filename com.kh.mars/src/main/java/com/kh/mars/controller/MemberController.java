@@ -1,7 +1,6 @@
 package com.kh.mars.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.mars.entity.FollowDto;
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.FollowDao;
@@ -78,10 +78,10 @@ public class MemberController {
 		
 		int attachNo = memberProfileDao.info(memberNo);
 		if(attachNo == 0) {
-			model.addAttribute("profileUrl", "/image/user.png");
+			model.addAttribute("profileUrl", "/image/user.jpg");
 		}
 		else {
-			model.addAttribute("profileUrl", "/attach/download?attachNo=" + attachNo);
+			model.addAttribute("profileUrl", "/file/download/" + attachNo);
 		}
 		
 		return "member/edit";
@@ -131,7 +131,7 @@ public class MemberController {
 	}
 	
 	@GetMapping("/page")
-	public String page(@RequestParam int memberNo, Model model) {
+	public String page(@RequestParam int memberNo, Model model, HttpSession session) {
 		MemberDto memberDto = memberDao.info(memberNo);
 		model.addAttribute("memberDto",memberDto);
 		
@@ -143,6 +143,34 @@ public class MemberController {
 		
 		int boardCount = boardDao.countBoard(memberNo);
 		model.addAttribute("boardNum", boardCount);
+		
+		//팔로우 버튼
+		int followWho = (Integer)session.getAttribute("login");
+		
+		FollowDto followDto = followDao.selectOne(followWho, memberNo);
+		if(followDto == null ) {
+			followDto = new FollowDto();
+			followDto.setFollowConfirm(2);
+			model.addAttribute("followDto", followDto);	
+		}
+		else {
+			model.addAttribute("followDto", followDto);
+		}
+		
+		//내 페이지 확인
+		boolean isLogin = followWho != 0;
+		boolean isOwner = isLogin && followWho == memberDto.getMemberNo();
+		model.addAttribute("isLogin", isLogin);
+		model.addAttribute("isOwner", isOwner);
+		
+		//프로필 사진
+		int attachNo = memberProfileDao.info(memberNo);
+		if(attachNo == 0) {
+			model.addAttribute("profileUrl", "/image/user.jpg");
+		}
+		else {
+			model.addAttribute("profileUrl", "/file/download/" + attachNo);
+		}
 		
 		return "member/page";
 	}

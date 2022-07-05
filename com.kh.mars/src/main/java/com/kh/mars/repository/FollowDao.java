@@ -2,6 +2,7 @@ package com.kh.mars.repository;
 
 import java.util.List;
 
+import com.kh.mars.entity.FollowDto;
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.vo.FollowRecommendVO;
 import com.kh.mars.vo.FollowVO;
@@ -19,6 +20,10 @@ public interface FollowDao {
 
 	List<FollowerVO> followerList(int memberNo);
 
+	boolean follow(int followWho, int followTarget, int followConfirm);
 
+	boolean followDelete(int followWho, int followTarget);
+
+	FollowDto selectOne(int followWho, int memberNo);
 
 }

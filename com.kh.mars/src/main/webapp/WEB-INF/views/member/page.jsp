@@ -1,28 +1,69 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
-
+	
+	세션 : ${login }
+	<br><br>
 	${memberDto.memberNo}의 페이지
-	프로필 사진 :
 	<br><br>
-	<a href="edit">프로필 편집</a>
-	<br><br>
-	닉네임 : ${memberDto.memberNick }
-	<br><br>
-	게시물 수 : ${boardNum }
-	<br><br>
-	팔로워 수 : ${follower }
-	<br><br>
-	팔로잉 수 : ${follow }
+    ???: ${profileUrl }
 	
 	<!-- 특정 영역을 생성하여 이 부분만 vue로 제어한다 -->
     <div id="app" class="container w950 m30">
     <!-- 화면 영역 -->
     <!-- Button trigger modal -->
-<button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="followList">
-    팔로우 ${follow}
-  </button>
+    	팔로우 요청 승인 여부 : ${followDto.followConfirm }
+		공개 여부 : ${memberDto.memberPrivate }
+    <div class="row">
+            <div class="col-4">
+                <img src="${pageContext.request.contextPath}${profileUrl}"
+ 				width = "150">
+            </div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-6">
+                        <h2>${memberDto.memberNick }</h2>
+                    </div>
+                    <div class="col-6">
+                    	<c:if test="${isOwner }">
+                        <a href="edit"><button class="btn">프로필 편집</button></a>
+                        </c:if>
+                        
+                        <c:if test="${!isOwner }">
+                        <button v-if="confirm == 1" class="btn" @click="following(${memberDto.memberNo})">
+                        언팔로우
+                        </button>
+                        
+                        <button v-if="confirm == 2" class="btn" @click="following(${memberDto.memberNo})">
+                        팔로우
+                        </button>
+                        
+                        <button v-if="confirm == 0" class="btn" @click="following(${memberDto.memberNo})">
+                        팔로우 신청됨
+                        </button>
+                		</c:if>
+                		
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 mt-3">
+                        <h6>게시물 ${boardNum }</h6>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal2" @click="followerList">
+						   팔로워 ${follower }
+						</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="followList">
+						   팔로우 ${follow}
+						</button>
+                    </div>
+                </div>
+            </div>
+        </div>
   
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -35,6 +76,7 @@
         <div class="modal-body">
             <p v-for="(f,index) in follow" v-bind:key="index">
                 프로필사진{{f.attachNo}}
+                <img :src="'${pageContext.request.contextPath }/file/download/'+ f.attachNo" width="25">
                 {{f.memberNick}}
             </p>
         </div>
@@ -42,9 +84,6 @@
     </div>
   </div>
 
-  <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal2" @click="followerList">
-    팔로워 ${follower }
-  </button>
 
   <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -56,6 +95,7 @@
         <div class="modal-body">
           <p v-for="(fm,index) in follower" v-bind:key="index">
               프로필사진{{fm.attachNo}}
+              <img :src="'${pageContext.request.contextPath }/file/download/'+ fm.attachNo" width="25">
               {{fm.memberNick}}
           </p>
         </div>
@@ -76,6 +116,7 @@
                 return{
                     follow:[],
                     follower:[],
+                    confirm:${followDto.followConfirm},
                 };
             },
             //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
@@ -87,7 +128,7 @@
             methods:{
                 followList(){
                     axios({
-                        url:"http://localhost:8080/mars/follow?memberNo="+ ${memberDto.memberNo},
+                        url:"http://localhost:8080/mars/followList?memberNo="+ ${memberDto.memberNo},
                         method:"get"
                     })
                     .then((resp)=>{
@@ -96,12 +137,33 @@
                 },
                 followerList(){
                     axios({
-                        url:"http://localhost:8080/mars/follower?memberNo=" + ${memberDto.memberNo}, 
+                        url:"http://localhost:8080/mars/followerList?memberNo=" + ${memberDto.memberNo}, 
                         method:"get"
                     })
                     .then((resp)=>{
                         this.follower=resp.data;
                     })
+                },
+                
+                following(memberNo){
+                	console.log(memberNo);
+                	axios({
+                		url: "${pageContext.request.contextPath}/follow",
+                		method: "post",
+                		params:{
+                			memberNo : memberNo
+                		},
+                	})
+                	.then(resp=>{
+                		console.log(resp.data);
+                		if(resp.data > 0){
+                			this.confirm = 1;//언팔
+                		}else if(resp.data == 0){
+                			this.confirm = 2;//팔로우
+                		}else{
+                			this.confirm = 0;//신청
+                		}
+                	});
                 },
             },
             created(){

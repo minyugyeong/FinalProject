@@ -2,6 +2,8 @@ package com.kh.mars.rest;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.mars.entity.CertDto;
+import com.kh.mars.entity.MemberDto;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
+import com.kh.mars.repository.MemberDao;
 import com.kh.mars.service.EmailService;
+import com.kh.mars.service.FollowService;
 import com.kh.mars.vo.FollowVO;
 import com.kh.mars.vo.FollowerVO;
 
@@ -31,6 +36,12 @@ public class MemberRestController {
 	@Autowired
 	private FollowDao followDao;
 	
+	@Autowired
+	private FollowService followService;
+	
+	@Autowired
+	private MemberDao memberDao;
+	
 	
 	@PostMapping("/sendMail")
 	@ResponseBody
@@ -44,16 +55,56 @@ public class MemberRestController {
 		return certDao.check(certDto);
 	}
 	
-	@GetMapping("/follow")
+	@GetMapping("/followList")
 	@ResponseBody
-	public List<FollowVO> follow(@RequestParam int memberNo) {
+	public List<FollowVO> followList(@RequestParam int memberNo) {
 		return followDao.followList(memberNo);
 	}
 	
-	@GetMapping("/follower")
+	@GetMapping("/followerList")
 	@ResponseBody
-	public List<FollowerVO> follower(@RequestParam int memberNo){
+	public List<FollowerVO> followerList(@RequestParam int memberNo){
 		return followDao.followerList(memberNo);
+	}
+	
+	@PostMapping("/follow")
+	@ResponseBody
+	public int follow(@RequestParam int memberNo,
+			HttpSession session) {
+		int followWho = (Integer) session.getAttribute("login");
+		
+		//비공개 계정일 경우
+		MemberDto memberDto = memberDao.info(memberNo);
+		
+		
+		if(memberDto.getMemberPrivate() == 1) {//비공개 계정일 경우
+			int followConfirm = 0;
+			if(followService.follow(followWho, memberNo, followConfirm) > 0) {
+				return -1;
+			}else {
+				return 0;
+			}
+			
+		}
+		else {//공개 계정일 경우			
+			int followConfirm = 1;
+			return followService.follow(followWho, memberNo, followConfirm);
+		}
+		
+		
+	}
+	
+	@GetMapping("/checkEmail")
+	@ResponseBody
+	public String checkEmail(@RequestParam String memberEmail) {
+		String checkEmail = memberDao.checkEmail(memberEmail);
+		
+		if(checkEmail != null) {
+			return "N";
+		}
+		else{
+			return "Y";
+		}
 	}
 	
 }

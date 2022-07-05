@@ -27,5 +27,8 @@ public interface MemberDao {
 
 	void proFile(MultipartFile memberProfile, int memberNo) throws IllegalStateException, IOException;
 
+	String checkEmail(String memberEmail);
+
+	
 
 }
