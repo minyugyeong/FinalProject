@@ -7,13 +7,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.mars.entity.CertDto;
+import com.kh.mars.entity.MemberDto;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
+import com.kh.mars.repository.MemberDao;
 import com.kh.mars.service.EmailService;
 import com.kh.mars.vo.FollowVO;
 import com.kh.mars.vo.FollowerVO;
@@ -30,6 +33,9 @@ public class MemberRestController {
 	
 	@Autowired
 	private FollowDao followDao;
+	
+	@Autowired
+	private MemberDao memberDao;
 	
 	
 	@PostMapping("/sendMail")
@@ -56,4 +62,15 @@ public class MemberRestController {
 		return followDao.followerList(memberNo);
 	}
 	
+	
 }
+
+
+
+
+
+
+
+
+
+

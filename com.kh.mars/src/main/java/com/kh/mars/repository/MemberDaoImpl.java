@@ -1,6 +1,7 @@
 package com.kh.mars.repository;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +102,18 @@ public class MemberDaoImpl implements MemberDao{
 		
 		return sqlSession.selectOne("member.nick", memberNo);
 	}
+
+	@Override
+	public int selectNo(String memberNick) {
+		
+		return sqlSession.selectOne("member.selectNo", memberNick);
+	}
+
+	/*
+	 * @Override public List<MemberDto> findMemberNick(String memberNick) {
+	 * 
+	 * return sqlSession.selectList("member.findmemberNick", memberNick); }
+	 */
 
 }
 

@@ -6,25 +6,25 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.kh.mars.entity.BoardHashtagDto;
+import com.kh.mars.entity.BoardMemberTagDto;
 
 @Repository
-public class BoardHashtagDaoImpl implements BoardHashtagDao {
+public class BoardMemberTagDaoImpl implements BoardMemberTagDao{
 	
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Override
-	public void insert(BoardHashtagDto boardHashtagDto) {
+	public void insert(BoardMemberTagDto boardMemberTagDto) {
 		
-		sqlSession.insert("board-hashtag.insert", boardHashtagDto);
+		sqlSession.insert("board_member_tag.insert", boardMemberTagDto);
 		
 	}
 
 	@Override
 	public boolean delete(int boardNo) {
 		
-		int count = sqlSession.delete("board-hashtag.delete", boardNo);
+		int count = sqlSession.delete("board_member_tag.delete", boardNo);
 		
 		return count > 0;
 	}
@@ -32,14 +32,9 @@ public class BoardHashtagDaoImpl implements BoardHashtagDao {
 	@Override
 	public List<String> selectList(int boardNo) {
 		
-		return sqlSession.selectList("board-hashtag.selectHash", boardNo);
+		return sqlSession.selectList("board_member_tag.selectMemberTag", boardNo);
 	}
+	
 	
 
 }
-
-
-
-
-
-

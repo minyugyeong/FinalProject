@@ -24,26 +24,23 @@
  <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- <mapper namespace="board-hashtag">
-	
-	<!-- 등록 -->
-	<insert id="insert" parameterType="BoardHashtagDto">
- 		insert into board_hashtag(board_no, hashtag_no) values(#{boardNo}, #{hashtagNo})
-  </insert>
-  
-  <!-- 삭제 -->
-  <delete id="delete" parameterType="int">
-  	delete board_hashtag where board_no = #{boardNo}
-  </delete>
-  
-  <select id="selectHash" resultType="String" parameterType="int">
-  	select hashtag_name from board_hashtag B
-    left outer join hashtag H on B.hashtag_no = H.hashtag_no where board_no=#{boardNo}
-  </select>
-  
-		
- </mapper> 
+ <mapper namespace="board_member_tag">
  
+ 	<insert id="insert" parameterType="BoardMemberTagDto">
+ 		insert into board_member_tag(board_no, member_no) values (#{boardNo}, #{memberNo})
+ 	</insert>
+ 	
+ 	<!-- 삭제 -->
+ 	<delete id="delete" parameterType="int">
+ 		delete board_member_tag where board_no = #{boardNo}
+ 	</delete>
+ 	
+ 	<select id="selectMemberTag" resultType="String" parameterType="int">
+  	select member_nick from board_member_tag B
+    left outer join member M on B.member_no = M.member_no where board_no=#{boardNo}
+  </select>
+
+ </mapper> 
  
  
  

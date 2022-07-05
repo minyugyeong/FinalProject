@@ -17,4 +17,6 @@ public class BoardAdDto {
 	private String boardAdContent;
 	private String boardAdLink;
 	private int boardAdCount;
+	private String boardAdCheck;
+	private int boardAdIsReply;
 }
