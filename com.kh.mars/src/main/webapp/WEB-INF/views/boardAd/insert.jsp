@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-<%-- <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> --%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
@@ -170,10 +170,12 @@ $(function(){
 	
 	$(".form-submit").submit(function(e){
 	
+		
 		if($(".content").val() == ""){
 			alert("문구를 입력하세요.");
 			e.preventDefault();
 		}
+		
 		
 		if($("#upload2").val() == ""){
 			$("#upload2").attr("disabled", true);
@@ -189,15 +191,6 @@ $(function(){
 		else{
 			$("#hashtag").attr("disabled", true);
 		}
-		
-		if($(".content").val() == "" || $("#memberTag").val() != ""){
-			$("#memberTag").attr("disabled", false);
-		}
-		else{
-			$("#memberTag").attr("disabled", true);
-		}
-		
-		
 		
 	});
 	
@@ -259,7 +252,7 @@ $(function(){
 		            <button type="button" class="btn btn-secondary cancel" style="float:left;">취소</button>
 		          </div>
 		          <div class="col-md-8">
-		            <h4 class="text-primary text-center" style="margin-top: 1%;">새 게시물 만들기</h4>
+		            <h4 class="text-primary text-center" style="margin-top: 1%;">광고 게시물 만들기</h4>
 		          </div>
 		          <div class="col-md-2">
 		            <button type="button" class="btn btn-secondary btn-next" style="float:right;">다음</button>
@@ -276,7 +269,7 @@ $(function(){
 				        <h1 class="card-title" ><i class="fa-regular fa-images"></i></h1>
 				        <p class="card-text fs-5">사진을 선택하세요.</p>
 				        <label for="upload" class="input-upload">업로드</label>
-				        <input type="file" name="boardAttach" accept=".png, .jpg" id="upload" ref="files" @change="imageUpload" style="display:none;" multiple>
+				        <input type="file" name="boardAdAttach" accept=".png, .jpg" id="upload" ref="files" @change="imageUpload" style="display:none;" multiple>
 				        <p style="margin-top: 20px;">* 이미지는 최대 5개까지 선택 가능합니다.</p>
 				      </div>
 			      </div>
@@ -295,7 +288,7 @@ $(function(){
 						        <label for="upload2" class="input-uploadPlus">
 						        	<i class="fa-solid fa-plus fa-3x"></i>
 						        </label>
-						        <input type="file" name="boardAttach" accept=".png, .jpg" id="upload2" ref="files2" @change="imageAddUpload" style="display:none;" multiple/>				        	
+						        <input type="file" name="boardAdAttach" accept=".png, .jpg" id="upload2" ref="files2" @change="imageAddUpload" style="display:none;" multiple/>				        	
 				        	</div>
 				        </div>
 				      </div>
@@ -323,10 +316,10 @@ $(function(){
 		            <button type="button" class="btn btn-secondary btn-prev" style="float:left;">이전</button>
 		          </div>
 		          <div class="col-md-8">
-		            <h4 class="text-primary text-center" style="margin-top: 1%;">새 게시물 만들기</h4>
+		            <h4 class="text-primary text-center" style="margin-top: 1%;">광고 게시물 만들기</h4>
 		          </div>
 		          <div class="col-md-2">
-		            <button type="submit" class="btn btn-primary" style="float:right;">공유하기</button>
+		            <button type="submit" class="btn btn-primary" style="float:right;">신청하기</button>
 		          </div>
 		        </div>
 		      </div>
@@ -372,7 +365,7 @@ $(function(){
 					    	<div class="row mb-2"></div>
 					    	
 					    	<div class="row">
-					    		<textarea id="contentCheck" class="form-control content" rows="6" name="boardContent" placeholder="문구를 입력하세요"></textarea>
+					    		<textarea id="contentCheck" class="form-control content" rows="6" name="boardAdContent" placeholder="문구를 입력하세요"></textarea>
 					    		<div class="right">
 										<span class="length">
 											<span class="count">0</span>
@@ -386,19 +379,19 @@ $(function(){
 					    		<input type="text" name="hashtagName" class="form-control" placeholder="#해시태그" id="hashtag" autocomplete="off">
 					    	</div>
 					    	
+					    	<!-- 광고 종류 선택 -->
 					    	<div class="row mt-4">
-					    		<input type="text" name="memberNick" class="form-control" placeholder="@사람태그" id="memberTag" autocomplete="off">
+					    		<select name="adNo" class="form-select">
+					    			<c:forEach var="list" items="${list}">
+					    				<option value="${list.adNo}">노출 횟수 ${list.adCount}번 : 가격 ${list.adPrice}원</option>
+					    			</c:forEach>
+					    		</select>
 					    	</div>
 					    	
-					    	<!-- <div class="row">
-					    		<div class="col-md-8 offset-md-2">
-					    			<ul class="list-group">
-					    				<li v-for="(nick, index) in nickList" v-bind:key="index" class="list-group-item">
-					    					<div v-on:click="selectNick(index);">{{nick.memberNick}}</div>
-					    				</li>
-					    			</ul>
-					    		</div>
-					    	</div> -->
+					    	<!-- 광고 링크 입력 -->
+					    	<div class="row mt-4">
+					    		<input type="text" name="boardAdLink" class="form-control" placeholder="광고 링크" autocomplete="off">
+					    	</div>
 					    	
 					    	<div class="row mt-4 form-check form-switch" style="display: flex;">
 					    		
@@ -406,7 +399,7 @@ $(function(){
 											<label class="fs-5" for="replyCheck">댓글 기능 해제</label>
 										</div>
 										<div class="col-md-3">
-											<input type="checkbox" name="boardIsReply" value="1" class="form-check-input fs-5" style="margin-left: 0;" id="replyCheck">
+											<input type="checkbox" name="boardAdIsReply" value="1" class="form-check-input fs-5" style="margin-left: 0;" id="replyCheck">
 										</div>
 									
 					    	</div>
@@ -449,10 +442,7 @@ $(function(){
     	  uploadImageIndex: 0,
 
     	  
-    	  /* //사람태그
-    	  keyword: "",
-    	  nickList: [],
-    	  click: false, */
+    	  
         
       }
     },
@@ -499,37 +489,10 @@ $(function(){
     		this.files = this.files.filter(data => data.number != Number(name));
     	},
     	
-     
-	    /* selectNick(index){
-	    	this.click = true;
-	    	this.keyword = this.nickList[index].memberNick;
-	    	this.nickList = [];
-	    }, */
 	    
     },
     
-    /* watch:{
-    	
-    	keyword:_.throttle(function(){
-    		if(!this.keyword) return;
-    		if(this.click){
-    			this.click = false;
-    			return;
-    		}
-    		
-    		axios({
-    			url: "http://localhost:8080/mars/rest/member/memberNick/"+this.keyword,
-    			method: "get"
-    		})
-    		.then(resp=>{
-    			console.log(resp.data);
-    			this.nickList = resp.data;
-    		})
-    		
-    	},250),
-    	
-    }, */
-    
+
 
   });
   app.mount("#app");

@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data@NoArgsConstructor@AllArgsConstructor@Builder
-public class BoardMemberDto {
-	private int boardAttachNo;
-	private int boardTagMemberNo;
+@Data @AllArgsConstructor @NoArgsConstructor @Builder
+public class BoardAdHashtagDto {
+	
+	private int boardAdNo;
+	private int hashtagNo;
+
 }

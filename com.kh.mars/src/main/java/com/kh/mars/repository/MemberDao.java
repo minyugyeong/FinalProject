@@ -1,6 +1,7 @@
 package com.kh.mars.repository;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,10 @@ public interface MemberDao {
 	boolean changePassword(int memberNo, String currentPassword, String changePassword);
 
 	void proFile(MultipartFile memberProfile, int memberNo) throws IllegalStateException, IOException;
+
+	int selectNo(String memberNick);
+
+	/* List<MemberDto> findMemberNick(String memberNick); */
 
 
 }

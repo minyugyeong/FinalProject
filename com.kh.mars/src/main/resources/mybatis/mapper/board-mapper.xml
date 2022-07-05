@@ -136,11 +136,24 @@
 	<select id="selectOne" resultType="BoardDto" parameterType="int">
 		select * from board where board_no = #{boardNo}
 	</select>
+	
+	<select id="selectBoardMember" resultType="BoardMemberVO" parameterType="int">
+		select * from board B
+    left outer join member M on B.member_no = M.member_no 
+    left outer join member_profile P on M.member_no = P.member_no
+    where board_no=#{boardNo}
+	</select>
+	
+	<!-- 게시물 첨부파일 조회 -->
+	<select id="selectAttach" resultType="BoardAttachVO" parameterType="int">
+		select * from attach A
+    left outer join board_attach B on A.attach_no = B.attach_no
+    where B.board_no = #{boardNo}
+	</select>
 
 
 
 <!-- insert 구문 -->	
-
 
 	<insert id="insert" parameterType="BoardDto">
 		insert into board (board_no, member_no, board_date, board_content, board_is_reply) 
@@ -151,6 +164,11 @@
 	<select id="boardCount" parameterType="int" resultType="int">
 		select count(*)board_no from board where member_no = #{memberNo}
 	</select>
+	
+	<!-- 게시글 수정 -->
+	<update id="edit" parameterType="BoardDto">
+		update board set board_content = #{boardContent}, board_is_reply = #{boardIsReply} where board_no = #{boardNo}
+	</update>
 	
  </mapper>
  

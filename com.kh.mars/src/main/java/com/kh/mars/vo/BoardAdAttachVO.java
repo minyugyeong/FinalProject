@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @AllArgsConstructor @NoArgsConstructor @Builder
-public class BoardAttachVO {
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
+public class BoardAdAttachVO {
 	private int attachNo;
-	private int boardNo;
+	private int boardAdNo;
 	private String attachUploadname;
 	private String attachType;
 	private int attachSize;
+	
+	
+
 }
