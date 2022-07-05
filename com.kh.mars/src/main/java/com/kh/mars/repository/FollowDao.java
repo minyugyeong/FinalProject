@@ -26,4 +26,6 @@ public interface FollowDao {
 
 	FollowDto selectOne(int followWho, int memberNo);
 
+	boolean isFollower(int followWho, int memberNo);
+
 }

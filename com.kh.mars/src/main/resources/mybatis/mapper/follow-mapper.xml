@@ -89,5 +89,9 @@
 	<select id="one" resultType="FollowDto" parameterType="map">
 		select * from follow where follow_who = #{followWho} and follow_target = #{memberNo}
 	</select>
+	
+	<select id="isFollower" resultType="FollowDto" parameterType="map">
+		select * from follow where follow_who = #{followWho} and follow_target = #{memberNo} and follow_confirm = #{followConfirm}
+	</select>
 
  </mapper> 

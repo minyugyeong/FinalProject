@@ -4,18 +4,11 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 	
-	세션 : ${login }
-	<br><br>
-	${memberDto.memberNo}의 페이지
-	<br><br>
-    ???: ${profileUrl }
 	
 	<!-- 특정 영역을 생성하여 이 부분만 vue로 제어한다 -->
-    <div id="app" class="container w950 m30">
+    <div id="app" class="container-fluid" style="width:70%!important;">
     <!-- 화면 영역 -->
     <!-- Button trigger modal -->
-    	팔로우 요청 승인 여부 : ${followDto.followConfirm }
-		공개 여부 : ${memberDto.memberPrivate }
     <div class="row">
             <div class="col-4">
                 <img src="${pageContext.request.contextPath}${profileUrl}"
@@ -75,9 +68,10 @@
         </div>
         <div class="modal-body">
             <p v-for="(f,index) in follow" v-bind:key="index">
-                프로필사진{{f.attachNo}}
                 <img :src="'${pageContext.request.contextPath }/file/download/'+ f.attachNo" width="25">
-                {{f.memberNick}}
+                <a :href="'${pageContext.request.contextPath }/member/page?memberNo='+f.memberNo">{{f.memberNick}}</a>
+                
+                <button class="btn btn-primary" @click="followingBtn">팔로잉</button>
             </p>
         </div>
       </div>
@@ -94,14 +88,27 @@
         </div>
         <div class="modal-body">
           <p v-for="(fm,index) in follower" v-bind:key="index">
-              프로필사진{{fm.attachNo}}
               <img :src="'${pageContext.request.contextPath }/file/download/'+ fm.attachNo" width="25">
-              {{fm.memberNick}}
+             <a :href="'${pageContext.request.contextPath }/member/page?memberNo='+fm.memberNo">{{fm.memberNick}}</a>
+              
+              <button class="btn btn-primary" @click="deleteFollower(fm.memberNo)">삭제</button>
           </p>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- 사진영역 -->
+  
+  <!-- 비공개 계정+ 팔로우 상태가 아닐 경우 -->
+  <c:if test="${isPrivate && !isFollower }"> 
+  <div class="card mt-5" style="width: 100%;">
+  <div class="card-body mt-5 mb-5">
+    <h6 class="card-subtitle mb-2 text-muted text-center">비공개 계정입니다</h6>
+    <h6 class="card-subtitle mb-2 text-muted text-center mt-3">사진 및 동영상을 보려면 팔로우하세요.</h6>
+  </div>
+</div>
+ </c:if> 
 
 </div> 
     <!-- vue js도 lazy loading을 사용한다 -->
@@ -165,6 +172,20 @@
                 		}
                 	});
                 },
+                
+                deleteFollower(memberNo){
+                	console.log(memberNo);
+                	axios({
+                		url: "${pageContext.request.contextPath}/deleteFollower",
+                		method: "post",
+                		params:{
+                			memberNo : memberNo
+                		},
+                	})
+                	.then(resp=>{
+                		
+                	})
+                }
             },
             created(){
                

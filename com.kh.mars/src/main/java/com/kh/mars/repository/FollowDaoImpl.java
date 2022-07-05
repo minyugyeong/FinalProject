@@ -72,6 +72,21 @@ public class FollowDaoImpl implements FollowDao {
 		
 		return followDto;
 	}
-	
-	
+
+	@Override
+	public boolean isFollower(int followWho, int memberNo) {
+		Map<Object, Object> param = new HashMap<Object, Object>();
+		param.put("followWho", followWho);
+		param.put("memberNo", memberNo);
+		param.put("followConfirm", 1);
+		
+		FollowDto followDto = sqlSession.selectOne("follow.isFollower", param);
+		
+		if(followDto == null) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
 }

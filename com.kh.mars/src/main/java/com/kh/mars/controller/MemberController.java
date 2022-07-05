@@ -172,6 +172,17 @@ public class MemberController {
 			model.addAttribute("profileUrl", "/file/download/" + attachNo);
 		}
 		
+		//계정상태
+		//비공개 계정
+		int memberPrivate = memberDao.info(memberNo).getMemberPrivate();
+		boolean isPrivate = memberPrivate == 1;
+		
+		model.addAttribute("isPrivate", isPrivate);
+		//팔로우 상태
+		boolean isFollower = followDao.isFollower(followWho,memberNo);
+		model.addAttribute("isFollower", isFollower);
+
+		
 		return "member/page";
 	}
 	

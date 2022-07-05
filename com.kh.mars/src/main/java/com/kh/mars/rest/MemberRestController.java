@@ -23,6 +23,8 @@ import com.kh.mars.service.FollowService;
 import com.kh.mars.vo.FollowVO;
 import com.kh.mars.vo.FollowerVO;
 
+import oracle.jdbc.proxy.annotation.Post;
+
 @Controller
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 public class MemberRestController {
@@ -105,6 +107,15 @@ public class MemberRestController {
 		else{
 			return "Y";
 		}
+	}
+	
+	@PostMapping("/deleteFollower")
+	@ResponseBody
+	public int deleteFollower(@RequestParam int memberNo, HttpSession session) {
+		int followWho = (Integer) session.getAttribute("login");
+		followDao.followDelete(followWho, memberNo);
+		
+		return 0;
 	}
 	
 }
