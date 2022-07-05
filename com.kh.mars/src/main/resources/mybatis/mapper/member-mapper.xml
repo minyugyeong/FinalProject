@@ -72,7 +72,9 @@
 				member_university = #{memberUniversity},
 				member_gender = #{memberGender},
 				member_interest = #{memberInterest},
-				member_private = #{memberPrivate}
+				member_private = #{memberPrivate},
+				member_name = #{memberName},
+				member_introduce = #{memberIntroduce}
 			where
 				member_no = #{memberNo}
 	</update>

@@ -8,8 +8,8 @@
 
         <div class="col-4">
           <div class="list-group" id="list-tab" role="tablist">
-            <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">Home</a>
-            <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">Profile</a>
+            <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">프로필 편집</a>
+            <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">비밀번호 변경</a>
           </div>
         </div>
         <div class="col-8">
@@ -30,11 +30,25 @@
 				</div>
 	<form action="edit" method="post">
 	
+				<div class="mb-3 row">
+                    <label for="inputmemberName" class="col-sm-5 col-form-label">이름</label>
+                    <div class="col-sm-5">
+                      <input type="text" name="memberName" class="form-control" id="inputmemberName" value="${memberDto.memberName }">
+                      <h6 class="card-subtitle mb-2 mt-3 text-muted text-center">사람들이 이름, 별명 또는 비즈니스 이름 등 회원님의 알려진 이름을 사용하여 회원님의 계정을 찾을 수 있도록 도와주세요.</h6>
+                    </div>
+                </div>
 				
                 <div class="mb-3 row">
                     <label for="inputmemberNick" class="col-sm-5 col-form-label">닉네임</label>
                     <div class="col-sm-5">
                       <input type="text" name="memberNick" class="form-control" id="inputmemberNick" value="${memberDto.memberNick }">
+                    </div>
+                </div>
+                
+                <div class="mb-3 row">
+                    <label for="inputmemberIntroduce" class="col-sm-5 col-form-label">소개</label>
+                    <div class="col-sm-5">
+                      <textarea name="memberIntroduce" class="form-control">${memberDto.memberIntroduce }</textarea>
                     </div>
                 </div>
 
