@@ -87,4 +87,20 @@
 		select member_nick from member where member_no = #{memberNo}
 	</select>
 	
+	<!-- 사람 태그 목록 -->
+	<select id="findmemberNick" resultType="MemberDto" parameterType="String">
+		select member_nick from member where instr(member_nick, #{memberNick}) > 0 order by member_nick asc
+	</select>
+	
+	<!-- 닉네임으로 번호 조회 -->
+	<select id="selectNo" resultType="int" parameterType="String">
+		select member_no from member where member_nick = #{memberNick}
+	</select>
+	
  </mapper> 
+ 
+ 
+ 
+ 
+ 
+ 

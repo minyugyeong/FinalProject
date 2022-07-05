@@ -40,6 +40,30 @@
 		select * from board_ad where board_ad_no = #{boardAdNo}
 	</select>
 	
+	<select id="selectBoardAdMember" resultType="BoardAdMemberVO" parameterType="int">
+		select * from board_ad B
+    left outer join member M on B.member_no = M.member_no 
+    left outer join member_profile P on M.member_no = P.member_no
+    where board_ad_no=#{boardAdNo}
+	</select>
+	
+	<!-- 게시물 첨부파일 조회 -->
+	<select id="selectAttach" resultType="BoardAdAttachVO" parameterType="int">
+		select * from attach A
+    left outer join board_ad_attach B on A.attach_no = B.attach_no
+    where B.board_ad_no = #{boardAdNo}
+	</select>
+	
+	<!-- 광고 게시글 수정 -->
+	<update id="edit" parameterType="BoardAdDto">
+		update board_ad set 
+		ad_no=#{adNo}, 
+		board_ad_content=#{boardAdContent}, 
+		board_ad_link=#{boardAdLink}, 
+		board_ad_is_reply=#{boardAdIsReply} where board_ad_no=#{boardAdNo}
+	</update>
+	
+	
  </mapper> 
  
  
