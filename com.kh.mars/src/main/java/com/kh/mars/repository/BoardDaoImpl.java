@@ -53,13 +53,12 @@ public class BoardDaoImpl implements BoardDao{
 
 
 	@Override
-<<<<<<< HEAD
 	public List<BoardReplyVO> detailReply(int memberNo, int boardNo) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("memberNo", memberNo);
 		param.put("boardNo", boardNo);
 		return sqlSession.selectList("board.detailReply", param);
-=======
+	}
 	public BoardDto selectOne(int boardNo) {
 		
 		return sqlSession.selectOne("board.selectOne", boardNo);
@@ -85,7 +84,6 @@ public class BoardDaoImpl implements BoardDao{
 	public List<BoardAttachVO> selectAttach(int boardNo) {
 		
 		return sqlSession.selectList("board.selectAttach", boardNo);
->>>>>>> refs/remotes/origin/main
 	}
 	
 	
