@@ -3,9 +3,7 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <style>
-		.card-text{
-            font-size: 0.8em;
-        }
+		
 
         .follow-recomand{
             position: fixed;
@@ -202,17 +200,21 @@
                         </div>
                         <div class="card-body">
                           <h4 class="card-title">회원 추천</h4>
-                          <p v-for="(recommend, index) in recommendList" class="card-text">
-                          		<img v-if="recommend.targetAttach > 0" :src="'${pageContext.request.contextPath}/file/download/'+recommend.targetAttach" width="30" style="border-radius: 70%">
-                                <img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
-                          		{{recommend.targetNick}} <br>
-                          		<span v-if="recommend.followcount > 0">
-	                          		{{recommend.whoNick}}님 외 {{recommend.followcount}}명 팔로우
-                          		</span>
-                          		<span v-else>
+                          <div v-for="(recommend, index) in recommendList" class="card-text">
+                          		<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+recommend.followTarget" style="text-decoration:none;color:black;position:relative;">
+	                          		<img v-if="recommend.targetAttach > 0" :src="'${pageContext.request.contextPath}/file/download/'+recommend.targetAttach" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+	                                <img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                          <p style="padding-left:3em;margin-bottom:0;">
+	                          		{{recommend.targetNick}}
+		                          </p>
+                          		</a>
+	                          		<p v-if="recommend.followcount > 0" style="font-size:0.9;padding-left:3em;color:grey;">
+		                          		{{recommend.whoNick}}님 외 {{recommend.followcount}}명 팔로우
+	                          		</p>
+                          		<p v-if="recommend.followcount == 0" style="font-size:0.9;padding-left:3em;color:grey;">
                           			{{recommend.whoNick}}님이 팔로우 합니다
-                          		</span>
-                          </p>
+                          		</p>
+                          </div>
                         </div>
                       </div>
                     
@@ -253,14 +255,22 @@
 	                            <div class="card-body card-scroll" style="height: 60%;">
 	                                <h4 class="card-title"></h4>
 	                                <p class="card-text">{{boardDetail.boardContent}}</p><br><br>
-	                                <p v-for="(reply, index) in boardDetailReply" class="card-text show-icon">
-	                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%">
-                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
-									{{reply.memberNick}}
-									<i v-if="reply.replyMemberNo == ${memberDto.memberNo}" class="fa-solid fa-xmark" style="display:none;" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="targetInput(reply.replyNo)"></i>
-									<br>
-	                                {{reply.replyContent}}
-	                                </p>
+	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" style="position:relative;">
+	                                	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+reply.replyMemberNo" style="text-decoration:none;color:black;position:relative;">
+			                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                <p style="padding-left:3em;margin-bottom:1px;font-size:0.9em;font-weight:bold;">
+											{{reply.memberNick}}
+	                                	</p>
+	                                	</a>
+	                                	<p style="padding-left:2.9em;margin-bottom:1px;font-size:0.9em;">
+			                                {{reply.replyContent}}
+	                                	</p>
+	                                	<p style="padding-left:3.1em;font-size:0.85em;color:grey;">
+	                                		<a>답글</a>&nbsp;
+											<i v-if="reply.replyMemberNo == ${memberDto.memberNo}" class="fa-solid fa-xmark" style="display:none;z-index:100;" data-bs-toggle="modal" data-bs-target="#exampleModal" @click.stop="targetInput(reply.replyNo)"></i>
+										<p>
+	                                </div>
 	                            </div>
 	                            <div class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
 	                                <span style="position: absolute; left:0; top: 6px; z-index: 999;">임티</span>
@@ -321,15 +331,12 @@
                             
                             replyTarget:"",
                             
-                            
-                            
                         };
                     },
                     computed:{
                         
                     },
                     methods:{
-                    	
                     		//추가로 게시글 더불러오는 함수
                     		loading:_.debounce(function(){
 	                    		axios({
@@ -337,7 +344,6 @@
 	                        		method: "get"
 	                        	})
 	                        	.then(resp=>{
-	                        		console.log(resp.data);
 	                        		this.boardList.push(...resp.data);
 	                        		this.pageCount++;
 	                        	});
@@ -353,7 +359,6 @@
                     				return "24시간 이내";
                     			}
                         	},
-                        	
                         	//좋아요기능
                         	like(likeNo,index){
                         		const boardNo = likeNo;
@@ -365,8 +370,6 @@
                         			}
                         		})
                         		.then(resp=>{
-                        			console.log(resp.data);
-                        			console.log("index " + index);
                         			this.boardList[index].boardListVO.isLike = resp.data;
                         			if(resp.data > 0){
                         				this.boardList[index].boardListVO.likecount += 1
@@ -375,7 +378,6 @@
                         			}
                         		});
                         	},
-                        	
                         	// 상세보기 모달창 작동 함수
                         	detailViewOn(){
                                 if(!this.detailView){
@@ -407,7 +409,6 @@
                             		method: "get"
                             	})
                             	.then(resp=>{
-                            		console.log(resp.data);
                             		this.boardDetailReply = resp.data;
                             	});
                             },
@@ -447,9 +448,7 @@
                             		this.replyTarget = "";
                             		this.boardDetailSearch();
                             	});
-                            	
                             },
-                            
                             async promise(index){
                             	const boardNo = this.boardList[index].boardListVO.boardNo;
                             	await this.replyEnter(boardNo);
@@ -478,6 +477,7 @@
                             }, */
                     },
                     watch:{
+                    	
                     },
                     beforeCreate(){},
                     created(){
