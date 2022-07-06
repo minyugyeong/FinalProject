@@ -17,6 +17,11 @@
                 return {
                 	noticeValue:false,
                     searchValue:false,
+                    keyword:"",
+                    
+                    searchList:[],
+                    searchLength:null,
+              
                 };
             },
             //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
@@ -40,13 +45,25 @@
                         this.noticeValue = false;
                 },
                 searchOff(){
-                        this.searchValue = false;
+                        /* this.searchValue = false; */
                         this.noticeValue = false;
                 }
             },
             // watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다
             watch:{
-                
+            	keyword:_.throttle(function(){
+            		if(!this.searchValue) this.searchValue=true;
+            		if(this.keyword == "") return;
+                    axios({
+                        url:"${pageContext.request.contextPath}/rest/search/"+this.keyword,
+                        method:"get",
+                    })
+                    .then((resp)=>{
+                    	console.log(resp.data);
+                    	this.searchLength = resp.data.length;
+                        this.searchList = resp.data;
+                    })
+                }, 200),
             },
             //데이터 및 구성요소 초기화 전
             beforeCreate(){},

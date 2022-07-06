@@ -48,6 +48,10 @@
         	top: 100px;
         	width: 100%;
         }
+        
+        .card-text{
+            font-size: 0.8em;
+        }
     </style>
 </head>
 <body>
@@ -60,19 +64,41 @@
                     
                     <div class="collapse navbar-collapse" id="navbarColor03">
                         
-                        <form class="d-flex search0503" style="position: relative;"  @click.stop>
-                            <input class="form-control me-sm-2" type="text" placeholder="Search" @focus="searchOn" @blur="searchOff">
-                            <div v-if="searchValue" style="position: absolute; top: 50px; right: -70px; width: 350px; max-height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;" @click.stop>
-                                <div class="card border-light">
-                                    <div class="card-body">
-                                      <h5 class="card-title">Light card title</h5>
-                                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <div class="d-flex search0503" style="position: relative;" @click.stop>
+                            <input class="form-control me-sm-2" v-model="keyword" type="text" placeholder="Search" @focus="searchOn" @blur="searchOff" @input="keyword = $event.target.value">
+                            <div v-if="searchValue" style="position: absolute; top: 50px; right: -70px; width: 350px; height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;background-color:white;" @click.stop="">
+                                <div class="card border-light" style="border:none!important;">
+                                    <div v-if="keyword == ''" class="card-body">
+                                      <h5 class="card-title">최근 검색 목록</h5>
+                                      <p class="card-text"></p>
                                     </div>
-                                  </div>
+                                    <div v-else class="card-body" style="padding-bottom:0;">
+	                                    <p v-if="searchList.length == 0" class="card-text">검색 결과가 없습니다.</p>
+	                                    <div v-for="(search, index) in searchList" class="card-text">
+		                                    <a v-if="search.type == 0" :href="'${pageContext.request.contextPath}/member/page?memberNo='+search.no" style="text-decoration:none;color:black;position:relative;">
+		                                      <img v-if="search.attach != 0" :src="'${pageContext.request.contextPath}/file/download/'+search.attach" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                      <img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                      <p style="margin-bottom:0;padding-left:2.5em;">
+		                                       {{search.main}}
+		                                      </p>
+		                                      <p style="font-weight:normal;margin-bottom:1;font-size:0.8em;color:grey;padding-left:3em;">
+		                                       {{search.sub}}
+		                                      </p>
+		                                    </a>
+		                                    <a v-else :href="'${pageContext.request.contextPath}/member/page?memberNo='+search.no" style="text-decoration:none;color:black;position:relative;">
+		                                      <img src="${pageContext.request.contextPath}/image/hashtag.png" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                      <p style="margin-bottom:0;padding-left:2.5em;">
+		                                       {{search.main}}
+		                                      </p>
+		                                      <p style="font-weight:normal;margin-bottom:1;font-size:0.8em;color:grey;padding-left:3em;">
+		                                       게시글 개수 : {{search.sub}} 개
+		                                       </p>
+		                                    </a>
+	                                    </div>
+                                    </div>
+                                </div>
                             </div>
-                        </form>
+                        </div>
                         
                         <ul class="navbar-nav align-right me-auto">
                             <li class="nav-item">
@@ -107,7 +133,7 @@
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/member/page?memberNo=${memberDto.memberNo}">
                                     <i class="fa-solid fa-user-astronaut fa-lg"></i>
                                 </a>
                             </li>
