@@ -61,7 +61,7 @@
                     <a class="navbar-brand" href="${pageContext.request.contextPath}">
                         <img src="${pageContext.request.contextPath}/image/logo.png" width="150">
                     </a>
-                    
+                    <c:if test="${memberDto != null }">
                     <div class="collapse navbar-collapse" id="navbarColor03">
                         
                         <div class="d-flex search0503" style="position: relative;" @click.stop>
@@ -140,6 +140,7 @@
                             
                         </ul>
             </div>
+            </c:if>
         </div>
     </nav>
         
