@@ -34,6 +34,7 @@
             <input type="email" class="form-control member-email" id="floatingInput" placeholder="name@example.com" name="memberEmail">
             <label for="floatingInput">이메일 주소</label>
             <div class="invalid-feedback">사용할 수 없는 이메일 입니다</div>
+            <span></span>
         </div>
 
         <div class="row form-floating mb-3">
@@ -197,15 +198,27 @@
                 if(memberEmail == false){
                 	return;
                 } */
+         		$(this).removeClass("is- valid is-invalid");
+                $(this).addClass(memberEmail ? "is-valid" : "is-invalid")
                 
                 //중복확인
-                /* $.ajax({
+                $.ajax({
                 	url : "${pageContext.request.contextPath}/checkEmail",
-                	type:"get", 
-                }) */
+                	type:"get",
+                	data:{
+                		memberEmail : memberEmail
+                	},
+                	success:function(resp){
+                		if(resp = true){
+                			$(that).next("span").text("아")
+                		}
+                		else if(resp = false){
+                			$(that).next("span").text("아")
+                		}
+                	}
+                })
 
-                $(this).removeClass("is- valid is-invalid");
-                $(this).addClass(memberEmail ? "is-valid" : "is-invalid")
+                
             });
             
             /*  var that = this;
@@ -219,7 +232,7 @@
             	},
             	success:function(resp){
             		if(resp === "Y"){
-            			$(that).next("spna").text("이미 사용중인 이메일입니다");
+            			$(that).next("span").text("이미 사용중인 이메일입니다");
             			object.memberEmail = false;
             		}
             		else if(resp === "N"){

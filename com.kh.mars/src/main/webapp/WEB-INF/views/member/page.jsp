@@ -55,6 +55,15 @@
 						</button>
                     </div>
                 </div>
+                
+                <div class="row mt-2">
+                	<h5>${memberDto.memberName }</h5>
+                </div>
+                
+                <div class="row mt-2">
+                	<h6>${memberDto.memberIntroduce }</h6>
+                </div>
+                
             </div>
         </div>
   

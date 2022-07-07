@@ -104,9 +104,14 @@ public class MemberDaoImpl implements MemberDao{
 
 	@Override
 	public String checkEmail(String memberEmail) {
-		sqlSession.selectOne("member.checkEmail",memberEmail);
-		return memberEmail;
+		return sqlSession.selectOne("member.checkEmail",memberEmail);
 		
+	}
+
+	@Override
+	public boolean resetPassword(String memberEmail) {
+		sqlSession.selectOne("member.memberPw",memberEmail);
+		return false;
 	}
 
 

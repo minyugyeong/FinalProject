@@ -29,6 +29,8 @@ public interface MemberDao {
 
 	String checkEmail(String memberEmail);
 
+	boolean resetPassword(String memberEmail);
+
 	
 
 }

@@ -98,14 +98,14 @@ public class MemberRestController {
 	
 	@GetMapping("/checkEmail")
 	@ResponseBody
-	public String checkEmail(@RequestParam String memberEmail) {
+	public boolean checkEmail(@RequestParam String memberEmail) {
 		String checkEmail = memberDao.checkEmail(memberEmail);
 		
 		if(checkEmail != null) {
-			return "N";
+			return true;
 		}
 		else{
-			return "Y";
+			return false;
 		}
 	}
 	
@@ -115,7 +115,7 @@ public class MemberRestController {
 		int followWho = (Integer) session.getAttribute("login");
 		followDao.followDelete(followWho, memberNo);
 		
-		return 0;
+		return followWho;
 	}
 	
 }

@@ -1,7 +1,11 @@
 package com.kh.mars.controller;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.util.Random;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +18,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.mars.entity.CertDto;
 import com.kh.mars.entity.FollowDto;
 import com.kh.mars.entity.MemberDto;
+import com.kh.mars.error.UnauthorizeException;
 import com.kh.mars.repository.BoardDao;
+import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
 import com.kh.mars.repository.MemberDao;
 import com.kh.mars.repository.MemberProfileDao;
+import com.kh.mars.service.EmailService;
 
 @Controller
 @RequestMapping("/member")
@@ -36,6 +44,12 @@ public class MemberController {
 	
 	@Autowired
 	private BoardDao boardDao;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private CertDao certDao;
 
 	//회원가입 페이지
 	@GetMapping("/join")
@@ -184,6 +198,49 @@ public class MemberController {
 
 		
 		return "member/page";
+	}
+	
+	@GetMapping("/password_reset")
+	public String passwordReset() {
+		return "member/password_reset";
+	}
+	
+	@PostMapping("/password_reset")
+	public String passwordReset(@RequestParam String memberEmail) throws MessagingException {
+		String findEmail = memberDao.checkEmail(memberEmail);
+		
+		if(findEmail == null) {
+			return "redirect:password_reset?error";
+		}
+		emailService.sendPasswordResetMail(memberEmail);
+		return "redirect:password_reset_send_mail";
+	}
+	
+	@GetMapping("/password_reset_send_mail")
+	public String passwordResetSendMail() {
+		return "member/password_reset_send_mail";
+	}
+	
+	private Random r = new Random();
+	private Format f = new DecimalFormat("000000");
+	
+	@GetMapping("/reset")
+	public String reset(
+			@RequestParam String memberEmail,
+			@RequestParam String cert,
+			Model model) {
+		boolean isOk = certDao.check(CertDto.builder()
+										.memberEmail(memberEmail)
+										.certNumber(cert)
+										.build());
+		
+		if(isOk) {
+			boolean result = memberDao.resetPassword(memberEmail);
+			if(result) {
+				return "redirect:reset_success";
+			}
+		}
+		throw new UnauthorizeException();
 	}
 	
 }
