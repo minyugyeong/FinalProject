@@ -14,8 +14,6 @@
     <!-- 파비콘 -->
     <link rel="icon" href="${pageContext.request.contextPath}/image/favicon.png">
     
-    <!-- jquery cdn -->
- 		<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
  		
    <style>
         @media screen and (max-width: 768px) {
@@ -152,6 +150,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
         
         <section>
         
