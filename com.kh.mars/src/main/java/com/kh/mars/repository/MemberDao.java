@@ -34,6 +34,8 @@ public interface MemberDao {
 
 	int selectNo(String memberNick);
 
+	String checkNick(String memberNick);
+
 	/* List<MemberDto> findMemberNick(String memberNick); */
 
 }

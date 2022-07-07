@@ -34,11 +34,11 @@
             <input type="email" class="form-control member-email" id="floatingInput" placeholder="name@example.com" name="memberEmail">
             <label for="floatingInput">이메일 주소</label>
             <div class="invalid-feedback">사용할 수 없는 이메일 입니다</div>
-            <span></span>
         </div>
 
         <div class="row form-floating mb-3">
             <input type="text" class="form-control" id="floatingInput" placeholder="memberNick" name="memberNick">
+            <span style="color:red"></span>
             <label for="floatingInput">닉네임</label>
             <div class="invalid-feedback">영문 대/소문자,특수문자(-_.) 4~16글자로 작성해주세요</div>
         </div>
@@ -192,62 +192,43 @@
 
             $("input[name=memberEmail]").blur(function(){
                 var regex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-                var memberEmail = regex.test($(this).val());
+                var memberEmail = $(this).val();
+                var memberEmailTest = regex.test(memberEmail);
                 
-                /* //형식검사
-                if(memberEmail == false){
-                	return;
-                } */
-         		$(this).removeClass("is- valid is-invalid");
-                $(this).addClass(memberEmail ? "is-valid" : "is-invalid")
-                
-                //중복확인
-                $.ajax({
-                	url : "${pageContext.request.contextPath}/checkEmail",
-                	type:"get",
-                	data:{
-                		memberEmail : memberEmail
-                	},
-                	success:function(resp){
-                		if(resp = true){
-                			$(that).next("span").text("아")
-                		}
-                		else if(resp = false){
-                			$(that).next("span").text("아")
-                		}
-                	}
-                })
-
+              	if(memberEmailTest == true){//정규표현식 검사 통과 시
+              	//중복확인
+                    $.ajax({
+                    	url : "${pageContext.request.contextPath}/checkEmail",
+                    	type:"get",
+                    	data:{
+                    		memberEmail : memberEmail
+                    	},
+                    	success:(resp)=>{
+                    		if(resp == true){//정규표현식 통과 + 중복검사 통과
+                    			$(this).removeClass("is- valid is-invalid");
+                                $(this).addClass("is-valid")
+                    		}
+                    		else {//정규표현식 통과 + 중복검사 실패
+                    			$(this).removeClass("is- valid is-invalid");
+                                $(this).addClass("is-invalid")
+                    		}
+                    	}
+                    })              		
+              	}
+              	else{//정규표현식 실패
+              		$(this).removeClass("is- valid is-invalid");
+                    $(this).addClass("is-invalid")
+                    	
+              	}
                 
             });
-            
-            /*  var that = this;
-            
-            $.ajax({
-            	url : "${pageContext.request.contextPath}/checkEmail",
-            	type:"get",
-            	data:{
-            		//<input type="hidden" name="memberEmail" value="데이터">
-            		memberEmail : 데이터
-            	},
-            	success:function(resp){
-            		if(resp === "Y"){
-            			$(that).next("span").text("이미 사용중인 이메일입니다");
-            			object.memberEmail = false;
-            		}
-            		else if(resp === "N"){
-            			$(that).next("span").text("사용 가능한 이메일입니다");
-            			object.memberEmail = true;
-            		}
-            	}
-            });  */
 
             $("input[name=memberPassword]").blur(function(){
                 var regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$])[a-zA-Z0-9!@#$]{8,16}$/;
-                var memberPassword = regex.test($(this).val());
-
+                var memberPasswordTest = regex.test($(this).val());
+                
                 $(this).removeClass("is-valid is-invalid");
-                $(this).addClass(memberPassword ? "is-valid" : "is-invalid")
+                $(this).addClass(memberPasswordTest ? "is-valid" : "is-invalid")
             });
 
             $("input[name=memberPhone]").blur(function(){
@@ -260,10 +241,35 @@
 
             $("input[name=memberNick").blur(function(){
                 var regex = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{4,16}$/;
-                var memberNick = regex.test($(this).val());
+                var memberNick = $(this).val();
+                var memberNickTest = regex.test($(this).val());
+                
+                if(memberNickTest == true){//정규표현식 통과 시 - > 중복검사
+                	$.ajax({
+                		url : "${pageContext.request.contextPath}/checkNick",
+                		method : "get",
+                		data : {
+                			memberNick : memberNick
+                		},
+                		success:(resp)=>{
+                			if(resp == true){//중복검사 통과 시
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).addClass("is-valid");
+                				$(this).next("span").text("");
+                			}
+                			else{//중복검사 실패 시
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).next("span").text("사용중인 닉네임 입니다");
+                			}
+                		}
+                	});
+                }
+                else{//정규표현식 실패 시
+                	$(this).removeClass("is-valid is-invalid");
+                    $(this).addClass("is-invalid");
+                    $(this).next("span").text("");
+                }
 
-                $(this).removeClass("is-valid is-invalid");
-                $(this).addClass(memberNick ? "is-valid" : "is-invalid");
             });
         });
 

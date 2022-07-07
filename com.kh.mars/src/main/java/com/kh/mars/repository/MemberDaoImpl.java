@@ -129,6 +129,11 @@ public class MemberDaoImpl implements MemberDao{
 		return count > 0;
 	}
 
+	@Override
+	public String checkNick(String memberNick) {
+		return sqlSession.selectOne("member.checkNick",memberNick);
+	}
+
 	
 
 

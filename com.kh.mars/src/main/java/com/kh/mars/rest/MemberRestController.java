@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -102,10 +103,23 @@ public class MemberRestController {
 	public boolean checkEmail(@RequestParam String memberEmail) {
 		String checkEmail = memberDao.checkEmail(memberEmail);
 		
-		if(checkEmail != null) {
+		if(checkEmail == null) {//중복되지 않으면
 			return true;
 		}
 		else{
+			return false;
+		}
+	}
+	
+	@GetMapping("/checkNick")
+	@ResponseBody
+	public boolean checkNick(@RequestParam String memberNick) {
+		String checkNick = memberDao.checkNick(memberNick);
+		
+		if(checkNick == null) {//닉네임 중복이 아닐경우 
+			return true;
+		}
+		else {
 			return false;
 		}
 	}
