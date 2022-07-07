@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class DMController {
 	
 	@GetMapping("")
-	public String channel(
+	public String chat(
 						HttpSession session,
 						Model model
 						) {
@@ -24,11 +24,6 @@ public class DMController {
 		return "dm/chat";
 	}
 	
-	@GetMapping("/chat")
-	public String channel(@RequestParam int no, Model model) {
-		model.addAttribute("channelName", no);
-		return "chat";
-	}
 	 
 	
 }

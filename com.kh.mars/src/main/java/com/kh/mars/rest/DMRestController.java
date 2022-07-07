@@ -59,4 +59,9 @@ public class DMRestController {
 	 * @PostMapping("") public DmRecordDto insert(@RequestBody DmRecordDto
 	 * dmRecordDto) { return dmDao.insertDmRecordDto(dmRecordDto); }
 	 */
+	@GetMapping("/chat/{no}")
+	public String channel(@PathVariable int no, Model model) {
+		model.addAttribute("roomNo", no);
+		return "chat";
+	}
 }

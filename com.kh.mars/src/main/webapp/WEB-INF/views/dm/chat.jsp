@@ -46,9 +46,10 @@
 	}
 	.message-wrapper > .message > .text {
 		padding:1em;
-		font-size: 10px,
-		margin:1px;
+		font-size: 10px;		
 		text-align: right;
+		margin: 2px;
+		
 	}
 	.message-wrapper > .message > .time {
 		padding:0.25em;
@@ -72,6 +73,7 @@ const app = Vue.createApp({
         return {
 			roomList:[],
 			messageList:[],
+			
         };
     },
     //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
@@ -114,11 +116,11 @@ const app = Vue.createApp({
 		
 		socket.onopen = function(e){
 			connectOperation();
-			
+			console.log("${param.roomNo}");
 			//접속하자마자 나의 채널명을 서버로 전송해야한다(입장메세지)
 			var message = {
 				type:1,
-				roomNo:"${roomNo}"
+				roomNo:"${param.roomNo}"
 			};
 			var json = JSON.stringify(message);
 			socket.send(json);
@@ -152,8 +154,9 @@ const app = Vue.createApp({
 			
 			var message = {
 				type:2,
-				roomNo:"${roomNo}",
-				message:text
+				roomNo:"${param.roomNo}",
+				message:text,
+				
 			};
 			var json = JSON.stringify(message);
 			socket.send(json);//전송 명령
