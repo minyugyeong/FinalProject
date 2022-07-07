@@ -114,6 +114,19 @@ public class MemberDaoImpl implements MemberDao{
 	 * 
 	 * return sqlSession.selectList("member.findmemberNick", memberNick); }
 	 */
+	
+	@Override
+	public String checkEmail(String memberEmail) {
+		return sqlSession.selectOne("member.checkEmail",memberEmail);
+		
+	}
+
+	@Override
+	public boolean resetPassword(String memberEmail) {
+		sqlSession.selectOne("member.memberPw",memberEmail);
+		return false;
+	}
+
 
 }
 

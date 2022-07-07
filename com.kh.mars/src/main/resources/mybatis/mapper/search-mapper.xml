@@ -24,8 +24,29 @@
  <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- <mapper namespace="admin">
-	<select id="list" resultType="MemberDto">
-		select member_no, member_email, member_name, member_nick, member_phone, member_grade, member_gender from member order by member_name asc
+ <mapper namespace="search">
+
+	<select id="search" resultType="SearchVO" parameterType="map">
+		select * from (
+		select 
+    		m.member_no "no", m.member_nick "main", m.member_name "sub", 0 "type", f.follow_target "is_follow", mp.attach_no "attachNo" 
+		from member m 
+		    left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
+		    left outer join member_profile mp on mp.member_no = m.member_no where instr(member_nick, #{keyword}) > 0
+		union
+		select 
+		    m.member_no "no", m.member_nick "main", m.member_name "sub", 0 "type", f.follow_target "is_follow", mp.attach_no "attachNo" 
+		from member m 
+		    left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
+		    left outer join member_profile mp on mp.member_no = m.member_no where instr(member_name, #{keyword}) > 0
+		union
+		select 
+			h.hashtag_no "no", h.hashtag_name "main", to_char(count(bh.board_no)) "sub", 1 "type", null "is_follow", null "attachNo" 
+		from hashtag h 
+			inner join board_hashtag bh on h.hashtag_no = bh.hashtag_no  where instr(h.hashtag_name, #{keyword}) > 0 group by h.hashtag_no, h.hashtag_name
+		<![CDATA[
+		) where rownum <= 30
+		]]>
 	</select>
+	
  </mapper> 

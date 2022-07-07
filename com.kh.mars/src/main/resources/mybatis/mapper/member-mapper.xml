@@ -71,7 +71,10 @@
 				member_highschool = #{memberHighschool},
 				member_university = #{memberUniversity},
 				member_gender = #{memberGender},
-				member_interest = #{memberInterest}
+				member_interest = #{memberInterest},
+				member_private = #{memberPrivate},
+				member_name = #{memberName},
+				member_introduce = #{memberIntroduce}
 			where
 				member_no = #{memberNo}
 	</update>
@@ -85,6 +88,11 @@
 	<!-- 닉네임 조회 -->
 	<select id="nick" resultType="String" parameterType="int">
 		select member_nick from member where member_no = #{memberNo}
+	</select>
+	
+	<!-- 이메일 중복확인 -->
+	<select id="checkEmail" resultType="String" parameterType="String">
+		select member_email from member where member_email = #{memberEmail}
 	</select>
 	
 	<!-- 사람 태그 목록 -->
