@@ -30,7 +30,7 @@ public interface MemberDao {
 
 	String checkEmail(String memberEmail);
 
-	boolean resetPassword(String memberEmail);
+	boolean resetPassword(MemberDto memberDto);
 
 	int selectNo(String memberNick);
 

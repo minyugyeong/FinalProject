@@ -105,6 +105,12 @@
 		select member_no from member where member_nick = #{memberNick}
 	</select>
 	
+	<update id="resetPassword" parameterType="MemberDto">
+		update member
+		set member_password = #{memberPassword}
+		where member_email = #{memberEmail}
+	</update>
+	
  </mapper> 
  
  

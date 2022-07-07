@@ -229,15 +229,40 @@ public class MemberController {
 			@RequestParam String memberEmail,
 			@RequestParam String cert,
 			Model model) {
+		CertDto certDto = CertDto.builder()
+				.memberEmail(memberEmail)
+				.certNumber(cert)
+				.build();
+		
+		boolean isOk = certDao.check(certDto);
+		if(isOk) {
+			String newCert = f.format(r.nextInt(1000000));
+			certDao.insert(CertDto.builder()
+								.memberEmail(memberEmail)
+								.certNumber(newCert)
+								.build());
+			model.addAttribute("cert", newCert);
+			
+			return "member/reset";
+		}
+		else {
+			throw new UnauthorizeException();
+		}
+	}
+	
+	@PostMapping("/reset")
+	public String reset(
+			@ModelAttribute MemberDto memberDto,
+			@RequestParam String cert) {
 		boolean isOk = certDao.check(CertDto.builder()
-										.memberEmail(memberEmail)
-										.certNumber(cert)
-										.build());
+									.memberEmail(memberDto.getMemberEmail())
+									.certNumber(cert)
+									.build());
 		
 		if(isOk) {
-			boolean result = memberDao.resetPassword(memberEmail);
+			boolean result = memberDao.resetPassword(memberDto);
 			if(result) {
-				return "redirect:reset_success";
+				return "member/login";
 			}
 		}
 		throw new UnauthorizeException();

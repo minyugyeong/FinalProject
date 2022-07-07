@@ -1,7 +1,6 @@
 package com.kh.mars.repository;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,10 +121,15 @@ public class MemberDaoImpl implements MemberDao{
 	}
 
 	@Override
-	public boolean resetPassword(String memberEmail) {
-		sqlSession.selectOne("member.memberPw",memberEmail);
-		return false;
+	public boolean resetPassword(MemberDto memberDto) {
+		String rawPassword = memberDto.getMemberPassword();
+		String encryptPassword = passwordEncoder.encode(rawPassword);
+		memberDto.setMemberPassword(encryptPassword);
+		int count = sqlSession.update("member.resetPassword", memberDto);
+		return count > 0;
 	}
+
+	
 
 
 }
