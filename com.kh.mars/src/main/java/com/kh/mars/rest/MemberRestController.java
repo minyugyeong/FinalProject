@@ -40,12 +40,9 @@ public class MemberRestController {
 	private FollowDao followDao;
 	
 	@Autowired
-<<<<<<< HEAD
 	private FollowService followService;
 	
 	@Autowired
-=======
->>>>>>> refs/remotes/origin/main
 	private MemberDao memberDao;
 	
 	
@@ -73,7 +70,6 @@ public class MemberRestController {
 		return followDao.followerList(memberNo);
 	}
 	
-<<<<<<< HEAD
 	@PostMapping("/follow")
 	@ResponseBody
 	public int follow(@RequestParam int memberNo,
@@ -122,8 +118,6 @@ public class MemberRestController {
 		
 		return followWho;
 	}
-=======
->>>>>>> refs/remotes/origin/main
 	
 }
 
