@@ -33,7 +33,7 @@
             </div>
     </form>
             <div class="row text-center m-3">
-                <a href="#">비밀번호를 잊으셨나요?</a>
+                <a href="password_reset">비밀번호를 잊으셨나요?</a>
             </div>
         </div>
     

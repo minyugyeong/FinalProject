@@ -57,25 +57,41 @@
 	</select>
 	
 	<select id="followCount" parameterType="int" resultType="int">
-		select count(*)follow_target from follow where follow_who = #{memberNo}
+		select count(*)follow_target from follow where follow_who = #{memberNo} AND follow_confirm = 1
 	</select>
 	
 	<select id="followerCount" parameterType="int" resultType="int">
-		select count(*)follow_who from follow where follow_target = #{memberNo}
+		select count(*)follow_who from follow where follow_target = #{memberNo} AND follow_confirm = 1
 	</select>
 	
 	<select id="followList" resultType="followVO" parameterType="int">
 		select abc.*, mp.attach_no from (
 		    select aa.member_no, aa.member_nick from (
-		    select follow_target from follow where follow_who = #{memberNo})ab inner join member aa on ab.follow_target = aa.member_no
+		    select follow_target from follow where follow_who = #{memberNo} AND follow_confirm = 1)ab inner join member aa on ab.follow_target = aa.member_no
 		)abc left outer join member_profile mp on abc.member_no = mp.member_no
 	</select>
 	
 	<select id="followerList" resultType="followerVO" parameterType="int">
 		SELECT FM.*,mp.attach_no from(
 			SELECT M.member_no, M.member_nick from(
-			SELECT follow_who FROM FOLLOW WHERE follow_target = #{memberNo})F INNER JOIN MEMBER M ON F.follow_who = M.MEMBER_NO
+			SELECT follow_who FROM FOLLOW WHERE follow_target = #{memberNo} AND follow_confirm = 1)F INNER JOIN MEMBER M ON F.follow_who = M.MEMBER_NO
 		)FM LEFT OUTER JOIN member_profile mp ON FM .member_no = mp.member_no
+	</select>
+	
+	<update id="follow" parameterType="Map">
+		insert into follow(follow_who, follow_target, follow_confirm) values(#{followWho}, #{memberNo}, #{followConfirm})
+	</update>
+	
+	<delete id="followDelete" parameterType="Map">
+		delete follow where follow_who = #{followWho} and follow_target = #{memberNo}
+	</delete>
+	
+	<select id="one" resultType="FollowDto" parameterType="map">
+		select * from follow where follow_who = #{followWho} and follow_target = #{memberNo}
+	</select>
+	
+	<select id="isFollower" resultType="FollowDto" parameterType="map">
+		select * from follow where follow_who = #{followWho} and follow_target = #{memberNo} and follow_confirm = #{followConfirm}
 	</select>
 
  </mapper> 

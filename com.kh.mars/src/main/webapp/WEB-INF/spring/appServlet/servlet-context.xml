@@ -55,6 +55,17 @@
 	<mvc:resources location="/resources/image/" mapping="/image/**"></mvc:resources>
 	
 	<!-- 
+		인터셉터 설정
+	 -->
+	<!--  <mvc:interceptors>
+	 	<mvc:interceptor>
+	 		<mvc:mapping path="/member/page*"/>
+	 	
+	 	<bean class="com.kh.mars.interceptor.MemberPageInterceptor"></bean>
+	 	</mvc:interceptor>
+	 </mvc:interceptors> -->
+	
+	<!-- 
 	파일 업로드를 위한 도구 등록
 	-(주의) 등록할 때 ID는 반드시 "multipartResolver"로 해야 한다
 	 -->
