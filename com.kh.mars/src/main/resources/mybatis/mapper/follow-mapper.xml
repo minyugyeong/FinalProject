@@ -93,5 +93,17 @@
 	<select id="isFollower" resultType="FollowDto" parameterType="map">
 		select * from follow where follow_who = #{followWho} and follow_target = #{memberNo} and follow_confirm = #{followConfirm}
 	</select>
+	
+	<select id="blockFollowCheck" resultType="FollowDto" parameterType="Map">
+		select * from follow where follow_who = #{followWho} and follow_target = #{memberNo}
+	</select>
+	
+	<select id="blockFollowingCheck" resultType="FollowDto" parameterType="Map">
+		select * from follow where follow_who = #{memberNo} and follow_target = #{followWho}
+	</select>
+	
+	<delete id="followingDelete" parameterType="Map">
+		delete follow where follow_who = #{memberNo} and follow_target = #{followWho}
+	</delete>
 
  </mapper> 

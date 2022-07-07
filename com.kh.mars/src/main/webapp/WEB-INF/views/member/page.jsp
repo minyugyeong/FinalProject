@@ -16,10 +16,10 @@
             </div>
             <div class="col-8">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-4">
                         <h2>${memberDto.memberNick }</h2>
                     </div>
-                    <div class="col-6">
+                    <div class="col-4">
                     	<c:if test="${isOwner }">
                         <a href="edit"><button class="btn">프로필 편집</button></a>
                         </c:if>
@@ -37,8 +37,12 @@
                         팔로우 신청됨
                         </button>
                 		</c:if>
-                		
                     </div>
+                    <c:if test="${!isOwner }">
+                    <div class="col-4">
+                    	<button class="btn" @click="blockMember(${memberDto.memberNo })">차단하기</button>
+                    </div>
+                    </c:if>
                 </div>
                 <div class="row">
                     <div class="col-4 mt-3">
@@ -193,7 +197,21 @@
                 	})
                 	.then(resp=>{
                 		
+                	});
+                },
+                
+                blockMember(memberNo){
+                	console.log(memberNo);
+                	axios({
+                		url : "${pageContext.request.contextPath}/block",
+                		method : "post",
+                		params :{
+                			memberNo : memberNo
+                		}
                 	})
+                	.then(resp=>{
+                		console.log("차단")
+                	});
                 }
             },
             created(){

@@ -9,14 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kh.mars.entity.BlockDto;
 import com.kh.mars.entity.CertDto;
 import com.kh.mars.entity.MemberDto;
+import com.kh.mars.repository.BlockDao;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
 import com.kh.mars.repository.MemberDao;
@@ -24,8 +24,6 @@ import com.kh.mars.service.EmailService;
 import com.kh.mars.service.FollowService;
 import com.kh.mars.vo.FollowVO;
 import com.kh.mars.vo.FollowerVO;
-
-import oracle.jdbc.proxy.annotation.Post;
 
 @Controller
 @CrossOrigin(origins = "http://127.0.0.1:5500")
@@ -45,6 +43,9 @@ public class MemberRestController {
 	
 	@Autowired
 	private MemberDao memberDao;
+	
+	@Autowired
+	private BlockDao blockDao;
 	
 	
 	@PostMapping("/sendMail")
@@ -131,6 +132,39 @@ public class MemberRestController {
 		followDao.followDelete(followWho, memberNo);
 		
 		return followWho;
+	}
+	
+	@PostMapping("/block")
+	@ResponseBody
+	public int block(@RequestParam int memberNo, HttpSession session) {
+		//팔로우 상태인지 검사
+		int followWho = (Integer)session.getAttribute("login");
+		boolean isFollow = followDao.blockFollowCheck(followWho, memberNo);
+		
+		//팔로우 상태면 삭제
+		if(isFollow == true) {
+			followDao.followDelete(followWho, memberNo);
+		}
+		
+		//팔로잉 상태인지 검사
+		boolean isFollowing = followDao.blockFollowingCheck(followWho, memberNo);
+		
+		//팔로잉 상태면 삭제
+		if(isFollowing == true) {
+			followDao.followingDelete(followWho, memberNo);
+		}
+		
+		BlockDto blockDto = blockDao.selectOne(followWho,memberNo);
+		
+		//회원 차단
+		if(blockDto == null) {
+			blockDao.blockMember(followWho , memberNo);
+		}
+		else {
+			blockDao.unBlockMember(followWho, memberNo);
+		}
+		
+		return 1;
 	}
 	
 }
