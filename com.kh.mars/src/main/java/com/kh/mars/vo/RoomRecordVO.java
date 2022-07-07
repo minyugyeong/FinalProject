@@ -1,4 +1,4 @@
-package com.kh.mars.entity;
+package com.kh.mars.vo;
 
 import java.sql.Date;
 
@@ -8,10 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
-public class RoomEnter {
-	private int memberNo;
+public class RoomRecordVO {
+	private int dmNo;
+	private int who;
+	private int target;
+	private Date dmRecordTime;
+	private int dmRecordCheck;
 	private int roomNo;
-	private Date roomEnterTime;
-	private int roomEnterIs;
-	
+	private String dmContent;
 }
