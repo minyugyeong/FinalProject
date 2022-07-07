@@ -9,8 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.mars.entity.BoardDto;
+import com.kh.mars.vo.BoardDetailVO;
 import com.kh.mars.vo.BoardListVO;
+import com.kh.mars.vo.BoardAttachVO;
 import com.kh.mars.vo.BoardMainListVO;
+import com.kh.mars.vo.BoardReplyVO;
+import com.kh.mars.vo.BoardMemberVO;
 
 @Repository
 public class BoardDaoImpl implements BoardDao{
@@ -21,7 +25,7 @@ public class BoardDaoImpl implements BoardDao{
 
 	@Override
 	public BoardDto insert(BoardDto boardDto) {
-		int boardNo = sqlSession.selectOne("board.sequence", boardDto);
+		int boardNo = sqlSession.selectOne("board.sequence");
 		boardDto.setBoardNo(boardNo);
 		sqlSession.insert("board.insert", boardDto);
 		return sqlSession.selectOne("board.selectOne", boardNo);
@@ -45,6 +49,41 @@ public class BoardDaoImpl implements BoardDao{
 	@Override
 	public int countBoard(int memberNo) {
 		return sqlSession.selectOne("board.boardCount", memberNo);
+	}
+
+
+	@Override
+	public List<BoardReplyVO> detailReply(int memberNo, int boardNo) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("memberNo", memberNo);
+		param.put("boardNo", boardNo);
+		return sqlSession.selectList("board.detailReply", param);
+	}
+	public BoardDto selectOne(int boardNo) {
+		
+		return sqlSession.selectOne("board.selectOne", boardNo);
+	}
+
+
+	@Override
+	public void edit(BoardDto boardDto) {
+
+		sqlSession.update("board.edit", boardDto);
+		
+	}
+
+
+	@Override
+	public BoardMemberVO selectMember(int boardNo) {
+		
+		return sqlSession.selectOne("board.selectBoardMember", boardNo);
+	}
+
+
+	@Override
+	public List<BoardAttachVO> selectAttach(int boardNo) {
+		
+		return sqlSession.selectList("board.selectAttach", boardNo);
 	}
 	
 	

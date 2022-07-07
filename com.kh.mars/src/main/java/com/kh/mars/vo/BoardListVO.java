@@ -16,12 +16,11 @@ public class BoardListVO {
 	private Date boardDate;
 	private String boardContent;
 	private int boardIsReply;
-	private int followTarget;
+	private int likecount;
 	private String memberNick;
-	private int replyNo;
-	private String replyContent;
-	private int replyMemberNo;
-	private String replyNick;
 	private int writerProfile;
+	private int replycount;
 	private int isLike;
+	
+	
 }

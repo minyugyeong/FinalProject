@@ -168,23 +168,67 @@ $(function(){
 		
 
 	
-	$(".form-submit").submit(function(){
+	$(".form-submit").submit(function(e){
+	
+		if($(".content").val() == ""){
+			alert("문구를 입력하세요.");
+			e.preventDefault();
+		}
 		
 		if($("#upload2").val() == ""){
 			$("#upload2").attr("disabled", true);
 		}
-		else {
+		else{
 			$("#upload2").attr("disabled", false);
 		}
 		
-		if($("#hashtag").val() == ""){
-			$("#hashtag").attr("disabled", true);
-		}
-		else{
+		
+		if($(".content").val() == "" || $("#hashtag").val() != ""){
 			$("#hashtag").attr("disabled", false);
 		}
+		else{
+			$("#hashtag").attr("disabled", true);
+		}
+		
+		if($(".content").val() == "" || $("#memberTag").val() != ""){
+			$("#memberTag").attr("disabled", false);
+		}
+		else{
+			$("#memberTag").attr("disabled", true);
+		}
+		
+		
 		
 	});
+	
+		//멀티 페이지
+		let index = 0;
+		move(index);
+		
+		$(".btn-next").click(function(){
+			
+			if($("#upload").val() == "" && $("#upload2").val() == ""){
+					alert("사진을 선택하세요.");
+					$(".btn-next").attr("disabled", false);
+			}
+			else{
+				index++;
+				move(index);
+			}	
+			
+		});
+		
+		$(".btn-prev").click(function(){
+			index--;
+			move(index);
+		});
+		
+		function move(index){
+			$(".page").hide();
+			$(".page").eq(index).show();
+		}
+		
+		
 	
 });
 
@@ -204,6 +248,7 @@ $(function(){
 		<div class="row mt-3"></div>
 		
 		<!-- 1. 사진 첨부 영역 -->
+		<div class="page">
 		<div class="row w-50 mt-5" style="float: none; margin: 0 auto;">
 		  <div class="col">
 		
@@ -217,7 +262,7 @@ $(function(){
 		            <h4 class="text-primary text-center" style="margin-top: 1%;">새 게시물 만들기</h4>
 		          </div>
 		          <div class="col-md-2">
-		            <button type="button" class="btn btn-secondary" style="float:right;">다음</button>
+		            <button type="button" class="btn btn-secondary btn-next" style="float:right;">다음</button>
 		          </div>
 		        </div>
 		      </div>
@@ -263,9 +308,11 @@ $(function(){
 		
 		  </div>
 		</div>
+		</div>
 		
 		
 		<!-- 2. 게시물 등록 영역 -->
+		<div class="page">
 		<div v-show="files.length > 0" class="row w-50 mt-5" style="float: none; margin: 0 auto;">
 		  <div class="col">
 		
@@ -273,7 +320,7 @@ $(function(){
 		      <div class="card-header">
 		        <div class="row">
 		          <div class="col-md-2">
-		            <button type="button" class="btn btn-secondary" style="float:left;">이전</button>
+		            <button type="button" class="btn btn-secondary btn-prev" style="float:left;">이전</button>
 		          </div>
 		          <div class="col-md-8">
 		            <h4 class="text-primary text-center" style="margin-top: 1%;">새 게시물 만들기</h4>
@@ -287,7 +334,7 @@ $(function(){
 		      <div class="card-body text-center">
 		      
 		      	<div class="row">
-		      		<div class="col-7">
+		      		<div class="col-md-7">
 		      			
 		      			<div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false">
 								  <div class="carousel-indicators">
@@ -312,12 +359,12 @@ $(function(){
 		      			
 		      		</div>
 		      		
-		      		<div class="col-5">
+		      		<div class="col-md-5">
 					    	<div class="row">
-					    		<div class="col-2 right">
+					    		<div class="col-md-2 right">
 						    		<img src="${pageContext.request.contextPath}/file/download/${attachNo}" class="img img-circle">		    		
 					    		</div>
-					    		<div class="col-10 left bottom">
+					    		<div class="col-md-10 left bottom">
 					    			<span class="nickname">${memberNick}</span>
 					    		</div>
 					    	</div>
@@ -339,16 +386,26 @@ $(function(){
 					    		<input type="text" name="hashtagName" class="form-control" placeholder="#해시태그" id="hashtag" autocomplete="off">
 					    	</div>
 					    	
-					    	<!-- <div class="row mt-4">
-					    		<input type="text" name="hashtagName" class="form-control" placeholder="@사람태그" id="hashtag" autocomplete="off">
+					    	<div class="row mt-4">
+					    		<input type="text" name="memberNick" class="form-control" placeholder="@사람태그" id="memberTag" autocomplete="off">
+					    	</div>
+					    	
+					    	<!-- <div class="row">
+					    		<div class="col-md-8 offset-md-2">
+					    			<ul class="list-group">
+					    				<li v-for="(nick, index) in nickList" v-bind:key="index" class="list-group-item">
+					    					<div v-on:click="selectNick(index);">{{nick.memberNick}}</div>
+					    				</li>
+					    			</ul>
+					    		</div>
 					    	</div> -->
 					    	
 					    	<div class="row mt-4 form-check form-switch" style="display: flex;">
 					    		
-										<div class="col-9 left" style="margin-left: 0px;">
+										<div class="col-md-9 left" style="margin-left: 0px;">
 											<label class="fs-5" for="replyCheck">댓글 기능 해제</label>
 										</div>
-										<div class="col-3">
+										<div class="col-md-3">
 											<input type="checkbox" name="boardIsReply" value="1" class="form-check-input fs-5" style="margin-left: 0;" id="replyCheck">
 										</div>
 									
@@ -368,6 +425,7 @@ $(function(){
 		    </div>
 		
 		  </div>
+		 </div>
 		</div>
 		
 		<div class="row mb-5"></div>
@@ -388,7 +446,13 @@ $(function(){
       return {
     	  files : [],
     	  filesPreview: [],
-    	  uploadImageIndex: 0
+    	  uploadImageIndex: 0,
+
+    	  
+    	  /* //사람태그
+    	  keyword: "",
+    	  nickList: [],
+    	  click: false, */
         
       }
     },
@@ -434,8 +498,37 @@ $(function(){
     		const name = e.target.getAttribute('name');
     		this.files = this.files.filter(data => data.number != Number(name));
     	},
+    	
      
+	    /* selectNick(index){
+	    	this.click = true;
+	    	this.keyword = this.nickList[index].memberNick;
+	    	this.nickList = [];
+	    }, */
+	    
     },
+    
+    /* watch:{
+    	
+    	keyword:_.throttle(function(){
+    		if(!this.keyword) return;
+    		if(this.click){
+    			this.click = false;
+    			return;
+    		}
+    		
+    		axios({
+    			url: "http://localhost:8080/mars/rest/member/memberNick/"+this.keyword,
+    			method: "get"
+    		})
+    		.then(resp=>{
+    			console.log(resp.data);
+    			this.nickList = resp.data;
+    		})
+    		
+    	},250),
+    	
+    }, */
     
 
   });

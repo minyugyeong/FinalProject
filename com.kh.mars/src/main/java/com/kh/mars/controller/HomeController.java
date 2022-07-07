@@ -23,6 +23,7 @@ public class HomeController {
 						) {
 		
 		
+		session.setAttribute("login", 1);
 		int memberNo = (Integer)session.getAttribute("login");
 		MemberDto memberDto = memberDao.myInfo(memberNo);
 		int attachNo = memberDao.memberProfile(memberNo);

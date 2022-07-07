@@ -1,6 +1,7 @@
 package com.kh.mars.repository;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +32,8 @@ public interface MemberDao {
 
 	boolean resetPassword(String memberEmail);
 
-	
+	int selectNo(String memberNick);
+
+	/* List<MemberDto> findMemberNick(String memberNick); */
 
 }

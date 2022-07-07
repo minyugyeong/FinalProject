@@ -14,4 +14,5 @@ public class ReplyDto {
 	private int superNo;
 	private Date replyDate;
 	private int replyCheck;
+	private int replyMemberNo;
 }

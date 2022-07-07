@@ -35,7 +35,7 @@ public class MemberProfileDaoImpl implements MemberProfileDao{
 	@Override
 	public Integer selectAttachNo(Integer memberNo) {
 		
-		return sqlSession.selectOne("member-profile.selectAttachNo", memberNo);
+		return sqlSession.selectOne("memberProfile.one", memberNo);
 	}
 
 }
