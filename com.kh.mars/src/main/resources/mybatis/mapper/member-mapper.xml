@@ -97,7 +97,84 @@
 		select member_no from member where member_nick = #{memberNick}
 	</select>
 	
+	<!-- 관리자 회원 목록 검색 & 조회 -->
+	<select id="searchList" resultType="MemberDto" parameterType="Map">
+		
+		<bind name="isEmailExist" value="memberEmail != null and !memberEmail.equals('')"></bind>
+		<bind name="isGenderExist" value="memberGender != null and !memberGender.equals('')"></bind>
+		<bind name="isNickExist" value="memberNick != null and !memberNick.equals('')"></bind>
+		<bind name="isPhoneExist" value="memberPhone != null and !memberPhone.equals('')"></bind>
+		<bind name="isGradeExist" value="memberGrade != null and !memberGrade.equals('')"></bind>
+		<bind name="isInterestExist" value="memberInterest != null and !memberInterest.equals('')"></bind>
+		<bind name="isNameExist" value="memberName != null and !memberName.equals('')"></bind>
+		
+		select * from member
+		
+		<where>
+			
+			<if test="isEmailExist">
+				<![CDATA[and instr(member_email, #{memberEmail}) > 0]]>
+			</if>
+			
+			<choose>
+				<when test="isGenderExist and memberGender == 0">
+					and member_gender = 0
+				</when>
+				<when test="isGenderExist and memberGender == 1">
+					and member_gender = 1
+				</when>
+			</choose>
+			
+			<if test="isNickExist">
+				<![CDATA[and instr(member_nick, #{memberNick}) > 0]]>
+			</if>
+			<if test="isPhoneExist">
+				<![CDATA[and instr(member_phone, #{memberPhone}) > 0]]>
+			</if>
+			<if test="isNameExist">
+				<![CDATA[and instr(member_name, #{memberName}) > 0]]>
+			</if>
+			
+			<if test="isGradeExist">
+				and member_grade in
+				<foreach collection="memberGrade" item="grade" open="(" close=")" separator=",">
+					#{grade}
+				</foreach> 
+			</if>
+			
+			<if test="isInterestExist">
+				and member_interest in
+				<foreach collection="memberInterest" item="interest" open="(" close=")" separator=",">
+					#{interest}
+				</foreach>
+			</if>
+			
+		</where>
+		
+		order by member_no asc
+		
+	</select>
+	
  </mapper> 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  

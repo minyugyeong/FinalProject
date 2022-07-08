@@ -30,7 +30,13 @@ public interface MemberDao {
 
 	int selectNo(String memberNick);
 
-	/* List<MemberDto> findMemberNick(String memberNick); */
+	List<MemberDto> selectList(MemberDto memberDto);
+
+//	List<MemberDto> adminSelect(String type, String keyword, int p, int s);
+//
+//	int count(String type, String keyword);
+
+	
 
 
 }
