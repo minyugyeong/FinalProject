@@ -1,6 +1,12 @@
 package com.kh.mars.repository;
 
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+>>>>>>> refs/remotes/origin/main
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +114,35 @@ public class MemberDaoImpl implements MemberDao{
 		return sqlSession.selectOne("member.selectNo", memberNick);
 	}
 
+	@Override
+	public List<MemberDto> selectList(MemberDto memberDto) {
+		List<MemberDto> list = sqlSession.selectList("member.searchList", memberDto);
+		return list;
+	}
+
+//	@Override
+//	public List<MemberDto> adminSelect(String type, String keyword, int p, int s) {
+//		Map<String, Object> param = new HashMap<>();
+//		param.put("type", type);
+//		param.put("keyword", keyword);
+//		
+//		int end = p * s;
+//		int begin = end - (s-1);
+//		param.put("begin", begin);
+//		param.put("end", end);
+//		
+//		return sqlSession.selectList("member.adminSelect", param);
+//	}
+//
+//	@Override
+//	public int count(String type, String keyword) {
+//		Map<String, Object> param = new HashMap<>();
+//		param.put("type", "keyword");
+//		param.put("keyword", keyword);
+//		
+//		return sqlSession.selectOne("member.count", param);
+//	}
+	
 	/*
 	 * @Override public List<MemberDto> findMemberNick(String memberNick) {
 	 * 

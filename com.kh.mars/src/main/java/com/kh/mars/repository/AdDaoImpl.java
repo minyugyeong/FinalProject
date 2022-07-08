@@ -19,6 +19,35 @@ public class AdDaoImpl implements AdDao{
 		
 		return sqlSession.selectList("ad.selectList");
 	}
+
+	@Override
+	public AdDto insert(AdDto adDto) {
+		int adNo = sqlSession.selectOne("ad.sequence");
+		adDto.setAdNo(adNo);
+		sqlSession.insert("ad.insert", adDto);
+		
+		return adDto;
+	}
+
+	@Override
+	public AdDto update(AdDto adDto) {
+		sqlSession.update("ad.edit", adDto);
+		
+		return sqlSession.selectOne("ad.one", adDto.getAdNo());
+	}
+
+	@Override
+	public void delete(int adNo) {
+		sqlSession.delete("ad.delete", adNo);
+		
+	}
+
+	@Override
+	public List<AdDto> selectListOrderbyNo() {
+		
+		return sqlSession.selectList("ad.selectListOrderbyNo");
+	}
+	
 	
 	
 

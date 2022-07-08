@@ -144,9 +144,23 @@ public class MemberRestController {
 		//팔로우 상태인지 검사
 		int followWho = (Integer)session.getAttribute("login");
 
-		blockService.block(memberNo, followWho);
 		
-		return 1;
+		//차단 상태 검사
+		BlockDto blockDto = blockDao.selectOne(followWho, memberNo);
+		
+		//차단
+		if(blockDto == null) {//차단
+			blockService.block(memberNo, followWho);
+			return 1;
+		}
+		else {//차단 취소
+			blockService.block(memberNo, followWho);
+			return 0;
+		}
+		
+		
+		
+		
 	}
 	
 }

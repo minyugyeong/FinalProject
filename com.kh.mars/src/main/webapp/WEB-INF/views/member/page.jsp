@@ -40,7 +40,9 @@
                     </div>
                     <c:if test="${!isOwner }">
                     <div class="col-4">
-                    	<button class="btn" @click="blockMember(${memberDto.memberNo })">차단하기</button>
+                    	<button class="btn" v-if="block == 1" @click="blockMember(${memberDto.memberNo })">차단하기</button>
+                    	
+                    	<button class="btn" v-if="block == 0" @click="blockMember(${memberDto.memberNo })">차단해제</button>
                     </div>
                     </c:if>
                 </div>
@@ -137,6 +139,7 @@
                     follow:[],
                     follower:[],
                     confirm:${followDto.followConfirm},
+                    block: [],
                 };
             },
             //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
@@ -201,7 +204,6 @@
                 },
                 
                 blockMember(memberNo){
-                	console.log(memberNo);
                 	axios({
                 		url : "${pageContext.request.contextPath}/block",
                 		method : "post",
@@ -210,7 +212,21 @@
                 		}
                 	})
                 	.then(resp=>{
-                		console.log("차단")
+                		console.log(resp.data)
+                		this.block=resp.data;
+                		if(resp.data == 1){//차단
+                			if(this.block == null){
+                				console.log("차단해제");
+                				this.block == 0;
+                				
+                			}
+                		}
+                		else{//차단취소
+                			if(this.block != null){
+                				console.log("차단");
+                				this.block == 1;
+                			}
+                		}
                 	});
                 }
             },

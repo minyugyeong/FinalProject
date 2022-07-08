@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.mars.entity.AdDto;
 import com.kh.mars.entity.BoardAdDto;
 import com.kh.mars.vo.BoardAdAttachVO;
 import com.kh.mars.vo.BoardAdMemberVO;
@@ -20,8 +21,13 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	public BoardAdDto insert(BoardAdDto boardAdDto) {
 		int boardAdNo = sqlSession.selectOne("board_ad.sequence");
 		boardAdDto.setBoardAdNo(boardAdNo);
-		boardAdDto.setBoardAdCount(0);
+		
+		AdDto adDto = sqlSession.selectOne("ad.one", boardAdDto.getAdNo());
+		boardAdDto.setBoardAdCount(adDto.getAdCount());
+		boardAdDto.setBoardAdPrice(adDto.getAdPrice());
+		
 		sqlSession.insert("board_ad.insert", boardAdDto);
+		
 		return sqlSession.selectOne("board_ad.selectOne", boardAdNo);
 	}
 
@@ -45,6 +51,10 @@ public class BoardAdDaoImpl implements BoardAdDao{
 
 	@Override
 	public void edit(BoardAdDto boardAdDto) {
+		
+		AdDto adDto = sqlSession.selectOne("ad.one", boardAdDto.getAdNo());
+		boardAdDto.setBoardAdCount(adDto.getAdCount());
+		boardAdDto.setBoardAdPrice(adDto.getAdPrice());
 		
 		sqlSession.update("board_ad.edit", boardAdDto);
 		

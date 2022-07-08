@@ -6,14 +6,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kh.mars.repository.DmDao;
 import com.kh.mars.vo.MessageVO;
 
 //여러 방을 관리하는 관리자
 public class RoomManager {
+	@Autowired
+	private DmDao dmDao;
 	//방 목록
 	private Map<Integer, Room> rooms = Collections.synchronizedMap(new HashMap<>());
 	//대기실
@@ -65,7 +69,7 @@ public class RoomManager {
 	public boolean notExist(int no) {
 		return rooms.containsKey(no) == false;
 	}
-	public void broadcastRoom(WebSocketSession session, int no, String message) throws IOException {
+	public void broadcastRoom(WebSocketSession session, int roomNo, String message) throws IOException {
 		User user = new User(session);
 		if(!user.isMember()) return;//비회원 차단
 		
@@ -75,9 +79,9 @@ public class RoomManager {
 																.content(message)
 																.time(new Date())
 															.build();
-		
+		//dmDao.insertDmRecordDto(messageVO);
 		String json = mapper.writeValueAsString(messageVO);
 		TextMessage textMessage = new TextMessage(json);
-		getRoom(no).broadcast(textMessage);
+		getRoom(roomNo).broadcast(textMessage);
 	}
 }

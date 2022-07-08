@@ -19,4 +19,5 @@ public class BoardAdDto {
 	private int boardAdCount;
 	private String boardAdCheck;
 	private int boardAdIsReply;
+	private int boardAdPrice;
 }
