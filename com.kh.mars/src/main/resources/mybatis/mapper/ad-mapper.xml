@@ -26,10 +26,40 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  <mapper namespace="ad">
  
- 		<!-- 광고 등록할 때, 광고 목록 출력 -->
+ 	<!-- 광고 게시글 등록할 때, 광고 목록 출력 -->
  	<select id="selectList" resultType="AdDto">
  		select * from ad order by ad_count
  	</select>
+ 	
+ 	<select id="selectListOrderbyNo" resultType="AdDto">
+ 		select * from ad order by ad_no
+ 	</select>
+ 	
+ 	<!-- 등록 -->
+ 	<select id="sequence" resultType="int">
+ 		select ad_seq.nextval from dual
+ 	</select>
+ 	
+ 	<insert id="insert" parameterType="AdDto">
+ 		insert into ad(ad_no, ad_count, ad_price) values (#{adNo}, #{adCount}, #{adPrice})
+ 	</insert>
+ 	
+ 	<!-- 수정 -->
+ 	<update id="edit" parameterType="int">
+ 		update ad set ad_count=#{adCount}, ad_price = #{adPrice} where ad_no = #{adNo}
+ 	</update>
+ 	
+ 	<!-- 삭제 -->
+ 	<delete id="delete" parameterType="int">
+ 		delete ad where ad_no=#{adNo}
+ 	</delete>
+ 	
+ 	<!-- 상세 -->
+ 	<select id="one" resultType="AdDto" parameterType="int">
+ 		select * from ad where ad_no=#{adNo}
+ 	</select>
+ 	
+
 
  </mapper> 
  
