@@ -19,4 +19,5 @@ public class MemberDto {
 	private String memberHighschool;
 	private String memberUniversity;
 	private String memberName;
+	private String memberIntroduce;
 }

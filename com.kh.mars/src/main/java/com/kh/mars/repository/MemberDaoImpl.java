@@ -139,6 +139,24 @@ public class MemberDaoImpl implements MemberDao{
 //		
 //		return sqlSession.selectOne("member.count", param);
 //	}
+	
+	/*
+	 * @Override public List<MemberDto> findMemberNick(String memberNick) {
+	 * 
+	 * return sqlSession.selectList("member.findmemberNick", memberNick); }
+	 */
+	
+	@Override
+	public String checkEmail(String memberEmail) {
+		return sqlSession.selectOne("member.checkEmail",memberEmail);
+		
+	}
+
+	@Override
+	public boolean resetPassword(String memberEmail) {
+		sqlSession.selectOne("member.memberPw",memberEmail);
+		return false;
+	}
 
 
 }

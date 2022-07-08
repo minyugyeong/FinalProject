@@ -8,11 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
-public class ReplyDto {
-	private int replyNo;
-	private String replyContent;
-	private int superNo;
-	private Date replyDate;
-	private int replyCheck;
-	private int replyMemberNo;
+public class RoomEnterDto {
+	private int memberNo;
+	private int roomNo;
+	private Date roomEnterTime;
+	private int roomEnterIs;
+	
 }

@@ -28,6 +28,10 @@ public interface MemberDao {
 
 	void proFile(MultipartFile memberProfile, int memberNo) throws IllegalStateException, IOException;
 
+	String checkEmail(String memberEmail);
+
+	boolean resetPassword(String memberEmail);
+
 	int selectNo(String memberNick);
 
 	List<MemberDto> selectList(MemberDto memberDto);
@@ -37,6 +41,5 @@ public interface MemberDao {
 //	int count(String type, String keyword);
 
 	
-
 
 }

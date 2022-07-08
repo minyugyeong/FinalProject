@@ -36,7 +36,7 @@ public class User {
 
 	//추가기능 
 	public boolean isMember() {
-		return this.memberNo >0;
+		return this.memberNo > 0;
 	}
 	
 	public void send(TextMessage message) throws IOException {
