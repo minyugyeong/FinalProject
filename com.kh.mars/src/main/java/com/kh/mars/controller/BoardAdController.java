@@ -65,8 +65,6 @@ public class BoardAdController {
 	@GetMapping("/insert")
 	public String insert(HttpSession session, Model model) {
 
-		session.setAttribute("login", 43);
-
 		Integer memberNo = (Integer) session.getAttribute("login");
 
 		String memberNick = memberDao.nick(memberNo);
@@ -123,7 +121,7 @@ public class BoardAdController {
 
 		attr.addAttribute("memberNo", memberNo);
 
-		return "redirect:/member/detail";
+		return "redirect:/member/page";
 	}
 	
 	
@@ -205,7 +203,7 @@ public class BoardAdController {
 		Integer memberNo = (Integer)session.getAttribute("login");
 		attr.addAttribute("memberNo", memberNo);
 		
-		return "redirect:/member/detail";
+		return "redirect:/member/page";
 	}
 	
 	

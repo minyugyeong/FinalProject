@@ -32,8 +32,8 @@
 	</select>
 	
 	<insert id="insert" parameterType="BoardAdDto">
-		insert into board_ad(board_ad_no, member_no, ad_no, board_ad_date, board_ad_content, board_ad_link, board_ad_count, board_ad_is_reply) 
-		values (#{boardAdNo}, #{memberNo}, #{adNo}, sysdate, #{boardAdContent}, #{boardAdLink}, #{boardAdCount}, #{boardAdIsReply})
+		insert into board_ad(board_ad_no, member_no, ad_no, board_ad_date, board_ad_content, board_ad_link, board_ad_count, board_ad_is_reply, board_ad_price) 
+		values (#{boardAdNo}, #{memberNo}, #{adNo}, sysdate, #{boardAdContent}, #{boardAdLink}, #{boardAdCount}, #{boardAdIsReply}, #{boardAdPrice})
 	</insert>
 	
 	<select id="selectOne" resultType="BoardAdDto" parameterType="int">
@@ -58,8 +58,10 @@
 	<update id="edit" parameterType="BoardAdDto">
 		update board_ad set 
 		ad_no=#{adNo}, 
-		board_ad_content=#{boardAdContent}, 
-		board_ad_link=#{boardAdLink}, 
+		board_ad_content=#{boardAdContent},
+		board_ad_count=#{boardAdCount}, 
+		board_ad_link=#{boardAdLink},
+		board_ad_price=#{boardAdPrice},
 		board_ad_is_reply=#{boardAdIsReply} where board_ad_no=#{boardAdNo}
 	</update>
 	

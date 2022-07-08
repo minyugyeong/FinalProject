@@ -135,6 +135,16 @@
                                     <i class="fa-solid fa-user-astronaut fa-lg"></i>
                                 </a>
                             </li>
+                            <li class="nav-item dropdown">
+													    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+													    	 <i class="fa-solid fa-screwdriver-wrench"></i>
+													    </a>
+													    <div class="dropdown-menu" style="">
+													      <a class="dropdown-item" href="${pageContext.request.contextPath}/member/list/">회원 관리</a>
+													      <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/ad">광고 관리</a>
+													      <a class="dropdown-item" href="#">통계</a>
+													    </div>
+													  </li>
                             
                         </ul>
             </div>
