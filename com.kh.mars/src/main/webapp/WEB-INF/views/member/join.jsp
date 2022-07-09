@@ -72,15 +72,17 @@
 	              <label class="form-check-label" for="inlineRadio2">여</label>
 	            </div>
     
-       <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberHighschool" name="memberHighschool" >
-                    <label for="floatingNumber">고등학교</label>
-                </div>
+       			<div class="row form-floating mb-3">
+			        <input type="text" class="form-control" id="high" placeholder="memberHighschool" name="memberHighschool" >
+			        <label for="floatingNumber">고등학교</label>
+			        <ul id="highList"></ul>
+			    </div>
 
                 <div class="row form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingNumber" placeholder="memberUniversity" name="memberUniversity" >
-                    <label for="floatingNumber">대학교</label>
-                </div>
+			        <input type="text" class="form-control" id="univ" placeholder="memberUniversity" name="memberUniversity" >
+			        <label for="univ">대학교</label>
+			        <ul id="univList"></ul>
+			    </div>
 
                 <div class="row form-floating mb-3">
                     <div class="mb-2">
@@ -271,6 +273,103 @@
                 }
 
             });
+            
+            //대학교 검색
+				$("#univ").on("input",function(){
+                
+                
+                var word = $("#univ").val();
+                var encodeWord = encodeURI(word);
+                
+                $.ajax({
+                    type : 'GET',
+                    dataType : 'json',
+                    url : "http://www.career.go.kr/cnet/openapi/getOpenApi?"
+                    +"apiKey=3f143116ee8d4868928505ddaf0a16b7"
+                    +"&svcType=api&svcCode=SCHOOL&contentType=json&gubun=univ_list"
+                    +"&searchSchulNm="+encodeWord,
+                    
+                    success : function(data) {
+                        
+                        $("#univList").empty();
+                        var checkWord = $("#univ").val(); //검색어 입력값
+                        
+                        if(checkWord.length > 0 && data.dataSearch.content.length > 0){
+                            
+                            for (i = 0; i < data.dataSearch.content.length; i++) {
+                                
+                                $("#univList")
+                                .append(
+                                    "<li class='univList' value='"
+                                    + data.dataSearch.content[i].schoolName
+                                    + data.dataSearch.content[i].campusName
+                                    + "' data-input='"
+                                    + data.dataSearch.content[i].schoolName
+                                    + data.dataSearch.content[i].campusName
+                                    + "'>"
+                                    + "<a class='univ' href='#'>"
+                                        + data.dataSearch.content[i].schoolName
+                                        + "("
+                                        + data.dataSearch.content[i].campusName
+                                        + ")"
+                                        + "</a>"
+                                        + "</li>");
+
+                                    }
+                                    $(".univ").click(function(e){
+                                        e.preventDefault();
+                                        $('#univ').val($(this).text());
+                                        $('#univList').children().remove();
+                                    });
+                                }
+                            }
+                        });
+                    });
+            //고등학교 검색
+				$("#high").on("input",function(){
+				    
+				    var word = $("#high").val();
+				    var encodeWord = encodeURI(word);
+				    
+				    $.ajax({
+				        type : 'GET',
+				        dataType : 'json',
+				        url : "http://www.career.go.kr/cnet/openapi/getOpenApi?"
+				        +"apiKey=3f143116ee8d4868928505ddaf0a16b7"
+				        +"&svcType=api&svcCode=SCHOOL&contentType=json&gubun=high_list"
+				        +"&searchSchulNm="+encodeWord,
+				        
+				        success : function(data) {
+				            
+				            $("#highList").empty();
+				            var checkWord = $("#high").val(); //검색어 입력값
+				            
+				            if(checkWord.length > 0 && data.dataSearch.content.length > 0){
+				                
+				                for (i = 0; i < data.dataSearch.content.length; i++) {
+				                    
+				                    $("#highList")
+				                    .append(
+				                        "<li class='highList' value='"
+				                        + data.dataSearch.content[i].schoolName
+				                        + "' data-input='"
+				                        + data.dataSearch.content[i].schoolName
+				                        + "'>"
+				                        + "<a class='high' href='#'>"
+				                            + data.dataSearch.content[i].schoolName
+				                            + "</a>"
+				                            + "</li>");
+				
+				                        }
+				                        $(".high").click(function(e){
+				                            e.preventDefault();
+				                            $('#high').val($(this).text());
+				                            $('#highList').children().remove();
+				                        });
+				                    }
+				                }
+				            });
+				        });
         });
 
 
