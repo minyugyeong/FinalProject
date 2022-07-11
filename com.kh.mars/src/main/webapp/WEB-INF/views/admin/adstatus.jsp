@@ -103,7 +103,7 @@
         });
     </script>
     
-    <div class="container">
+    <div class="container" style="width: 1000px;">
         <div class="row text-center">
             <h1>광고 유형 현황</h1>
         </div>

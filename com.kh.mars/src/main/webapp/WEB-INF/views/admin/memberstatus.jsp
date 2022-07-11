@@ -208,9 +208,9 @@
 	    });
 </script>
 
-	<div class="container">
+	<div class="container" style="width: 1000px;">
         <div class="row">
-            <canvas id="myChart" width="300" height="300"></canvas>
+            <canvas id="myChart" width="400" height="400"></canvas>
         </div>
         
         <div class="row">
