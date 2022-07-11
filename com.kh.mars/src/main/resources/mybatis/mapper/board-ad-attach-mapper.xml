@@ -35,5 +35,18 @@
 			insert into board_ad_attach(board_ad_attach_no, board_ad_no, attach_no) 
 			values (#{boardAdAttachNo}, #{boardAdNo}, #{attachNo})
 		</insert>
+		
+		<!-- 삭제 -->
+		<delete id="delete" parameterType="int">
+			delete board_ad_attach where board_ad_no = #{boardAdNo}
+		</delete>
+	
+		<select id="selectList" resultType="BoardAdAttachDto" parameterType="int">
+			select * from board_ad_attach where board_ad_no = #{boardAdNo}
+		</select>
 	
  </mapper> 
+ 
+ 
+ 
+ 

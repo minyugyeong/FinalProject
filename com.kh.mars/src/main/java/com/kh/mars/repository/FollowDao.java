@@ -28,4 +28,12 @@ public interface FollowDao {
 
 	boolean isFollower(int followWho, int memberNo);
 
+	boolean blockFollowCheck(int followWho, int memberNo);
+
+	boolean blockFollowingCheck(int followWho, int memberNo);
+
+	int followingDelete(int followWho, int memberNo);
+
+	void open(int memberNo);
+
 }

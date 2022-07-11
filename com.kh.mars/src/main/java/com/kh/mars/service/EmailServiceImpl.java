@@ -64,7 +64,7 @@ public class EmailServiceImpl implements EmailService{
 		String returnUri = ServletUriComponentsBuilder
 												.fromCurrentContextPath()
 												.path("/member/reset")
-												.queryParam("memberId", memberEmail)
+												.queryParam("memberEmail", memberEmail)
 												.queryParam("cert", certString)
 												.toUriString();
 		String content = 

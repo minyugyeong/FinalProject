@@ -28,6 +28,10 @@ public interface BoardDao {
 
 	List<BoardAttachVO> selectAttach(int boardNo);
 
+	void delete(int boardNo);
+
+	
+
 	
 
 }

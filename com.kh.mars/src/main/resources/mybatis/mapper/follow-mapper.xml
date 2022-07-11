@@ -46,7 +46,11 @@
 		        on a.follow_target = b.follow_target 
 		        group by a.follow_target, b."followcount"
 		        )ab
-		        inner join member m on m.member_no = ab.follow_target
+		        inner join (
+		        select * from member where member_private = 0
+                minus
+                select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo}
+		        ) m on m.member_no = ab.follow_target
 		        )abc
 		        inner join member mm on mm.member_no = abc."who_no"
 				)abcd left outer join member_profile mp on abcd.follow_target = mp.member_no    
@@ -93,5 +97,21 @@
 	<select id="isFollower" resultType="FollowDto" parameterType="map">
 		select * from follow where follow_who = #{followWho} and follow_target = #{memberNo} and follow_confirm = #{followConfirm}
 	</select>
+	
+	<select id="blockFollowCheck" resultType="FollowDto" parameterType="Map">
+		select * from follow where follow_who = #{followWho} and follow_target = #{memberNo}
+	</select>
+	
+	<select id="blockFollowingCheck" resultType="FollowDto" parameterType="Map">
+		select * from follow where follow_who = #{memberNo} and follow_target = #{followWho}
+	</select>
+	
+	<delete id="followingDelete" parameterType="Map">
+		delete follow where follow_who = #{memberNo} and follow_target = #{followWho}
+	</delete>
+	
+	<update id="open" parameterType="int">
+		UPDATE follow SET follow_confirm = 1 WHERE FOLLOW_TARGET = #{memberNo}
+	</update>
 
  </mapper> 

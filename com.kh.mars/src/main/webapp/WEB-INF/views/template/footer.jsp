@@ -55,11 +55,13 @@
             		if(!this.searchValue) this.searchValue=true;
             		if(this.keyword == "") return;
                     axios({
-                        url:"${pageContext.request.contextPath}/rest/search/"+this.keyword,
+                        url:"${pageContext.request.contextPath}/rest/search",
                         method:"get",
+                        params:{
+                        	keyword : this.keyword
+                        }
                     })
                     .then((resp)=>{
-                    	console.log(resp.data);
                     	this.searchLength = resp.data.length;
                         this.searchList = resp.data;
                     })
@@ -68,14 +70,19 @@
             //데이터 및 구성요소 초기화 전
             beforeCreate(){},
             //데이터 및 구성요소 초기화 후, data에 접근 가능하므로 ajax를 여기서 사용하여 데이터를 불러온다
-            created(){},
-            //데이터가 화면에 마운트 되기 전(View 생성 전)
+            created(){
+            	if(${hashTagName != null}){
+            		this.keyword = "${hashTagName}"
+            		
+            	}
+            },
             boeforeMount(){},
             mounted(){
             	$("body,html").click(resp=>{
                     this.noticeValue = false;
                     this.searchValue = false;
                 });
+            	this.searchValue=false;
             },
             beforeUpdate(){},
             updated(){},

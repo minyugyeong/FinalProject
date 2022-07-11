@@ -23,4 +23,12 @@ public class BoardAttachDaoImpl implements BoardAttachDao {
 	}
 
 
+	@Override
+	public void delete(int boardNo) {
+
+		sqlSession.delete("board_attach.delete", boardNo);
+		
+	}
+
+
 }

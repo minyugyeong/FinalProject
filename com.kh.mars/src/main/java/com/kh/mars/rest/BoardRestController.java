@@ -60,16 +60,16 @@ public class BoardRestController {
 		int board = Integer.parseInt(json.get("boardNo").toString());
 		int memberNo = (Integer)session.getAttribute("login");
 		return boardLikeService.boardLike(memberNo, board);
-		
 	}
 	
-	@GetMapping("/detail/{boardNo}")
-	public List<BoardReplyVO> detail(
+	@GetMapping("/detail_reply/{boardNo}")
+	public List<BoardReplyVO> detailReply(
 								@PathVariable int boardNo,
 								HttpSession session) {
 		int memberNo = (Integer)session.getAttribute("login");
 		return boardDao.detailReply(memberNo, boardNo);
 	}
+	
 }
 
 

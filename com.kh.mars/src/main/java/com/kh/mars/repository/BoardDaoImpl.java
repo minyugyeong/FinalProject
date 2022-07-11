@@ -51,7 +51,7 @@ public class BoardDaoImpl implements BoardDao{
 		return sqlSession.selectOne("board.boardCount", memberNo);
 	}
 
-
+//게시글 댓글조회
 	@Override
 	public List<BoardReplyVO> detailReply(int memberNo, int boardNo) {
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -59,6 +59,8 @@ public class BoardDaoImpl implements BoardDao{
 		param.put("boardNo", boardNo);
 		return sqlSession.selectList("board.detailReply", param);
 	}
+	
+	
 	public BoardDto selectOne(int boardNo) {
 		
 		return sqlSession.selectOne("board.selectOne", boardNo);
@@ -85,7 +87,14 @@ public class BoardDaoImpl implements BoardDao{
 		
 		return sqlSession.selectList("board.selectAttach", boardNo);
 	}
-	
+
+
+	@Override
+	public void delete(int boardNo) {
+		
+		sqlSession.delete("board.delete", boardNo);
+		
+	}
 	
 	
 }
