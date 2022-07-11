@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.mars.entity.BoardAdAttachDto;
+import com.kh.mars.vo.BoardAdAttachNoVO;
 
 @Repository
 public class BoardAdAttachDaoImpl implements BoardAdAttachDao {
@@ -30,10 +31,5 @@ public class BoardAdAttachDaoImpl implements BoardAdAttachDao {
 		
 	}
 
-	@Override
-	public List<BoardAdAttachDto> selectList(int boardAdNo) {
-		
-		return sqlSession.selectList("board-ad-attach.selectList", boardAdNo);
-	}
 
 }
