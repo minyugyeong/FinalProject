@@ -13,6 +13,8 @@ import com.kh.mars.entity.BoardDto;
 import com.kh.mars.repository.AttachDao;
 import com.kh.mars.repository.BoardAttachDao;
 import com.kh.mars.repository.BoardDao;
+import com.kh.mars.repository.BoardHashtagDao;
+import com.kh.mars.repository.BoardMemberTagDao;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -25,6 +27,12 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Autowired
 	private BoardAttachDao boardAttachDao;
+	
+	@Autowired
+	private BoardHashtagDao boardHashtagDao;
+	
+	@Autowired
+	private BoardMemberTagDao boardMemberTagDao;
 
 	
 	@Transactional
@@ -43,6 +51,18 @@ public class BoardServiceImpl implements BoardService {
 		}
 		
 	}
+
+	@Transactional
+	@Override
+	public void delete(int boardNo) {
+		boardDao.delete(boardNo);
+		boardAttachDao.delete(boardNo);
+		boardHashtagDao.delete(boardNo);
+		boardMemberTagDao.delete(boardNo);
+		
+	}
+	
+	
 	
 
 }

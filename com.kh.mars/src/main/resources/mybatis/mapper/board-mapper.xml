@@ -173,6 +173,11 @@
 		update board set board_content = #{boardContent}, board_is_reply = #{boardIsReply} where board_no = #{boardNo}
 	</update>
 	
+	<!-- 게시글 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete board where board_no=#{boardNo}
+	</delete>
+	
  </mapper>
  
  

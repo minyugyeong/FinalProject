@@ -18,4 +18,8 @@ public interface BoardAdDao {
 
 	void edit(BoardAdDto boardAdDto);
 
+	void delete(int boardAdNo);
+
+	List<BoardAdDto> selectList(int memberNo);
+
 }

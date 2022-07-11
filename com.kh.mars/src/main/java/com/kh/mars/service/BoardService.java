@@ -10,5 +10,7 @@ import com.kh.mars.entity.BoardDto;
 public interface BoardService {
 	
 	void insert(BoardDto boardDto, List<MultipartFile> boardAttach) throws IllegalStateException, IOException;
+	
+	void delete(int boardNo);
 
 }

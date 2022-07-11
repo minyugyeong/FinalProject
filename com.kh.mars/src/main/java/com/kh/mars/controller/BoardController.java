@@ -247,6 +247,18 @@ public class BoardController {
 		return "redirect:/member/page";
 	}
 
+	//게시글 삭제하기
+	@GetMapping("/delete")
+	public String delete(RedirectAttributes attr, @RequestParam int boardNo, HttpSession session) {
+		
+		boardService.delete(boardNo);
+		
+		Integer memberNo = (Integer)session.getAttribute("login");
+		attr.addAttribute("memberNo", memberNo);
+		
+		return "redirect:/member/page";
+	}
+	
 }
 
 
