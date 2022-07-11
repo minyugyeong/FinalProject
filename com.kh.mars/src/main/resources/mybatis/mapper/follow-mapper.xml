@@ -105,5 +105,9 @@
 	<delete id="followingDelete" parameterType="Map">
 		delete follow where follow_who = #{memberNo} and follow_target = #{followWho}
 	</delete>
+	
+	<update id="open" parameterType="int">
+		UPDATE follow SET follow_confirm = 1 WHERE FOLLOW_TARGET = #{memberNo}
+	</update>
 
  </mapper> 

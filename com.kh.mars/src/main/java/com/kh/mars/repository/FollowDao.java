@@ -34,4 +34,6 @@ public interface FollowDao {
 
 	int followingDelete(int followWho, int memberNo);
 
+	void open(int memberNo);
+
 }

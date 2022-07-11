@@ -42,4 +42,10 @@ public interface MemberDao {
 	
 	String checkNick(String memberNick);
 
+	boolean changeInterest(int memberNo, String memberInterest);
+
+	void personal(int memberNo);
+
+
+
 }

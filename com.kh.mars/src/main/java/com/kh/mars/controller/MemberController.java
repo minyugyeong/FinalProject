@@ -3,6 +3,7 @@ package com.kh.mars.controller;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.util.List;
 import java.util.Random;
 
 import javax.mail.MessagingException;
@@ -28,6 +29,7 @@ import com.kh.mars.repository.FollowDao;
 import com.kh.mars.repository.MemberDao;
 import com.kh.mars.repository.MemberProfileDao;
 import com.kh.mars.service.EmailService;
+import com.kh.mars.service.MemberService;
 
 @Controller
 @RequestMapping("/member")
@@ -50,6 +52,9 @@ public class MemberController {
 	
 	@Autowired
 	private CertDao certDao;
+	
+	@Autowired
+	private MemberService memberService;
 
 	//회원가입 페이지
 	@GetMapping("/join")
@@ -76,9 +81,12 @@ public class MemberController {
 			HttpSession session) {
 		MemberDto memberDto = memberDao.login(memberEmail, memberPassword);
 		
-		if(memberDto != null) {
+		if(memberDto != null) {//로그인 성공
 			session.setAttribute("login", memberDto.getMemberNo());
 			session.setAttribute("auth", memberDto.getMemberGrade());
+		}
+		else {//로그인 실패
+			return "redirect:login?error";
 		}
 		return "redirect:/";
 	}
@@ -314,15 +322,33 @@ public class MemberController {
 		throw new UnauthorizeException();
 	}
 	
+	@GetMapping("/professional")
+	public String professional(HttpSession session, Model model) {
+		int memberNo = (Integer) session.getAttribute("login");
+		
+		MemberDto memberDto = memberDao.info(memberNo);
+		model.addAttribute(memberDto);
+		
+		return "member/professional";
+	}
+	
+	@PostMapping("/professional")
+	public String professional(HttpSession session, @RequestParam String memberInterest) {
+		int memberNo = (Integer)session.getAttribute("login");
+		
+		memberService.professional(memberNo, memberInterest);
+		
+		return "redirect:edit";
+		
+	}
+	
+	@PostMapping("/personal")
+	public String personal(HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		
+		memberDao.personal(memberNo);
+		
+		return "redirect:edit";
+	}
+	
 }
-
-
-
-
-
-
-
-
-
-
-

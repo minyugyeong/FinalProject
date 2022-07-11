@@ -1,12 +1,9 @@
 package com.kh.mars.repository;
 
 import java.io.IOException;
-<<<<<<< HEAD
-=======
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
->>>>>>> refs/remotes/origin/main
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,13 +82,18 @@ public class MemberDaoImpl implements MemberDao{
 	@Override
 	public boolean changePassword(int memberNo, String currentPassword, String changePassword) {
 		MemberDto memberDto = this.info(memberNo);
-		if(currentPassword == memberDto.getMemberPassword());
-		String encodePassword = passwordEncoder.encode(changePassword);
+		boolean isPasswordMatch = passwordEncoder.matches(currentPassword, memberDto.getMemberPassword());
+		if(isPasswordMatch) {
+			
+			String encodePassword = passwordEncoder.encode(changePassword);
+			int count = sqlSession.update("member.changePassword", MemberDto.builder().memberNo(memberNo).memberPassword(encodePassword).build());
+			return count >0;
+		}else {
+			return false;
+		}
 		
-		int count = sqlSession.update("member.changePassword", MemberDto.builder().memberNo(memberNo).memberPassword(encodePassword).build());
 			
 		
-		return count >0;
 		
 	}
 
@@ -169,7 +171,23 @@ public class MemberDaoImpl implements MemberDao{
 		return sqlSession.selectOne("member.checkNick",memberNick);
 	}
 
-	
+	@Override
+	public boolean changeInterest(int memberNo, String memberInterest) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("memberNo", memberNo);
+		param.put("memberInterest", memberInterest);
+		
+		int count = sqlSession.update("member.changeInterest", param);
+		
+		return count > 0;
+	}
+
+	@Override
+	public void personal(int memberNo) {
+		sqlSession.update("member.personal",memberNo);
+	}
+
+
 
 
 }

@@ -131,4 +131,10 @@ public class FollowDaoImpl implements FollowDao {
 		return sqlSession.delete("follow.followDelete", param);
 	}
 
+	@Override
+	public void open(int memberNo) {
+		sqlSession.update("follow.open", memberNo);
+		
+	}
+
 }
