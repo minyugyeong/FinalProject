@@ -190,8 +190,34 @@
 			
 	</select>
 	
+	<update id="resetPassword" parameterType="MemberDto">
+		update member
+		set member_password = #{memberPassword}
+		where member_email = #{memberEmail}
+	</update>
 	
- </mapper>
+	<select id="checkNick" parameterType="String" resultType="String">
+		select member_nick from member where member_nick = #{memberNick}
+	</select>
+	
+	<update id="changeInterest" parameterType="Map">
+		update member
+			set 
+		member_interest = #{memberInterest}, member_grade = '비즈니스회원', member_private = 0
+			where
+			member_no = #{memberNo}
+	</update>
+	
+	<update id="personal" parameterType="int">
+		update member
+			set
+				member_grade = '일반회원'
+			where
+				member_no = #{memberNo}
+	</update>
+	
+ </mapper> 
+
  
  
  

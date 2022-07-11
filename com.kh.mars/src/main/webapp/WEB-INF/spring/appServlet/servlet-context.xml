@@ -57,13 +57,19 @@
 	<!-- 
 		인터셉터 설정
 	 -->
-	<!--  <mvc:interceptors>
+	 <mvc:interceptors>
 	 	<mvc:interceptor>
-	 		<mvc:mapping path="/member/page*"/>
-	 	
-	 	<bean class="com.kh.mars.interceptor.MemberPageInterceptor"></bean>
+	 		<mvc:mapping path="/*"/>
+	 		
+	 		<mvc:exclude-mapping path="/member/login"/>
+	 		<mvc:exclude-mapping path="/member/join"/>
+	 		<mvc:exclude-mapping path="/member/reset"/>
+	 		<mvc:exclude-mapping path="/member/password_reset_send_mail"/>
+	 		<mvc:exclude-mapping path="/member/password_reset"/>
+	 		
+	 		<ref bean="memberLoginInterceptor"/>
 	 	</mvc:interceptor>
-	 </mvc:interceptors> -->
+	 </mvc:interceptors>
 	
 	<!-- 
 	파일 업로드를 위한 도구 등록

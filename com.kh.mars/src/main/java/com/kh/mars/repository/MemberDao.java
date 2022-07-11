@@ -31,15 +31,24 @@ public interface MemberDao {
 
 	String checkEmail(String memberEmail);
 
-	boolean resetPassword(String memberEmail);
+	boolean resetPassword(MemberDto memberDto);
 
 	int selectNo(String memberNick);
+	
+//	List<MemberDto> adminSelect(String type, String keyword, int p, int s);
+//
+//	int count(String type, String keyword);
 
 	int count(MemberSearchVO vo);
 
 	List<MemberDto> selectList(MemberSearchVO vo, int p, int s);
 
+	String checkNick(String memberNick);
 
-	
+	boolean changeInterest(int memberNo, String memberInterest);
+
+	void personal(int memberNo);
+
+
 
 }

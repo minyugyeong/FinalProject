@@ -16,10 +16,10 @@
             </div>
             <div class="col-8">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-4">
                         <h2>${memberDto.memberNick }</h2>
                     </div>
-                    <div class="col-6">
+                    <div class="col-4">
                     	<c:if test="${isOwner }">
                         <a href="edit"><button class="btn">프로필 편집</button></a>
                         </c:if>
@@ -38,12 +38,34 @@
                         </button>
                 		</c:if>
                 		
+                		<c:if test="${!isOwner }">
+                		<a href="#" class="btn">메세지 보내기</a>
+                		</c:if>
+                		
                     </div>
+                    <c:if test="${!isOwner }">
+                    <div class="col-4">
+                    	<button class="btn" v-if="block == null" @click="blockMember(${memberDto.memberNo })">차단하기</button>
+                    	
+                    	<button class="btn" v-if="block == 1" @click="blockMember(${memberDto.memberNo })">차단해제</button>
+                    </div>
+                    </c:if>
                 </div>
                 <div class="row">
                     <div class="col-4 mt-3">
                         <h6>게시물 ${boardNum }</h6>
                     </div>
+                    
+                    <c:if test="${isPrivate && !isFollower && !isOwner}">
+                    <div class="col-4 mt-3">
+						   <h6>팔로워 ${follower }</h6>
+                    </div>
+                    <div class="col-4 mt-3">
+						   <h6>팔로우 ${follow}</h6>
+                    </div>
+                    </c:if>
+                    
+                    <c:if test="${!isPrivate || isOwner}">
                     <div class="col-4">
                         <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal2" @click="followerList">
 						   팔로워 ${follower }
@@ -54,6 +76,8 @@
 						   팔로우 ${follow}
 						</button>
                     </div>
+                    </c:if>
+                    
                 </div>
                 
                 <div class="row mt-2">
@@ -66,7 +90,7 @@
                 
             </div>
         </div>
-  
+
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -99,8 +123,10 @@
           <p v-for="(fm,index) in follower" v-bind:key="index">
               <img :src="'${pageContext.request.contextPath }/file/download/'+ fm.attachNo" width="25">
              <a :href="'${pageContext.request.contextPath }/member/page?memberNo='+fm.memberNo">{{fm.memberNick}}</a>
-              
+             
+              <c:if test="${isOwner }">
               <button class="btn btn-primary" @click="deleteFollower(fm.memberNo)">삭제</button>
+              </c:if>
           </p>
         </div>
       </div>
@@ -109,8 +135,8 @@
   
   <!-- 사진영역 -->
   
-  <!-- 비공개 계정+ 팔로우 상태가 아닐 경우 -->
-  <c:if test="${isPrivate && !isFollower }"> 
+  <!-- 비공개 계정+ 팔로우 상태가 아닐 경우+ 내 계정이 아닐경우 -->
+  <c:if test="${isPrivate && !isFollower && !isOwner}"> 
   <div class="card mt-5" style="width: 100%;">
   <div class="card-body mt-5 mb-5">
     <h6 class="card-subtitle mb-2 text-muted text-center">비공개 계정입니다</h6>
@@ -118,6 +144,8 @@
   </div>
 </div>
  </c:if> 
+ 
+
 
 </div> 
     <!-- vue js도 lazy loading을 사용한다 -->
@@ -133,6 +161,7 @@
                     follow:[],
                     follower:[],
                     confirm:${followDto.followConfirm},
+                    
                 };
             },
             //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
@@ -193,7 +222,34 @@
                 	})
                 	.then(resp=>{
                 		
+                	});
+                },
+                
+                blockMember(memberNo){
+                	axios({
+                		url : "${pageContext.request.contextPath}/block",
+                		method : "post",
+                		params :{
+                			memberNo : memberNo
+                		}
                 	})
+                	.then(resp=>{
+                		console.log(resp.data)
+                		this.block=resp.data;
+                		if(resp.data == 1){//차단
+                			
+                				console.log("차단");
+                				this.block == null;
+                				
+                			}
+                		
+                		else{//차단취소
+                				console.log("차단해제");
+                				this.block == 1;
+                			
+                			
+                		}
+                	});
                 }
             },
             created(){

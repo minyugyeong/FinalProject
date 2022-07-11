@@ -29,7 +29,9 @@ import com.kh.mars.repository.FollowDao;
 import com.kh.mars.repository.MemberDao;
 import com.kh.mars.repository.MemberProfileDao;
 import com.kh.mars.service.EmailService;
+import com.kh.mars.service.MemberService;
 import com.kh.mars.vo.MemberSearchVO;
+
 
 @Controller
 @RequestMapping("/member")
@@ -52,6 +54,9 @@ public class MemberController {
 	
 	@Autowired
 	private CertDao certDao;
+	
+	@Autowired
+	private MemberService memberService;
 
 	//회원가입 페이지
 	@GetMapping("/join")
@@ -78,9 +83,12 @@ public class MemberController {
 			HttpSession session) {
 		MemberDto memberDto = memberDao.login(memberEmail, memberPassword);
 		
-		if(memberDto != null) {
+		if(memberDto != null) {//로그인 성공
 			session.setAttribute("login", memberDto.getMemberNo());
 			session.setAttribute("auth", memberDto.getMemberGrade());
+		}
+		else {//로그인 실패
+			return "redirect:login?error";
 		}
 		return "redirect:/";
 	}
@@ -263,29 +271,72 @@ public class MemberController {
 			@RequestParam String memberEmail,
 			@RequestParam String cert,
 			Model model) {
+		CertDto certDto = CertDto.builder()
+				.memberEmail(memberEmail)
+				.certNumber(cert)
+				.build();
+		
+		boolean isOk = certDao.check(certDto);
+		if(isOk) {
+			String newCert = f.format(r.nextInt(1000000));
+			certDao.insert(CertDto.builder()
+								.memberEmail(memberEmail)
+								.certNumber(newCert)
+								.build());
+			model.addAttribute("cert", newCert);
+			
+			return "member/reset";
+		}
+		else {
+			throw new UnauthorizeException();
+		}
+	}
+	
+	@PostMapping("/reset")
+	public String reset(
+			@ModelAttribute MemberDto memberDto,
+			@RequestParam String cert) {
 		boolean isOk = certDao.check(CertDto.builder()
-										.memberEmail(memberEmail)
-										.certNumber(cert)
-										.build());
+									.memberEmail(memberDto.getMemberEmail())
+									.certNumber(cert)
+									.build());
 		
 		if(isOk) {
-			boolean result = memberDao.resetPassword(memberEmail);
+			boolean result = memberDao.resetPassword(memberDto);
 			if(result) {
-				return "redirect:reset_success";
+				return "member/login";
 			}
 		}
 		throw new UnauthorizeException();
 	}
 	
+	@GetMapping("/professional")
+	public String professional(HttpSession session, Model model) {
+		int memberNo = (Integer) session.getAttribute("login");
+		
+		MemberDto memberDto = memberDao.info(memberNo);
+		model.addAttribute(memberDto);
+		
+		return "member/professional";
+	}
+	
+	@PostMapping("/professional")
+	public String professional(HttpSession session, @RequestParam String memberInterest) {
+		int memberNo = (Integer)session.getAttribute("login");
+		
+		memberService.professional(memberNo, memberInterest);
+		
+		return "redirect:edit";
+		
+	}
+	
+	@PostMapping("/personal")
+	public String personal(HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		
+		memberDao.personal(memberNo);
+		
+		return "redirect:edit";
+	}
+	
 }
-
-
-
-
-
-
-
-
-
-
-

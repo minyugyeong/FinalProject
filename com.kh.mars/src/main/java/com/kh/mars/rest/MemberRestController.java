@@ -6,25 +6,26 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kh.mars.entity.BlockDto;
 import com.kh.mars.entity.CertDto;
 import com.kh.mars.entity.MemberDto;
+import com.kh.mars.repository.BlockDao;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
 import com.kh.mars.repository.MemberDao;
+import com.kh.mars.service.BlockService;
 import com.kh.mars.service.EmailService;
 import com.kh.mars.service.FollowService;
 import com.kh.mars.vo.FollowVO;
 import com.kh.mars.vo.FollowerVO;
-
-import oracle.jdbc.proxy.annotation.Post;
 
 @Controller
 @CrossOrigin(origins = "http://127.0.0.1:5500")
@@ -44,6 +45,12 @@ public class MemberRestController {
 	
 	@Autowired
 	private MemberDao memberDao;
+	
+	@Autowired
+	private BlockDao blockDao;
+	
+	@Autowired
+	private BlockService blockService;
 	
 	
 	@PostMapping("/sendMail")
@@ -102,10 +109,23 @@ public class MemberRestController {
 	public boolean checkEmail(@RequestParam String memberEmail) {
 		String checkEmail = memberDao.checkEmail(memberEmail);
 		
-		if(checkEmail != null) {
+		if(checkEmail == null) {//중복되지 않으면
 			return true;
 		}
 		else{
+			return false;
+		}
+	}
+	
+	@GetMapping("/checkNick")
+	@ResponseBody
+	public boolean checkNick(@RequestParam String memberNick) {
+		String checkNick = memberDao.checkNick(memberNick);
+		
+		if(checkNick == null) {//닉네임 중복이 아닐경우 
+			return true;
+		}
+		else {
 			return false;
 		}
 	}
@@ -117,6 +137,34 @@ public class MemberRestController {
 		followDao.followDelete(followWho, memberNo);
 		
 		return followWho;
+	}
+	
+	@PostMapping("/block")
+	@ResponseBody
+	public int block(
+			@RequestParam int memberNo, 
+			HttpSession session) {
+		
+		int followWho = (Integer)session.getAttribute("login");
+
+		
+		
+		//차단 상태 검사
+		BlockDto blockDto = blockDao.selectOne(followWho, memberNo);
+		
+		//차단
+		if(blockDto == null) {//차단
+			blockService.block(memberNo, followWho);
+			return 1;
+		}
+		else {//차단 취소
+			blockService.block(memberNo, followWho);
+			return 0;
+		}
+		
+		
+		
+		
 	}
 	
 }
