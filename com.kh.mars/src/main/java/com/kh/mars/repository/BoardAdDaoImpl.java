@@ -59,6 +59,19 @@ public class BoardAdDaoImpl implements BoardAdDao{
 		sqlSession.update("board_ad.edit", boardAdDto);
 		
 	}
+
+	@Override
+	public void delete(int boardAdNo) {
+		
+		sqlSession.delete("board_ad.delete", boardAdNo);
+		
+	}
+
+	@Override
+	public List<BoardAdDto> selectList(int memberNo) {
+		
+		return sqlSession.selectList("board_ad.selectList", memberNo);
+	}
 	
 	
 	

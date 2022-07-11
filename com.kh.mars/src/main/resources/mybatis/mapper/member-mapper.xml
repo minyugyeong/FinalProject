@@ -106,8 +106,52 @@
 	</select>
 	
 	<!-- 관리자 회원 목록 검색 & 조회 -->
-	<select id="searchList" resultType="MemberDto" parameterType="Map">
+	<select id="searchList" resultType="MemberDto" parameterType="MemberSearchVO">
 		
+		<bind name="isEmailExist" value="vo.memberEmail != null and !vo.memberEmail.equals('')"></bind>
+		<bind name="isGenderExist" value="vo.memberGender != null and !vo.memberGender.equals('')"></bind>
+		<bind name="isNickExist" value="vo.memberNick != null and !vo.memberNick.equals('')"></bind>
+		<bind name="isPhoneExist" value="vo.memberPhone != null and !vo.memberPhone.equals('')"></bind>
+		<bind name="isGradeExist" value="vo.memberGrade != null and !vo.memberGrade.equals('')"></bind>
+		<bind name="isInterestExist" value="vo.memberInterest != null and !vo.memberInterest.equals('')"></bind>
+		<bind name="isNameExist" value="vo.memberName != null and !vo.memberName.equals('')"></bind>
+		
+		select * from (
+			select rownum rn, TMP.* from(
+				select * from member
+					
+					<where>
+			
+						<if test="isEmailExist">
+						 	 <![CDATA[and instr(member_email, #{vo.memberEmail}) > 0]]>
+						</if>
+						<if test="isGenderExist">
+						 	 and member_gender = #{vo.memberGender}
+						</if>
+						<if test="isNickExist">
+							 <![CDATA[and instr(member_nick, #{vo.memberNick}) > 0]]>
+						</if>
+						<if test="isPhoneExist">
+							 <![CDATA[and instr(member_phone, #{vo.memberPhone}) > 0]]>
+						</if>
+						<if test="isNameExist">
+							 <![CDATA[and instr(member_name, #{vo.memberName}) > 0]]>
+						</if>
+						<if test="isInterestExist">
+							 and member_interest = #{vo.memberInterest}
+						</if>
+						<if test="isGradeExist">
+							 and member_grade = #{vo.memberGrade}
+						</if>
+						
+					</where>
+					
+			)TMP
+		)where rn between #{begin} and #{end} order by member_no asc
+		
+	</select>
+	
+	<select id="count" resultType="int" parameterType="MemberSearchVO">
 		<bind name="isEmailExist" value="memberEmail != null and !memberEmail.equals('')"></bind>
 		<bind name="isGenderExist" value="memberGender != null and !memberGender.equals('')"></bind>
 		<bind name="isNickExist" value="memberNick != null and !memberNick.equals('')"></bind>
@@ -116,54 +160,38 @@
 		<bind name="isInterestExist" value="memberInterest != null and !memberInterest.equals('')"></bind>
 		<bind name="isNameExist" value="memberName != null and !memberName.equals('')"></bind>
 		
-		select * from member
-		
-		<where>
+		select count(*) from member 
 			
-			<if test="isEmailExist">
-				<![CDATA[and instr(member_email, #{memberEmail}) > 0]]>
-			</if>
+			<where>
 			
-			<choose>
-				<when test="isGenderExist and memberGender == 0">
-					and member_gender = 0
-				</when>
-				<when test="isGenderExist and memberGender == 1">
-					and member_gender = 1
-				</when>
-			</choose>
+				<if test="isEmailExist">
+				 	 <![CDATA[and instr(member_email, #{memberEmail}) > 0]]>
+				</if>
+				<if test="isGenderExist">
+				 	 and member_gender = #{memberGender}
+				</if>
+				<if test="isNickExist">
+					 <![CDATA[and instr(member_nick, #{memberNick}) > 0]]>
+				</if>
+				<if test="isPhoneExist">
+					 <![CDATA[and instr(member_phone, #{memberPhone}) > 0]]>
+				</if>
+				<if test="isNameExist">
+					 <![CDATA[and instr(member_name, #{memberName}) > 0]]>
+				</if>
+				<if test="isInterestExist">
+					 and member_interest = #{memberInterest}
+				</if>
+				<if test="isGradeExist">
+					 and member_grade = #{memberGrade}
+				</if>
+				
+			</where>
 			
-			<if test="isNickExist">
-				<![CDATA[and instr(member_nick, #{memberNick}) > 0]]>
-			</if>
-			<if test="isPhoneExist">
-				<![CDATA[and instr(member_phone, #{memberPhone}) > 0]]>
-			</if>
-			<if test="isNameExist">
-				<![CDATA[and instr(member_name, #{memberName}) > 0]]>
-			</if>
-			
-			<if test="isGradeExist">
-				and member_grade in
-				<foreach collection="memberGrade" item="grade" open="(" close=")" separator=",">
-					#{grade}
-				</foreach> 
-			</if>
-			
-			<if test="isInterestExist">
-				and member_interest in
-				<foreach collection="memberInterest" item="interest" open="(" close=")" separator=",">
-					#{interest}
-				</foreach>
-			</if>
-			
-		</where>
-		
-		order by member_no asc
-		
 	</select>
 	
- </mapper> 
+	
+ </mapper>
  
  
  
