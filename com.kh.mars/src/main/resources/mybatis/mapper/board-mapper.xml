@@ -32,7 +32,7 @@
  		select board_seq.nextval from dual
  	</select>
 	
-	<select id="mainList" resultType="BoardListVO" parameterType="map"><!-- 팔로워들의 최근 게시글 조회 구문 -->
+	<!-- <select id="mainList" resultType="BoardListVO" parameterType="map">팔로워들의 최근 게시글 조회 구문
 		select * from (
 		        select rownum rn, TMP.* from(
 		            select final.*, member.member_nick"REPLY_NICK" from (
@@ -53,7 +53,7 @@
 		            )final left outer join member on member.member_no = final.reply_member_no order by final.board_no desc 
 		        )TMP
 		)where rn between ((#{pageCount}-1) * 3 + 1) and (#{pageCount} * 3)
- 	</select>
+ 	</select> -->
 	
 	<!-- 메인 게시글 리스트용 -->
 	<resultMap type="BoardMainListVO" id="boardMap">
@@ -73,15 +73,13 @@
 
 		 <collection property="attachList" javaType="list" ofType="BoardAttachVO" 
 		 	select="treeSearchSubquery" column="board_no">
-		 
+		 	
 			<result column="attach_no" property="attachNo"/>		 	
 			<result column="board_no" property="boardNo"/>		 	
 			<result column="attach_uploadname" property="attachUploadname"/>		 	
 			<result column="attach_type" property="attachType"/>		 	
 			<result column="attach_size" property="attachSize"/>		 	
 		 </collection>
-		 
-		 
 	</resultMap>
 	
 	<!-- 메인 게시글들 조회 -->
@@ -97,9 +95,9 @@
 					select follow_target from follow where follow_who = #{memberNo}
 					)"A" on b.member_no = a.follow_target
 					<if test="uptoNo != 0"> 
-					 <![CDATA[
-	            	where b.board_no <= #{uptoNo}
-	            	]]> 
+						 <![CDATA[
+		            	where b.board_no <= #{uptoNo}
+		            	]]> 
 	            	</if>
 					)ab on m.member_no = ab.member_no 
 					)abcd left outer join member_profile mp on abcd.member_no = mp.member_no
@@ -109,14 +107,14 @@
 					)aacc left outer join board_reply br on aacc.board_no = br.board_no group by aacc.board_no, aacc.member_no, aacc.board_date, aacc.board_content, aacc.board_is_reply, aacc.member_nick, aacc."writer_profile", aacc."is_like"
 					)aabb left outer join board_like bli on aabb.board_no = bli.board_no group by aabb.BOARD_NO, aabb.MEMBER_NO, aabb.BOARD_DATE, aabb.BOARD_CONTENT, aabb.BOARD_IS_REPLY, aabb.MEMBER_NICK, aabb."writer_profile", aabb."is_like", aabb."replycount" order by aabb.board_no desc
 		        )TMP
-		)where rn between ((#{pageCount}-1) * 3 + 1) and (#{pageCount} * 3)
+		)
+		where rn between ((#{pageCount}-1) * 3 + 1) and (#{pageCount} * 3)
 	</select>
 	<select id="treeSearchSubquery" resultType="BoardAttachVO" parameterType="int">
 		select ba.board_no, attach.* from (
 		      select * from board_attach where board_no = #{board_no}
 		)ba inner join attach on ba.attach_no = attach.attach_no
 	</select>
-	
 	
 	<select id="detailReply" resultType="BoardReplyVO" parameterType="map">
 		select c.*, mm.member_nick from (
@@ -153,7 +151,20 @@
     left outer join board_attach B on A.attach_no = B.attach_no
     where B.board_no = #{boardNo}
 	</select>
-
+	
+	
+	<!-- 해시태그 게시물(광고 포함, 비공개 계정은 게시물은 검색안됨) 검색 -->
+	<!-- <select id="hashSearchBoardList" resultType="" parameterType="int">
+		select bh.board_no, min(ba.attach_no) "attach_no", 0 "type" from board_hashtag bh 
+		    inner join board b on b.board_no = bh.board_no
+		    inner join member m on b.member_no = m.member_no 
+		    inner join board_attach ba on ba.board_no = bh.board_no 
+		    where m.member_private = 0  and bh.hashtag_no = #{hashtagNo} group by bh.board_no
+		union
+		select bah.board_ad_no "board_no", min(baa.attach_no), 1 "type" from board_ad_hashtag bah
+		    inner join board_ad_attach baa on baa.board_ad_no = bah.board_ad_no
+		    where hashtag_no = #{hashtagNo} group by bah.board_ad_no
+	</select> -->
 
 
 <!-- insert 구문 -->	

@@ -28,25 +28,268 @@
 
 	<select id="search" resultType="SearchVO" parameterType="map">
 		select * from (
-		select 
-    		m.member_no "no", m.member_nick "main", m.member_name "sub", 0 "type", f.follow_target "is_follow", mp.attach_no "attachNo" 
-		from member m 
-		    left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
-		    left outer join member_profile mp on mp.member_no = m.member_no where instr(member_nick, #{keyword}) > 0
-		union
-		select 
-		    m.member_no "no", m.member_nick "main", m.member_name "sub", 0 "type", f.follow_target "is_follow", mp.attach_no "attachNo" 
-		from member m 
-		    left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
-		    left outer join member_profile mp on mp.member_no = m.member_no where instr(member_name, #{keyword}) > 0
-		union
-		select 
-			h.hashtag_no "no", h.hashtag_name "main", to_char(count(bh.board_no)) "sub", 1 "type", null "is_follow", null "attachNo" 
-		from hashtag h 
-			inner join board_hashtag bh on h.hashtag_no = bh.hashtag_no  where instr(h.hashtag_name, #{keyword}) > 0 group by h.hashtag_no, h.hashtag_name
+			select 
+			        m.member_no "no", m.member_nick "main", m.member_name "sub", 0 "type", f.follow_target "is_follow", mp.attach_no "attachNo" 
+			    from (
+			        (select * from member where member_private = 0
+			                        minus
+			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+			                        union
+			                    select m.* from member m
+			                            left outer join follow f on m.member_no = f.follow_target
+			                            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
+			        ) m 
+			        left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
+			        left outer join member_profile mp on mp.member_no = m.member_no 
+			        where instr(member_nick, #{keyword}) > 0
+			union
+			    select 
+			        m.member_no "no", m.member_nick "main", m.member_name "sub", 0 "type", f.follow_target "is_follow", mp.attach_no "attachNo" 
+			    from (
+			        (select * from member where member_private = 0
+			                        minus
+			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+			                        union
+			                    select m.* from member m
+			                            left outer join follow f on m.member_no = f.follow_target
+			                            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
+			        ) m 
+			        left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
+			        left outer join member_profile mp on mp.member_no = m.member_no 
+			        where instr(member_name, #{keyword}) > 0
+			union
+			    select hm."no" "no", hm."main" "main", to_char(sum(hm."sub")) "sub", hm."type" "type", hm."is_follow" "is_follow", hm."attachNo" "attachNo" from
+			    (select 
+			        h.hashtag_no "no", h.hashtag_name "main", to_char(count(bh.board_no)) "sub", 1 "type", null "is_follow", null "attachNo" 
+			    from hashtag h 
+			        inner join (
+			        select bh.board_no, bh.hashtag_no from board_hashtag bh 
+			        inner join board b on bh.board_no = b.board_no
+			        inner join ((select * from member where member_private = 0
+			                        minus
+			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+			                        union
+			                    select m.* from member m
+			                            left outer join follow f on m.member_no = f.follow_target
+			                            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
+			        ) m on m.member_no = b.member_no group by bh.board_no, bh.hashtag_no
+			        )bh on h.hashtag_no = bh.hashtag_no  
+			        where instr(h.hashtag_name, #{keyword}) > 0 group by h.hashtag_no, h.hashtag_name
+			union all
+			    select 
+			        h.hashtag_no "no", h.hashtag_name "main", to_char(count(bah.board_ad_no)) "sub", 1 "type", null "is_follow", null "attach" 
+			    from hashtag h 
+			        inner join (
+			            select bh.board_ad_no, bh.hashtag_no from board_ad_hashtag bh 
+			            inner join board_ad b on bh.board_ad_no = b.board_ad_no
+			            inner join ((select * from member where member_private = 0
+			                        minus
+			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+			                            union
+			                        select m.* from member m
+			                                left outer join follow f on m.member_no = f.follow_target
+			                                where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
+			            ) m on m.member_no = b.member_no group by bh.board_ad_no, bh.hashtag_no
+			        ) bah on h.hashtag_no = bah.hashtag_no  
+			        where instr(h.hashtag_name, #{keyword}) > 0 group by h.hashtag_no, h.hashtag_name)hm group by hm."no", hm."main", hm."type", hm."is_follow", hm."attachNo"
 		<![CDATA[
 		) where rownum <= 30
 		]]>
+	</select>
+	
+	<select id="tagSearch" resultType="searchListVO" parameterType="map">
+	select fn."board_no", fn."attach_no",fn."attach_count",fn."type" from (
+	select rownum rn, TMP.* from(
+		select * from (
+            select 
+                b.board_no "board_no", min(ba.attach_no) "attach_no" , count(ba.attach_no)"attach_count" , 0 "type"
+            from 
+                board_hashtag bh 
+                
+                    inner join board b on b.board_no = bh.board_no 
+                    inner join 
+                        ((select * from member where member_private = 0
+                        minus
+                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+                            union
+                        select m.* from member m
+                                left outer join follow f on m.member_no = f.follow_target
+                                where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
+                        ) m on b.member_no = m.member_no
+                    inner join board_attach ba on b.board_no = ba.board_no
+                
+                where hashtag_no = #{hashTagNo}
+                group by b.board_no
+		union
+            select 
+                b.board_ad_no "board_no", min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", 1 "type"
+            from 
+                board_ad_hashtag bh 
+                
+                    inner join board_ad b on b.board_ad_no = bh.board_ad_no 
+                    inner join (
+                    (select * from member where member_private = 0
+                    minus
+                    select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+                        union
+                    select m.* from member m
+                            left outer join follow f on m.member_no = f.follow_target
+                            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
+                    ) m on b.member_no = m.member_no
+                    inner join board_ad_attach ba on b.board_ad_no = ba.board_ad_no
+            
+            where hashtag_no = #{hashTagNo}
+            group by b.board_ad_no
+        )fn 
+        
+        <if test="uptoNo != 0"> 
+        <![CDATA[
+        where fn."board_no" <= #{uptoNo}
+        ]]>
+        </if>
+        order by fn."board_no" desc
+	)TMP
+	)fn where rn between ((#{pageCount}-1) * 9 + 1) and (#{pageCount} * 9)
+	</select>
+	
+	<select id="tagSearchLike" resultType="searchListVO" parameterType="map">
+		select fn.board_no, fn."attach_no", fn."attach_count", fn."type" from(
+		    select b.board_no, min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", bl."likecount" , 0 "type" from board_hashtag bh 
+		    
+		    inner join board b on b.board_no = bh.board_no 
+		    inner join (
+			    (select * from member where member_private = 0
+			    minus
+			    select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+			        union
+			    select m.* from member m
+			            left outer join follow f on m.member_no = f.follow_target
+			            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+			    ) m on b.member_no = m.member_no
+		    inner join board_attach ba on b.board_no = ba.board_no
+		    left outer join (select board_no, count(member_no) "likecount" from board_like group by board_no) bl on bl.board_no = b.board_no
+		    
+		    where bh.hashtag_no = #{hashTagNo} and bl."likecount" is not null
+		    group by b.board_no, bl."likecount"
+		union
+		    select b.board_ad_no, min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", bl."likecount", 1 "type" from board_ad_hashtag bh 
+		    
+		    inner join board_ad b on b.board_ad_no = bh.board_ad_no 
+		    inner join (
+			    (select * from member where member_private = 0
+			    minus
+			    select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+			        union
+			    select m.* from member m
+			            left outer join follow f on m.member_no = f.follow_target
+			            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
+			    ) m on b.member_no = m.member_no
+		    inner join board_ad_attach ba on b.board_ad_no = ba.board_ad_no
+		    left outer join (select board_ad_no, count(member_no) "likecount" from board_ad_like group by board_ad_no) bl on bl.board_ad_no = b.board_ad_no
+		    
+		    where hashtag_no = #{hashTagNo} and bl."likecount" is not null
+		    group by b.board_ad_no, bl."likecount"
+		    <![CDATA[
+		)fn where rownum <= 9 order by fn."likecount" desc
+		    ]]>
+	</select>
+	
+	<!-- 게시글 검색 상세보기 용 -->
+	<resultMap type="BoardMainListVO" id="boardMap">
+	
+		<association property="boardListVO" javaType="BoardListVO">
+			<result column="board_no" property="boardNo"/>
+			<result column="member_no" property="memberNo"/>
+			<result column="board_date" property="boardDate"/>
+			<result column="board_content" property="boardContent"/>
+			<result column="board_is_reply" property="boardIsReply"/>
+			<result column="member_nick" property="memberNick"/>
+			<result column="writer_profile" property="writerProfile"/>
+			<result column="is_like" property="isLike"/>
+			<result column="replycount" property="replycount"/>
+			<result column="likecount" property="likecount"/>
+		</association>
+
+		 <collection property="attachList" javaType="list" ofType="BoardAttachVO" 
+		 	select="treeSearchSubquery" column="board_no">
+		 	
+			<result column="attach_no" property="attachNo"/>		 	
+			<result column="board_no" property="boardNo"/>		 	
+			<result column="attach_uploadname" property="attachUploadname"/>		 	
+			<result column="attach_type" property="attachType"/>		 	
+			<result column="attach_size" property="attachSize"/>		 	
+		 </collection>
+	</resultMap>
+	
+	
+	<select id="searchTreeSearch" resultMap="boardMap" parameterType="map">
+		select
+        	b.*, m.member_nick, mp.attach_no "writer_profile", r."replycount", bl."likecount", blm."is_like"
+	    from 
+	        board b
+	        
+	        inner join member m on m.member_no = b.member_no
+	        inner join member_profile mp on m.member_no = mp.member_no
+	        left outer join (select board_no, count(reply_no)"replycount" from board_reply where board_no = #{boardNo} group by board_no) r on r.board_no = b.board_no
+	        left outer join (select board_no, count(member_no)"likecount" from board_like where board_no = #{boardNo} group by board_no) bl on bl.board_no = b.board_no
+	        left outer join (select member_no "is_like" from board_like where board_no = #{boardNo} and member_no = #{memberNo}) blm on blm."is_like" = m.member_no
+	        
+	    where b.board_no = #{boardNo}
+	</select>
+	<select id="treeSearchSubquery" resultType="BoardAttachVO" parameterType="int">
+		select ba.board_no, attach.* from (
+		      select * from board_attach where board_no = #{board_no}
+		)ba inner join attach on ba.attach_no = attach.attach_no
+	</select>
+	
+	
+	<!-- 광고 게시글 검색 상세보기 용 -->
+	<resultMap type="BoardMainListVO" id="adBoardMap">
+	
+		<association property="boardListVO" javaType="BoardListVO">
+			<result column="board_ad_no" property="boardNo"/>
+			<result column="member_no" property="memberNo"/>
+			<result column="board_ad_date" property="boardDate"/>
+			<result column="board_ad_content" property="boardContent"/>
+			<result column="board_ad_is_reply" property="boardIsReply"/>
+			<result column="board_ad_link" property="boardAdLink"/>
+			<result column="member_nick" property="memberNick"/>
+			<result column="writer_profile" property="writerProfile"/>
+			<result column="is_like" property="isLike"/>
+			<result column="replycount" property="replycount"/>
+			<result column="likecount" property="likecount"/>
+		</association>
+
+		 <collection property="attachList" javaType="list" ofType="BoardAttachVO" 
+		 	select="adSearchSubquery" column="board_ad_no">
+		 	
+			<result column="attach_no" property="attachNo"/>		 	
+			<result column="board_ad_no" property="boardNo"/>		 	
+			<result column="attach_uploadname" property="attachUploadname"/>		 	
+			<result column="attach_type" property="attachType"/>		 	
+			<result column="attach_size" property="attachSize"/>		 	
+		 </collection>
+	</resultMap>
+	
+	
+	<select id="adTreeSearch" resultMap="adBoardMap" parameterType="map">
+		select
+        	b.board_ad_no, b.board_ad_content, b.member_no, b.board_ad_date, b.board_ad_link, b.board_ad_is_reply, m.member_nick, mp.attach_no "writer_profile", r."replycount", bl."likecount", blm."is_like"
+	    from 
+	        board_ad b
+	        
+	        inner join member m on m.member_no = b.member_no
+	        inner join member_profile mp on m.member_no = mp.member_no
+	        left outer join (select board_ad_no, count(reply_no)"replycount" from board_ad_reply where board_ad_no = #{boardNo} group by board_ad_no) r on r.board_ad_no = b.board_ad_no
+	        left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like where board_ad_no = #{boardNo} group by board_ad_no) bl on bl.board_ad_no = b.board_ad_no
+	        left outer join (select member_no "is_like" from board_ad_like where board_ad_no = #{boardNo} and member_no = #{memberNo}) blm on blm."is_like" = m.member_no
+	        
+	    where b.board_ad_no = #{boardNo}
+	</select>
+	<select id="adSearchSubquery" resultType="BoardAttachVO" parameterType="int">
+		select ba.board_ad_no "board_no", attach.* from (
+		      select * from board_ad_attach where board_ad_no = #{board_ad_no}
+		)ba inner join attach on ba.attach_no = attach.attach_no
 	</select>
 	
  </mapper> 

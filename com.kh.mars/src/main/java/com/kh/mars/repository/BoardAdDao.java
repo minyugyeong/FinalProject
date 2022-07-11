@@ -5,6 +5,8 @@ import java.util.List;
 import com.kh.mars.entity.BoardAdDto;
 import com.kh.mars.vo.BoardAdAttachVO;
 import com.kh.mars.vo.BoardAdMemberVO;
+import com.kh.mars.vo.BoardMainListVO;
+import com.kh.mars.vo.BoardReplyVO;
 
 public interface BoardAdDao {
 	
@@ -18,4 +20,7 @@ public interface BoardAdDao {
 
 	void edit(BoardAdDto boardAdDto);
 
+	List<BoardReplyVO> adDetailReply(int memberNo, int boardNo);
+
+	List<BoardMainListVO> mainList(int memberNo);
 }

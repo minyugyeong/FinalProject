@@ -21,6 +21,5 @@ public class BoardListVO {
 	private int writerProfile;
 	private int replycount;
 	private int isLike;
-	
-	
+	private String boardAdLink;
 }

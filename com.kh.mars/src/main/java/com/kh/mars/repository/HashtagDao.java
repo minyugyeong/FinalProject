@@ -7,5 +7,7 @@ public interface HashtagDao {
 	void insert(HashtagDto hashtagDto);
 
 	HashtagDto selectOne(String hashtagName);
+	
+	String hashTagName(int hashTagNo);
 
 }
