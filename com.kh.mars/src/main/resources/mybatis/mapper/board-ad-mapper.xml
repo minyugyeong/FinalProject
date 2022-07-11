@@ -54,6 +54,11 @@
     where B.board_ad_no = #{boardAdNo}
 	</select>
 	
+		<!-- 비즈니스 회원 광고 신청 목록 -->
+		<select id="selectList" resultType="BoardAdDto" parameterType="int">
+			select * from board_ad where member_no=#{memberNo}
+		</select>
+	
 	<!-- 광고 게시글 수정 -->
 	<update id="edit" parameterType="BoardAdDto">
 		update board_ad set 
@@ -65,6 +70,13 @@
 		board_ad_is_reply=#{boardAdIsReply} where board_ad_no=#{boardAdNo}
 	</update>
 	
+	<!-- 광고 게시글 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete board_ad where board_ad_no = #{boardAdNo}
+	</delete>
+	
+
+
 	
  </mapper> 
  

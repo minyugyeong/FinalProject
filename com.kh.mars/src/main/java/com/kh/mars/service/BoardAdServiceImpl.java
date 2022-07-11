@@ -13,6 +13,7 @@ import com.kh.mars.entity.BoardAdDto;
 import com.kh.mars.repository.AttachDao;
 import com.kh.mars.repository.BoardAdAttachDao;
 import com.kh.mars.repository.BoardAdDao;
+import com.kh.mars.repository.BoardAdHashtagDao;
 
 @Service
 public class BoardAdServiceImpl implements BoardAdService {
@@ -25,6 +26,9 @@ public class BoardAdServiceImpl implements BoardAdService {
 	
 	@Autowired
 	private BoardAdAttachDao boardAdAttachDao;
+	
+	@Autowired
+	private BoardAdHashtagDao boardAdHashtagDao;
 
 	@Transactional
 	@Override
@@ -43,6 +47,23 @@ public class BoardAdServiceImpl implements BoardAdService {
 		
 	}
 	
+	@Transactional
+	@Override
+	public void delete(int boardAdNo) {
+		boardAdDao.delete(boardAdNo);
+		boardAdAttachDao.delete(boardAdNo);
+		boardAdHashtagDao.delete(boardAdNo);
+		
+	}
+	
 	
 
 }
+
+
+
+
+
+
+
+

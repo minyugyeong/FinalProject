@@ -34,6 +34,11 @@
 		insert into board_attach (board_attach_no, board_no, attach_no) 
 		values (#{boardAttachNo}, #{boardNo}, #{attachNo})
 	</insert>
+	
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete board_attach where board_no=#{boardNo}
+	</delete>
 
 	
  </mapper> 
