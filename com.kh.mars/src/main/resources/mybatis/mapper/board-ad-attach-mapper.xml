@@ -40,7 +40,7 @@
 		<delete id="delete" parameterType="int">
 			delete board_ad_attach where board_ad_no = #{boardAdNo}
 		</delete>
-		
+	
 		<select id="selectList" resultType="BoardAdAttachDto" parameterType="int">
 			select * from board_ad_attach where board_ad_no = #{boardAdNo}
 		</select>

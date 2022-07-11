@@ -1,7 +1,5 @@
 package com.kh.mars.repository;
 
-import java.util.List;
-
 import com.kh.mars.entity.BoardAdAttachDto;
 
 public interface BoardAdAttachDao {
@@ -10,6 +8,6 @@ public interface BoardAdAttachDao {
 
 	void delete(int boardAdNo);
 
-	List<BoardAdAttachDto> selectList(int boardAdNo);
+
 
 }

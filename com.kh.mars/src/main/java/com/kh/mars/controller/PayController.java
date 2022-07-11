@@ -8,29 +8,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.kh.mars.entity.BoardAdAttachDto;
-import com.kh.mars.entity.BoardAdDto;
-import com.kh.mars.repository.BoardAdAttachDao;
 import com.kh.mars.repository.BoardAdDao;
+import com.kh.mars.vo.BoardAdAttachNoVO;
 
 
 @Controller
 public class PayController {
 	
-	@Autowired
-	private BoardAdDao boardAdDao;
 	
 	@Autowired
-	private BoardAdAttachDao boardAdAttachDao;
+	private BoardAdDao boardAdDao;
 	
 	@GetMapping("/member/ad")
 	public String pay(@RequestParam int memberNo, Model model) {
 		
-		List<BoardAdDto> list = boardAdDao.selectList(memberNo);
+		List<BoardAdAttachNoVO> list = boardAdDao.selectList(memberNo);
 		model.addAttribute("list", list);
-		
-//		List<BoardAdAttachDto> listAttach = boardAdAttachDao.selectList();
-//		model.addAttribute("listAttach", listAttach);
 		
 		return "/member/ad";
 	}

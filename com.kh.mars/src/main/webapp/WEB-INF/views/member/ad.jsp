@@ -13,8 +13,40 @@
     font-weight: bold;
   }
   
+  td {
+ 		max-width: 0;
+ 		overflow: hidden;
+ 		text-overflow: ellipsis;
+ 		white-space: nowrap;
+	}
+	
+	.fa-angle-down{
+		cursor: pointer;
+	}
+  
   
 </style>
+
+<script type="text/javascript">
+
+	$(function(){
+		
+		$(".fa-angle-down").click(function(){
+			
+			let currentRow = $(this).closest('tr');
+			let detail = currentRow.next('tr');
+			
+			if(detail.is(":visible")){
+				detail.hide();
+			} else {
+				detail.show();
+			}
+			
+		});
+		
+	});
+
+</script>
 
 <div class="container" style="width: 1000px;">
 	<div class="row-mt-5 mt-2">
@@ -28,7 +60,7 @@
 	<div class="accordion">
 		<div class="row">
 			<div class="col">
-				<table class="table table-hover border" style="width: 100%;">
+				<table class="table table-hover border" id="page" style="width: 100%;">
 					
 					<thead>
 						<tr class="text-center">
@@ -37,6 +69,7 @@
 							<th>가격</th>
 							<th>신청일</th>
 							<th>진행현황</th>
+							<th></th>
 						</tr>
 					</thead>
 					
@@ -48,16 +81,18 @@
 								<td>${list.boardAdPrice}</td>
 								<td>${list.boardAdDate}</td>
 								<td>${list.boardAdCheck}</td>
+								<td><i class="fa-solid fa-angle-down"></i></td>
 							</tr>
 							
-							<%-- <tr>
-								<td colspan="4">
-									<c:forEach var="listAttach" items="${listAttach}">
-										<img src="${pageContext.request.contextPath}/file/download/${listAttach.attachNo}" class="d-block w-100" style="height: 480px;">
+							
+							<tr style="display:none;">
+								<td colspan="3" style="padding: 0 0 0 50px;">
+									<c:forEach var="boardAdAttachDto" items="${list.attachNoList}">
+										<img src="${pageContext.request.contextPath}/file/download/${boardAdAttachDto.attachNo}" style="height: 70px; width: 60px;">									
 									</c:forEach>
 								</td>
-								<td colspan="1">ㅎㅎ</td>
-							</tr> --%>
+								<td colspan="3">&middot;&nbsp;내용 : ${list.boardAdContent}<br>&middot;&nbsp;링크 : ${list.boardAdLink}</td>
+							</tr>
 							
 						</c:forEach>
 					</tbody>
@@ -68,3 +103,7 @@
 		</div>
 	</div>
 </div>
+
+
+
+

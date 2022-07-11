@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mars.entity.AdDto;
 import com.kh.mars.entity.BoardAdDto;
+import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.BoardAdAttachVO;
 import com.kh.mars.vo.BoardAdMemberVO;
 
@@ -68,12 +69,12 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	}
 
 	@Override
-	public List<BoardAdDto> selectList(int memberNo) {
+	public List<BoardAdAttachNoVO> selectList(int memberNo) {
 		
-		return sqlSession.selectList("board_ad.selectList", memberNo);
+		return sqlSession.selectList("board_ad.treeSearch", memberNo);
 	}
-	
-	
+
+
 	
 
 }
