@@ -66,6 +66,8 @@
 	 		<mvc:exclude-mapping path="/member/reset"/>
 	 		<mvc:exclude-mapping path="/member/password_reset_send_mail"/>
 	 		<mvc:exclude-mapping path="/member/password_reset"/>
+	 		<mvc:exclude-mapping path="/checkEmail"/>
+	 		<mvc:exclude-mapping path="/checkNick"/>
 	 		
 	 		<ref bean="memberLoginInterceptor"/>
 	 	</mvc:interceptor>
