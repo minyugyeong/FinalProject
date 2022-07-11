@@ -27,7 +27,8 @@ public class DMWebsocketServer extends TextWebSocketHandler{
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		ReceiveVO receiveVO = mapper.readValue(message.getPayload(), ReceiveVO.class);
-		
+		System.out.println("타입" + receiveVO.getType());
+		System.out.println("방번호"+receiveVO.getRoomNo());
 		if(receiveVO.getType() == join) {
 			manager.enterRoom(session, receiveVO.getRoomNo());
 		}

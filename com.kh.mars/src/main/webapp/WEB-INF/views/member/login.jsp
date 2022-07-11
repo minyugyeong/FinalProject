@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -18,7 +19,10 @@
         <div class="container col-lg-4 card p-5 mt-5">
     <form action="login" method="post">
             <div class="img p-4 text-center">
-                <div>로고 자리</div> 세션 = ${login }, ${auth}
+                <a class="navbar-brand" href="${pageContext.request.contextPath}">
+                        <img src="${pageContext.request.contextPath}/image/logo.png" width="150">
+                </a>
+                <a href="${pageContext.request.contextPath}/member/logout">로그아웃</a>
             </div>
             <div class="form-floating mb-3 row">
                 <input type="text" class="form-control" id="floatingInput" placeholder="이메일" name="memberEmail">
@@ -31,9 +35,14 @@
             <div class="row">
                 <button class="btn btn-primary">로그인</button>
             </div>
+            <c:if test="${param.error != null}">
+            <div class="row text-center">
+            	<h5 style="color:red;">로그인 정보가 일치하지 않습니다</h5>
+            </div>
+            </c:if>
     </form>
             <div class="row text-center m-3">
-                <a href="#">비밀번호를 잊으셨나요?</a>
+                <a href="password_reset">비밀번호를 잊으셨나요?</a>
             </div>
         </div>
     

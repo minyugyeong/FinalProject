@@ -89,8 +89,12 @@ public class BoardDaoImpl implements BoardDao{
 	}
 
 
-	
-	
+	@Override
+	public void delete(int boardNo) {
+		
+		sqlSession.delete("board.delete", boardNo);
+		
+	}
 	
 	
 }

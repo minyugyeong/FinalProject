@@ -1,7 +1,9 @@
 package com.kh.mars.repository;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.mars.entity.MemberDto;
+import com.kh.mars.vo.MemberSearchVO;
 
 @Repository
 public class MemberDaoImpl implements MemberDao{
@@ -80,13 +83,18 @@ public class MemberDaoImpl implements MemberDao{
 	@Override
 	public boolean changePassword(int memberNo, String currentPassword, String changePassword) {
 		MemberDto memberDto = this.info(memberNo);
-		if(currentPassword == memberDto.getMemberPassword());
-		String encodePassword = passwordEncoder.encode(changePassword);
+		boolean isPasswordMatch = passwordEncoder.matches(currentPassword, memberDto.getMemberPassword());
+		if(isPasswordMatch) {
+			
+			String encodePassword = passwordEncoder.encode(changePassword);
+			int count = sqlSession.update("member.changePassword", MemberDto.builder().memberNo(memberNo).memberPassword(encodePassword).build());
+			return count >0;
+		}else {
+			return false;
+		}
 		
-		int count = sqlSession.update("member.changePassword", MemberDto.builder().memberNo(memberNo).memberPassword(encodePassword).build());
 			
 		
-		return count >0;
 		
 	}
 
@@ -109,11 +117,65 @@ public class MemberDaoImpl implements MemberDao{
 		return sqlSession.selectOne("member.selectNo", memberNick);
 	}
 
-	/*
-	 * @Override public List<MemberDto> findMemberNick(String memberNick) {
-	 * 
-	 * return sqlSession.selectList("member.findmemberNick", memberNick); }
-	 */
+	//멤버 리스트
+	@Override
+	public List<MemberDto> selectList(MemberSearchVO vo, int p, int s) {
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("vo", vo);
+		
+		int end = p * s;
+		int begin = end - (s-1);
+		param.put("end", end);
+		param.put("begin", begin);
+		
+		return sqlSession.selectList("member.searchList", param);
+	}
+	
+	@Override
+	public int count(MemberSearchVO vo) {
+		
+		return sqlSession.selectOne("member.count", vo);
+	}
+
+	
+	@Override
+	public String checkEmail(String memberEmail) {
+		return sqlSession.selectOne("member.checkEmail",memberEmail);
+		
+	}
+
+	@Override
+	public boolean resetPassword(MemberDto memberDto) {
+		String rawPassword = memberDto.getMemberPassword();
+		String encryptPassword = passwordEncoder.encode(rawPassword);
+		memberDto.setMemberPassword(encryptPassword);
+		int count = sqlSession.update("member.resetPassword", memberDto);
+		return count > 0;
+	}
+
+
+	@Override
+	public String checkNick(String memberNick) {
+		return sqlSession.selectOne("member.checkNick",memberNick);
+	}
+
+	@Override
+	public boolean changeInterest(int memberNo, String memberInterest) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("memberNo", memberNo);
+		param.put("memberInterest", memberInterest);
+		
+		int count = sqlSession.update("member.changeInterest", param);
+		
+		return count > 0;
+	}
+
+	@Override
+	public void personal(int memberNo) {
+		sqlSession.update("member.personal",memberNo);
+	}
+
 
 }
 

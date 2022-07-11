@@ -1,10 +1,13 @@
 package com.kh.mars.repository;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.mars.entity.BoardAdAttachDto;
+import com.kh.mars.vo.BoardAdAttachNoVO;
 
 @Repository
 public class BoardAdAttachDaoImpl implements BoardAdAttachDao {
@@ -20,5 +23,13 @@ public class BoardAdAttachDaoImpl implements BoardAdAttachDao {
 		sqlSession.insert("board-ad-attach.insert", boardAdAttachDto);
 		
 	}
+
+	@Override
+	public void delete(int boardAdNo) {
+
+		sqlSession.delete("board-ad-attach.delete", boardAdNo);
+		
+	}
+
 
 }

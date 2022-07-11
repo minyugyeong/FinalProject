@@ -55,6 +55,23 @@
 	<mvc:resources location="/resources/image/" mapping="/image/**"></mvc:resources>
 	
 	<!-- 
+		인터셉터 설정
+	 -->
+	 <mvc:interceptors>
+	 	<mvc:interceptor>
+	 		<mvc:mapping path="/*"/>
+	 		
+	 		<mvc:exclude-mapping path="/member/login"/>
+	 		<mvc:exclude-mapping path="/member/join"/>
+	 		<mvc:exclude-mapping path="/member/reset"/>
+	 		<mvc:exclude-mapping path="/member/password_reset_send_mail"/>
+	 		<mvc:exclude-mapping path="/member/password_reset"/>
+	 		
+	 		<ref bean="memberLoginInterceptor"/>
+	 	</mvc:interceptor>
+	 </mvc:interceptors>
+	
+	<!-- 
 	파일 업로드를 위한 도구 등록
 	-(주의) 등록할 때 ID는 반드시 "multipartResolver"로 해야 한다
 	 -->

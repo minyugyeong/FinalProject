@@ -1,4 +1,4 @@
-package com.kh.mars.controller;
+    package com.kh.mars.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,9 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.kh.mars.entity.AdDto;
 import com.kh.mars.entity.BoardAdDto;
 import com.kh.mars.entity.BoardAdHashtagDto;
-import com.kh.mars.entity.BoardDto;
-import com.kh.mars.entity.BoardHashtagDto;
-import com.kh.mars.entity.BoardMemberTagDto;
 import com.kh.mars.entity.HashtagDto;
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.repository.AdDao;
@@ -64,8 +61,7 @@ public class BoardAdController {
 	// 등록
 	@GetMapping("/insert")
 	public String insert(HttpSession session, Model model) {
-
-		session.setAttribute("login", 43);
+		
 
 		Integer memberNo = (Integer) session.getAttribute("login");
 
@@ -123,7 +119,7 @@ public class BoardAdController {
 
 		attr.addAttribute("memberNo", memberNo);
 
-		return "redirect:/member/detail";
+		return "redirect:/member/page";
 	}
 	
 	
@@ -205,7 +201,18 @@ public class BoardAdController {
 		Integer memberNo = (Integer)session.getAttribute("login");
 		attr.addAttribute("memberNo", memberNo);
 		
-		return "redirect:/member/detail";
+		return "redirect:/member/page";
+	}
+	
+	@GetMapping("/delete")
+	public String delete(RedirectAttributes attr, @RequestParam int boardAdNo, HttpSession session) {
+		
+		boardAdService.delete(boardAdNo);
+		
+		Integer memberNo = (Integer)session.getAttribute("login");
+		attr.addAttribute("memberNo", memberNo);
+		
+		return "redirect:/member/page";
 	}
 	
 	

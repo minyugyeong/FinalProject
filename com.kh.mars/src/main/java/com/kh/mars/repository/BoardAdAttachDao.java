@@ -6,4 +6,8 @@ public interface BoardAdAttachDao {
 	
 	void insert(BoardAdAttachDto boardAdAttachDto);
 
+	void delete(int boardAdNo);
+
+
+
 }

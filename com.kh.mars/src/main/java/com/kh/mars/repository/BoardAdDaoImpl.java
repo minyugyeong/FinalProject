@@ -8,7 +8,9 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.mars.entity.AdDto;
 import com.kh.mars.entity.BoardAdDto;
+import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.BoardAdAttachVO;
 import com.kh.mars.vo.BoardAdMemberVO;
 import com.kh.mars.vo.BoardMainListVO;
@@ -24,8 +26,13 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	public BoardAdDto insert(BoardAdDto boardAdDto) {
 		int boardAdNo = sqlSession.selectOne("board_ad.sequence");
 		boardAdDto.setBoardAdNo(boardAdNo);
-		boardAdDto.setBoardAdCount(0);
+		
+		AdDto adDto = sqlSession.selectOne("ad.one", boardAdDto.getAdNo());
+		boardAdDto.setBoardAdCount(adDto.getAdCount());
+		boardAdDto.setBoardAdPrice(adDto.getAdPrice());
+		
 		sqlSession.insert("board_ad.insert", boardAdDto);
+		
 		return sqlSession.selectOne("board_ad.selectOne", boardAdNo);
 	}
 
@@ -50,6 +57,10 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	@Override
 	public void edit(BoardAdDto boardAdDto) {
 		
+		AdDto adDto = sqlSession.selectOne("ad.one", boardAdDto.getAdNo());
+		boardAdDto.setBoardAdCount(adDto.getAdCount());
+		boardAdDto.setBoardAdPrice(adDto.getAdPrice());
+		
 		sqlSession.update("board_ad.edit", boardAdDto);
 		
 	}
@@ -66,6 +77,21 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	public List<BoardMainListVO> mainList(int memberNo) {
 		return sqlSession.selectList("board_ad.AdTreeSearch", memberNo);
 	}
+
+	@Override
+	public void delete(int boardAdNo) {
+		
+		sqlSession.delete("board_ad.delete", boardAdNo);
+		
+	}
+
+	@Override
+	public List<BoardAdAttachNoVO> selectList(int memberNo) {
+		
+		return sqlSession.selectList("board_ad.treeSearch", memberNo);
+	}
+
+
 	
 
 }

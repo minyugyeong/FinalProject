@@ -3,6 +3,7 @@ package com.kh.mars.repository;
 import java.util.List;
 
 import com.kh.mars.entity.BoardAdDto;
+import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.BoardAdAttachVO;
 import com.kh.mars.vo.BoardAdMemberVO;
 import com.kh.mars.vo.BoardMainListVO;
@@ -23,4 +24,8 @@ public interface BoardAdDao {
 	List<BoardReplyVO> adDetailReply(int memberNo, int boardNo);
 
 	List<BoardMainListVO> mainList(int memberNo);
+	void delete(int boardAdNo);
+
+	List<BoardAdAttachNoVO> selectList(int memberNo);
+
 }

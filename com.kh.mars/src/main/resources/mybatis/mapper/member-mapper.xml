@@ -71,7 +71,10 @@
 				member_highschool = #{memberHighschool},
 				member_university = #{memberUniversity},
 				member_gender = #{memberGender},
-				member_interest = #{memberInterest}
+				member_interest = #{memberInterest},
+				member_private = #{memberPrivate},
+				member_name = #{memberName},
+				member_introduce = #{memberIntroduce}
 			where
 				member_no = #{memberNo}
 	</update>
@@ -87,6 +90,11 @@
 		select member_nick from member where member_no = #{memberNo}
 	</select>
 	
+	<!-- 이메일 중복확인 -->
+	<select id="checkEmail" resultType="String" parameterType="String">
+		select member_email from member where member_email = #{memberEmail}
+	</select>
+	
 	<!-- 사람 태그 목록 -->
 	<select id="findmemberNick" resultType="MemberDto" parameterType="String">
 		select member_nick from member where instr(member_nick, #{memberNick}) > 0 order by member_nick asc
@@ -97,7 +105,138 @@
 		select member_no from member where member_nick = #{memberNick}
 	</select>
 	
+	<!-- 관리자 회원 목록 검색 & 조회 -->
+	<select id="searchList" resultType="MemberDto" parameterType="MemberSearchVO">
+		
+		<bind name="isEmailExist" value="vo.memberEmail != null and !vo.memberEmail.equals('')"></bind>
+		<bind name="isGenderExist" value="vo.memberGender != null and !vo.memberGender.equals('')"></bind>
+		<bind name="isNickExist" value="vo.memberNick != null and !vo.memberNick.equals('')"></bind>
+		<bind name="isPhoneExist" value="vo.memberPhone != null and !vo.memberPhone.equals('')"></bind>
+		<bind name="isGradeExist" value="vo.memberGrade != null and !vo.memberGrade.equals('')"></bind>
+		<bind name="isInterestExist" value="vo.memberInterest != null and !vo.memberInterest.equals('')"></bind>
+		<bind name="isNameExist" value="vo.memberName != null and !vo.memberName.equals('')"></bind>
+		
+		select * from (
+			select rownum rn, TMP.* from(
+				select * from member
+					
+					<where>
+			
+						<if test="isEmailExist">
+						 	 <![CDATA[and instr(member_email, #{vo.memberEmail}) > 0]]>
+						</if>
+						<if test="isGenderExist">
+						 	 and member_gender = #{vo.memberGender}
+						</if>
+						<if test="isNickExist">
+							 <![CDATA[and instr(member_nick, #{vo.memberNick}) > 0]]>
+						</if>
+						<if test="isPhoneExist">
+							 <![CDATA[and instr(member_phone, #{vo.memberPhone}) > 0]]>
+						</if>
+						<if test="isNameExist">
+							 <![CDATA[and instr(member_name, #{vo.memberName}) > 0]]>
+						</if>
+						<if test="isInterestExist">
+							 and member_interest = #{vo.memberInterest}
+						</if>
+						<if test="isGradeExist">
+							 and member_grade = #{vo.memberGrade}
+						</if>
+						
+					</where>
+					
+			)TMP
+		)where rn between #{begin} and #{end} order by member_no asc
+		
+	</select>
+	
+	<select id="count" resultType="int" parameterType="MemberSearchVO">
+		<bind name="isEmailExist" value="memberEmail != null and !memberEmail.equals('')"></bind>
+		<bind name="isGenderExist" value="memberGender != null and !memberGender.equals('')"></bind>
+		<bind name="isNickExist" value="memberNick != null and !memberNick.equals('')"></bind>
+		<bind name="isPhoneExist" value="memberPhone != null and !memberPhone.equals('')"></bind>
+		<bind name="isGradeExist" value="memberGrade != null and !memberGrade.equals('')"></bind>
+		<bind name="isInterestExist" value="memberInterest != null and !memberInterest.equals('')"></bind>
+		<bind name="isNameExist" value="memberName != null and !memberName.equals('')"></bind>
+		
+		select count(*) from member 
+			
+			<where>
+			
+				<if test="isEmailExist">
+				 	 <![CDATA[and instr(member_email, #{memberEmail}) > 0]]>
+				</if>
+				<if test="isGenderExist">
+				 	 and member_gender = #{memberGender}
+				</if>
+				<if test="isNickExist">
+					 <![CDATA[and instr(member_nick, #{memberNick}) > 0]]>
+				</if>
+				<if test="isPhoneExist">
+					 <![CDATA[and instr(member_phone, #{memberPhone}) > 0]]>
+				</if>
+				<if test="isNameExist">
+					 <![CDATA[and instr(member_name, #{memberName}) > 0]]>
+				</if>
+				<if test="isInterestExist">
+					 and member_interest = #{memberInterest}
+				</if>
+				<if test="isGradeExist">
+					 and member_grade = #{memberGrade}
+				</if>
+				
+			</where>
+			
+	</select>
+	
+	<update id="resetPassword" parameterType="MemberDto">
+		update member
+		set member_password = #{memberPassword}
+		where member_email = #{memberEmail}
+	</update>
+	
+	<select id="checkNick" parameterType="String" resultType="String">
+		select member_nick from member where member_nick = #{memberNick}
+	</select>
+	
+	<update id="changeInterest" parameterType="Map">
+		update member
+			set 
+		member_interest = #{memberInterest}, member_grade = '비즈니스회원', member_private = 0
+			where
+			member_no = #{memberNo}
+	</update>
+	
+	<update id="personal" parameterType="int">
+		update member
+			set
+				member_grade = '일반회원'
+			where
+				member_no = #{memberNo}
+	</update>
+	
  </mapper> 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
