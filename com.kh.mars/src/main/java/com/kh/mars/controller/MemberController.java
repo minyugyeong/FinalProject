@@ -3,6 +3,7 @@ package com.kh.mars.controller;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.util.List;
 import java.util.Random;
 
 import javax.mail.MessagingException;
@@ -28,6 +29,7 @@ import com.kh.mars.repository.FollowDao;
 import com.kh.mars.repository.MemberDao;
 import com.kh.mars.repository.MemberProfileDao;
 import com.kh.mars.service.EmailService;
+import com.kh.mars.vo.MemberSearchVO;
 
 @Controller
 @RequestMapping("/member")
@@ -200,51 +202,37 @@ public class MemberController {
 		return "member/page";
 	}
 	
-//	//관리자 회원 목록 출력
-//	@GetMapping("/admin")
-//	public String adminList(
-//			@RequestParam(required = false) String type,
-//			@RequestParam(required = false) String keyword,
-//			@RequestParam(required = false, defaultValue="1") int p,
-//			@RequestParam(required = false, defaultValue="10") int s,
-//			Model model) {
-//		
-//		List<MemberDto> list = memberDao.adminSelect(type, keyword, p, s);
-//		model.addAttribute("list", list);
-//		
-//		boolean search = type != null && keyword != null;
-//		model.addAttribute("search", list);
-//		
-//		int count = memberDao.count(type, keyword);
-//		int lastPage = (count + s-1)/s;
-//		
-//		int blockSize = 10;
-//		int endBlock = (p+blockSize-1) / blockSize * blockSize;
-//		int startBlock = endBlock - (blockSize - 1);
-//		if(endBlock > lastPage) {
-//			endBlock = lastPage;
-//		}
-//		
-//		model.addAttribute("p", p);
-//		model.addAttribute("s", s);
-//		model.addAttribute("type", type);
-//		model.addAttribute("keyword", keyword);
-//		model.addAttribute("lastPage", lastPage);
-//		model.addAttribute("startBlock", startBlock);
-//		model.addAttribute("endBlock", endBlock);
-//		
-//		return "member/admin";
-//		
-//	}
-	
 	//관리자 회원 목록 출력
 	@GetMapping("/list")
-	public String list(@ModelAttribute MemberDto memberDto, Model model) {
-		List<MemberDto> list = memberDao.selectList(memberDto);
+	public String list(
+			@ModelAttribute MemberSearchVO vo, 
+			Model model,
+			@RequestParam(required = false, defaultValue = "1") int p,
+			@RequestParam(required = false, defaultValue = "10") int s
+			) {
+		
+		List<MemberDto> list = memberDao.selectList(vo, p, s);
 		model.addAttribute("list", list);
+		
+		int count = memberDao.count(vo);
+		int lastPage = (count + s-1)/s;
+		
+		int blockSize = 10;
+		int endBlock = (p+blockSize-1) / blockSize * blockSize;
+		int startBlock = endBlock - (blockSize - 1);
+		if(endBlock > lastPage) {
+			endBlock = lastPage;	
+		}
+		
+		model.addAttribute("p", p);
+		model.addAttribute("s", s);
+		model.addAttribute("startBlock", startBlock);
+		model.addAttribute("endBlock", endBlock);
+		model.addAttribute("lastPage", lastPage);
 		
 		return "member/list";
 	}
+	
 	
 	@GetMapping("/password_reset")
 	public String passwordReset() {

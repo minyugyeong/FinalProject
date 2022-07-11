@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.mars.entity.MemberDto;
+import com.kh.mars.vo.MemberSearchVO;
 
 public interface MemberDao {
 
@@ -34,11 +35,10 @@ public interface MemberDao {
 
 	int selectNo(String memberNick);
 
-	List<MemberDto> selectList(MemberDto memberDto);
+	int count(MemberSearchVO vo);
 
-//	List<MemberDto> adminSelect(String type, String keyword, int p, int s);
-//
-//	int count(String type, String keyword);
+	List<MemberDto> selectList(MemberSearchVO vo, int p, int s);
+
 
 	
 
