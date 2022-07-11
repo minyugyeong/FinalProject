@@ -30,11 +30,26 @@ public class ReplyRestController {
 	public void replyInsert(
 							@ModelAttribute ReplyDto replyDto,
 							@RequestParam int boardNo,
+							@RequestParam int superNo,
 							HttpSession session
 							) {
 		System.out.println("replyDto = " + replyDto);
 		replyDto.setReplyMemberNo((Integer)session.getAttribute("login"));
+		replyDto.setSuperNo(superNo);
 		replyService.insert(boardNo, replyDto);
+	}
+	
+	@PostMapping("/insert_ad")
+	public void adReplyInsert(
+							@ModelAttribute ReplyDto replyDto,
+							@RequestParam int boardNo,
+							@RequestParam int superNo,
+							HttpSession session
+							) {
+		System.out.println("replyDto = " + replyDto);
+		replyDto.setReplyMemberNo((Integer)session.getAttribute("login"));
+		replyDto.setSuperNo(superNo);
+		replyService.insertAd(boardNo, replyDto);
 	}
 	
 	@DeleteMapping("/delete/{replyNo}")

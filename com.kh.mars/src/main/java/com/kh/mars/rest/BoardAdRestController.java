@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.mars.entity.BoardDto;
+import com.kh.mars.repository.BoardAdDao;
 import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.BoardLikeDao;
 import com.kh.mars.service.BoardLikeService;
@@ -31,23 +32,29 @@ import com.kh.mars.vo.BoardReplyVO;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
-@RequestMapping("/rest/board")
-public class BoardRestController {
+@RequestMapping("/rest/board_ad")
+public class BoardAdRestController {
 	
 	@Autowired
-	private BoardDao boardDao;
+	private BoardAdDao boardAdDao;
+	
 	@Autowired
 	private BoardLikeService boardLikeService;
 	
+	@GetMapping("/detail_reply/{boardNo}")
+	public List<BoardReplyVO> adDetailReply(
+								@PathVariable int boardNo,
+								HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		return boardAdDao.adDetailReply(memberNo, boardNo);
+	}
+	
 	@GetMapping("/main")
-	public List<BoardMainListVO> mainList(
-										@RequestParam int pageCount,
-										@RequestParam int uptoNo,
-										@ApiIgnore HttpSession session
-										) {
-			int memberNo = (Integer)session.getAttribute("login");
-			List<BoardMainListVO> list =  boardDao.mainList(memberNo, pageCount, uptoNo);
-			return list;
+	public List<BoardMainListVO> main(
+										HttpSession session
+										){
+		int memberNo = (Integer) session.getAttribute("login");
+		return boardAdDao.mainList(memberNo);
 	}
 	
 	@PostMapping("/like")
@@ -59,17 +66,8 @@ public class BoardRestController {
 		Map<String, Object> json = mapper.readValue(boardNo, HashMap.class);
 		int board = Integer.parseInt(json.get("boardNo").toString());
 		int memberNo = (Integer)session.getAttribute("login");
-		return boardLikeService.boardLike(memberNo, board);
+		return boardLikeService.boardAdLike(memberNo, board);
 	}
-	
-	@GetMapping("/detail_reply/{boardNo}")
-	public List<BoardReplyVO> detailReply(
-								@PathVariable int boardNo,
-								HttpSession session) {
-		int memberNo = (Integer)session.getAttribute("login");
-		return boardDao.detailReply(memberNo, boardNo);
-	}
-	
 }
 
 

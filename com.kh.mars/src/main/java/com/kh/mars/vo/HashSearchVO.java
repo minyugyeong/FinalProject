@@ -1,4 +1,4 @@
-package com.kh.mars.entity;
+package com.kh.mars.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,8 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
-public class AdLikeDto {
-	private int boardAdNo;
-	private int memberNo;
-	private int adLikeCheck;
+public class HashSearchVO {
+	
+	private int boardNo;
+	private int attachNo;
+	private int type;
+
 }

@@ -27,6 +27,11 @@ public class HashtagDaoImpl implements HashtagDao{
 		
 		return sqlSession.selectOne("hashtag.one", hashtagName); 
 	}
+
+	@Override
+	public String hashTagName(int hashTagNo) {
+		return sqlSession.selectOne("hashtag.oneName", hashTagNo);
+	}
 	
 	
 
