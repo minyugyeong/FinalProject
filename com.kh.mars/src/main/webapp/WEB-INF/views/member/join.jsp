@@ -19,7 +19,9 @@
 <form action="join" method="post" novalidate autocomplete="off" class="require-validation">
     <div class="container col-lg-4 card p-5 mt-5 page">
         <div class="img p-4 text-center">
-            <div>로고 자리</div> 
+            <a class="navbar-brand" href="${pageContext.request.contextPath}">
+                        <img src="${pageContext.request.contextPath}/image/logo.png" width="150">
+            </a>
         </div>
 
         <div class="mb-2 text-center">
@@ -32,6 +34,7 @@
 
         <div class="row form-floating mb-3">
             <input type="email" class="form-control member-email" id="floatingInput" placeholder="name@example.com" name="memberEmail">
+            <span style="color:red"></span>
             <label for="floatingInput">이메일 주소</label>
             <div class="invalid-feedback">사용할 수 없는 이메일 입니다</div>
         </div>
@@ -61,6 +64,7 @@
     </div>  
 
     <div class="container col-lg-4 card p-5 mt-5 page">
+    	
 
 		<label>성별</label>
 	          <div class="form-check form-check-inline">
@@ -133,7 +137,7 @@
             		cert:false,
             };
 
-           /*  $(".page:gt(0)").hide(); */
+           $(".page:gt(0)").hide();
 
             $(".btn-send-mail").click(function(){
                 var memberEmail = $(".member-email").val();
@@ -146,6 +150,7 @@
                     }, 
                     success:function(resp){
                        object.memberEmail = memberEmail;
+                      console.log("메일 전송")
                     }
                 });
             });
@@ -180,7 +185,7 @@
                 });
             });
 
-           /*  $(".btn-next").click(function(){
+           $(".btn-next").click(function(){
                 index++;
                 $(".page").hide();
                 $(".page").eq(index).show();
@@ -190,7 +195,7 @@
                 index--;
                 $(".page").hide();
                 $(".page").eq(index).show();
-            }); */
+            }); 
 
             $("input[name=memberEmail]").blur(function(){
                 var regex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -208,11 +213,12 @@
                     	success:(resp)=>{
                     		if(resp == true){//정규표현식 통과 + 중복검사 통과
                     			$(this).removeClass("is- valid is-invalid");
+                                $(this).next("span").text("");
                                 $(this).addClass("is-valid")
                     		}
                     		else {//정규표현식 통과 + 중복검사 실패
                     			$(this).removeClass("is- valid is-invalid");
-                                $(this).addClass("is-invalid")
+                                $(this).next("span").text("이미 가입된 이메일 입니다");
                     		}
                     	}
                     })              		
@@ -220,7 +226,7 @@
               	else{//정규표현식 실패
               		$(this).removeClass("is- valid is-invalid");
                     $(this).addClass("is-invalid")
-                    	
+                    $(this).next("span").text("");
               	}
                 
             });

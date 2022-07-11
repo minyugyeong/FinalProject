@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
+
 <div class="container-fluid mt-5" style="width:40%!important;">
 	<form action="reset" method="post">
 	<input type="hidden" name="cert" value="${cert}">
@@ -25,4 +26,8 @@
         </div>
     </form>
 </div>
+
+<script>
+
+</script>
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

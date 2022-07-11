@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -140,10 +141,13 @@ public class MemberRestController {
 	
 	@PostMapping("/block")
 	@ResponseBody
-	public int block(@RequestParam int memberNo, HttpSession session) {
-		//팔로우 상태인지 검사
+	public int block(
+			@RequestParam int memberNo, 
+			HttpSession session) {
+		
 		int followWho = (Integer)session.getAttribute("login");
 
+		
 		
 		//차단 상태 검사
 		BlockDto blockDto = blockDao.selectOne(followWho, memberNo);
