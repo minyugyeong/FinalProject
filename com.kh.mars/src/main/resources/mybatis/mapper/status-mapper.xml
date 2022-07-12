@@ -24,38 +24,47 @@
  <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- <mapper namespace="hashtag">
- 
- 	 <!-- 등록 -->
-	 <select id="sequence" resultType="int">
-	 		select hashtag_seq.nextval from dual
-	 </select>
-	 
-	 <insert id="insert" parameterType="HashtagDto">
-	 		insert into hashtag(hashtag_no, hashtag_name) values(#{hashtagNo}, #{hashtagName})
-	 </insert>
-	 
-	 <!-- 조회 -->
-	 <select id="one" resultType="HashtagDto" parameterType="String">
-	 		select * from hashtag where hashtag_name = #{hashtagName}
-	 </select>
-	 
-	 <select id="oneName" resultType="String" parameterType="int">
-	 		select hashtag_name from hashtag where hashtag_no = #{hashTagNo}
-	 </select>
-	 
-	 
-		
+ <mapper namespace="status">
+	<!-- 성별별 가입현황-->
+	<select id="joinGender" resultType="JoinGenderVO">
+		select count(*) as count, member_gender,
+		case when member_gender = 0 then '남성'
+        	 when member_gender = 1 then '여성' end as gender
+		from member group by member_gender
+	</select>
+	
+	<!-- 전체 회원 관심사 -->
+	<select id="memberInterest" resultType="MemberInterestVO">
+		select  '없음' "member_interest", count(*) as count
+		from member where member_interest is null group by member_interest
+		union
+		select member_interest , count(*) as count
+		from member where member_interest is not null group by member_interest
+	</select>
+	
+	<!-- 남성 관심사 -->
+	<select id="manInterest" resultType="MemberInterestVO">
+		select member_interest, count(*) as count 
+		from member where member_gender=0 group by member_interest
+	</select>
+	
+	<!-- 여성 관심사 -->
+	<select id="womanInterest" resultType="MemberInterestVO">
+		select member_interest, count(*) as count 
+		from member where member_gender=1 group by member_interest
+	</select>
+	
+	<!-- 유형별 광고수 -->
+	<select id="interestAd" resultType="AdStatusVO">
+		select m.member_interest, count(ba.board_ad_no) as count from board_ad ba 
+		inner join member m on ba.member_no=m.member_no group by m.member_interest
+	</select>
+	
+	<!-- 광고별 매출액 -->
+	<select id="adSum" resultType="AdStatusVO">
+		select m.member_interest, sum(ba.board_ad_price) as sum from board_ad ba 
+		inner join member m on ba.member_no=m.member_no group by m.member_interest 
+	</select>
+	
+	
  </mapper> 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 

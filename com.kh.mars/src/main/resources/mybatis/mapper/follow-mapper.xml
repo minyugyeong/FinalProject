@@ -46,7 +46,11 @@
 		        on a.follow_target = b.follow_target 
 		        group by a.follow_target, b."followcount"
 		        )ab
-		        inner join member m on m.member_no = ab.follow_target
+		        inner join (
+		        select * from member where member_private = 0
+                minus
+                select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo}
+		        ) m on m.member_no = ab.follow_target
 		        )abc
 		        inner join member mm on mm.member_no = abc."who_no"
 				)abcd left outer join member_profile mp on abcd.follow_target = mp.member_no    

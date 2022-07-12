@@ -29,5 +29,16 @@ public class ReplyServiceImpl implements ReplyService{
 		param.put("replyNo", replyNo);
 		sqlSession.insert("reply.boardReplyInsert", param);
 	}
+	
+	@Transactional
+	@Override
+	public void insertAd(int boardNo, ReplyDto replyDto) {
+		int replyNo = replyDao.insert(replyDto);
+		System.out.println(replyNo);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("boardNo", boardNo);
+		param.put("replyNo", replyNo);
+		sqlSession.insert("reply.boardAdReplyInsert", param);
+	}
 
 }

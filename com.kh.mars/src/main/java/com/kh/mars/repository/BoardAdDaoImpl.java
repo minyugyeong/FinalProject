@@ -1,6 +1,8 @@
 package com.kh.mars.repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mars.entity.AdDto;
 import com.kh.mars.entity.BoardAdDto;
+import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.BoardAdAttachVO;
 import com.kh.mars.vo.BoardAdMemberVO;
+import com.kh.mars.vo.BoardMainListVO;
+import com.kh.mars.vo.BoardReplyVO;
 
 @Repository
 public class BoardAdDaoImpl implements BoardAdDao{
@@ -59,6 +64,19 @@ public class BoardAdDaoImpl implements BoardAdDao{
 		sqlSession.update("board_ad.edit", boardAdDto);
 		
 	}
+	
+	@Override
+	public List<BoardReplyVO> adDetailReply(int memberNo, int boardNo) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("memberNo", memberNo);
+		param.put("boardNo", boardNo);
+		return sqlSession.selectList("board_ad.detailReply", param);
+	}
+
+	@Override
+	public List<BoardMainListVO> mainList(int memberNo) {
+		return sqlSession.selectList("board_ad.AdTreeSearch", memberNo);
+	}
 
 	@Override
 	public void delete(int boardAdNo) {
@@ -68,12 +86,12 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	}
 
 	@Override
-	public List<BoardAdDto> selectList(int memberNo) {
+	public List<BoardAdAttachNoVO> selectList(int memberNo) {
 		
-		return sqlSession.selectList("board_ad.selectList", memberNo);
+		return sqlSession.selectList("board_ad.treeSearch", memberNo);
 	}
-	
-	
+
+
 	
 
 }
