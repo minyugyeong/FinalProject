@@ -129,7 +129,7 @@ public class MemberController {
 			return "redirect:edit";
 		}
 		else {
-			return "redirect:edit?error";
+			return "redirect:edit?error2";
 		}
 	}
 	
