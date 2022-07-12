@@ -69,13 +69,22 @@
 	 		<mvc:exclude-mapping path="/checkEmail"/>
 	 		<mvc:exclude-mapping path="/checkNick"/>
 	 		
-	 		<ref bean="memberLoginInterceptor"/>
+	 		<ref bean="memberNonLoginInterceptor"/>
 	 	</mvc:interceptor>
 	 	
 	 	<mvc:interceptor>
 	 		<mvc:mapping path="/member/page*"/>
 	 		
 	 		<ref bean="memberBlockInterceptor"/>
+	 	</mvc:interceptor>
+	 	
+	 	<mvc:interceptor>
+	 		<mvc:mapping path="/member/login"/>
+	 		<mvc:mapping path="/member/join"/>
+	 		<mvc:mapping path="/member/password_reset"/>
+	 		<mvc:mapping path="/member/password_reset_send_mail"/>
+	 		
+	 		<ref bean="memberLoginInterceptor"/>
 	 	</mvc:interceptor>
 	 </mvc:interceptors>
 	
