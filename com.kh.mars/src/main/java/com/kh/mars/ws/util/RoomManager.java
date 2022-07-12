@@ -12,18 +12,24 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.mars.repository.DmDao;
+import com.kh.mars.service.DmService;
 import com.kh.mars.vo.MessageVO;
 
 //여러 방을 관리하는 관리자
 public class RoomManager {
 	@Autowired
 	private DmDao dmDao;
+	@Autowired
+	private DmService dmService;
+	
 	//방 목록
 	private Map<Integer, Room> rooms = Collections.synchronizedMap(new HashMap<>());
 	//대기실
 	private Room waitingRoom = new Room();
 	
 	private ObjectMapper mapper = new ObjectMapper();
+	
+	
 	
 	//기능
 	public void enterWaitingRoom(WebSocketSession session) {//대기실 입장
@@ -34,12 +40,21 @@ public class RoomManager {
 		//대기실에 있는 사용자를 꺼내고 삭제한 뒤 이름에 해당하는 방으로 입장시킨다
 		//(주의) 방이 만들어져있는지 검사해야한다
 		User user = new User(session);
-		waitingRoom.leave(user);//대기실에서 사용자를 내보낸다
+		//waitingRoom.leave(user);//대기실에서 사용자를 내보낸다
 		
 		if(notExist(no)) {//방이 없으면
 			//방을 생성하여 rooms에 추가한다
 			createRoom(no);
 		}
+		
+		//모든룸에서 일단 나오게 한 후
+		for(int no2 : rooms.keySet()) {//이름만 뽑아서
+			Room room = getRoom(no2);//방 정보를 얻어내고
+			if(room.contains(user)) {//사용자가 있다면
+				room.leave(user);//내보내세요
+			}
+		}
+		
 		//rooms의 name 방에 user를 추가한다
 		getRoom(no).enter(user);
 	}
@@ -69,15 +84,15 @@ public class RoomManager {
 	public boolean notExist(int no) {
 		return rooms.containsKey(no) == false;
 	}
-	public void broadcastRoom(WebSocketSession session, int roomNo, String message) throws IOException {
+	public void broadcastRoom(WebSocketSession session, int roomNo, String message, int target) throws IOException {
 		User user = new User(session);
 		if(!user.isMember()) return;//비회원 차단
 		
 		MessageVO messageVO = MessageVO.builder()
-																.memberNo(user.getMemberNo())
-																.memberNick(user.getMemberNick())
-																.content(message)
-																.time(new Date())
+																.who(user.getMemberNo())
+																.roomNo(roomNo)
+																.dmContent(message)
+																.dmRecordTime(new Date())
 															.build();
 		//dmDao.insertDmRecordDto(messageVO);
 		String json = mapper.writeValueAsString(messageVO);

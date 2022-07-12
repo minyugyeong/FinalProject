@@ -12,15 +12,16 @@ public class MemberLoginInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		Integer memberNo = (Integer) request.getSession().getAttribute("login");
+		return true;
+//		Integer memberNo = (Integer) request.getSession().getAttribute("login");
 		
-		if(memberNo == null) {
-			response.sendRedirect(request.getContextPath()+"/member/login");
-			return false;
-		}
-		else {
-			return true;
-		}
+//		if(memberNo == null) {
+//			response.sendRedirect(request.getContextPath()+"/member/login");
+//			return false;
+//		}
+//		else {
+//			return true;
+//		}
 	}
 	
 }
