@@ -59,7 +59,7 @@
 	 -->
 	 <mvc:interceptors>
 	 	<mvc:interceptor>
-	 		<mvc:mapping path="/*"/>
+	 		<mvc:mapping path="/**"/>
 	 		
 	 		<mvc:exclude-mapping path="/member/login"/>
 	 		<mvc:exclude-mapping path="/member/join"/>
@@ -70,6 +70,12 @@
 	 		<mvc:exclude-mapping path="/checkNick"/>
 	 		
 	 		<ref bean="memberLoginInterceptor"/>
+	 	</mvc:interceptor>
+	 	
+	 	<mvc:interceptor>
+	 		<mvc:mapping path="/member/page*"/>
+	 		
+	 		<ref bean="memberBlockInterceptor"/>
 	 	</mvc:interceptor>
 	 </mvc:interceptors>
 	

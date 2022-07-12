@@ -42,5 +42,9 @@
  	<select id="one" resultType="Integer" parameterType="int">
  		select attach_no from member_profile where member_no = #{memberNo}
  	</select>
+ 	
+ 	<delete id="delete" parameterType="Integer">
+ 		delete from member_profile where member_no = #{memberNo};
+ 	</delete>
 
  </mapper> 

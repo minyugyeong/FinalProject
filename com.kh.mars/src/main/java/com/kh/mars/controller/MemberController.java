@@ -23,6 +23,7 @@ import com.kh.mars.entity.CertDto;
 import com.kh.mars.entity.FollowDto;
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.error.UnauthorizeException;
+import com.kh.mars.repository.AttachDao;
 import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
@@ -31,6 +32,8 @@ import com.kh.mars.repository.MemberProfileDao;
 import com.kh.mars.service.EmailService;
 import com.kh.mars.service.MemberService;
 import com.kh.mars.vo.MemberSearchVO;
+
+import oracle.jdbc.proxy.annotation.Post;
 
 
 @Controller
@@ -57,6 +60,9 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private AttachDao attachDao;
 
 	//회원가입 페이지
 	@GetMapping("/join")
@@ -108,6 +114,8 @@ public class MemberController {
 			model.addAttribute("profileUrl", "/file/download/" + attachNo);
 		}
 		
+		model.addAttribute("attachNo", attachNo);
+		
 		return "member/edit";
 	}
 	
@@ -150,8 +158,27 @@ public class MemberController {
 	@PostMapping("/profile")
 	public String profile(@RequestParam MultipartFile memberProfile,HttpSession session) throws IllegalStateException, IOException {
 		int memberNo = (Integer)session.getAttribute("login");
+		
+		Integer profileIsNull = memberProfileDao.info(memberNo);
+		
+		if(profileIsNull != 0) {//파일 있을 경우
+			attachDao.delete(profileIsNull);
+		}
+		
+		
 		memberDao.proFile(memberProfile, memberNo);
-		return "/member/edit";
+		
+		return "redirect:edit";
+	}
+	
+	//프로필 사진 삭제
+	@PostMapping("/deleteProfile")
+	public String delete(HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		int attachNo = memberProfileDao.info(memberNo);
+		attachDao.delete(attachNo);
+		
+		return "redirect:edit";
 	}
 	
 	@GetMapping("/page")
@@ -337,6 +364,12 @@ public class MemberController {
 		memberDao.personal(memberNo);
 		
 		return "redirect:edit";
+	}
+	
+	//차단 시 이동 할 페이지
+	@GetMapping("/block")
+	public String block() {
+		return "member/block";
 	}
 	
 }

@@ -40,5 +40,5 @@
 	<delete id="unblock" parameterType="Map">
 		delete block where member_no = #{memberNo} and block_no = #{blockNo}
 	</delete>
-
+	
  </mapper> 

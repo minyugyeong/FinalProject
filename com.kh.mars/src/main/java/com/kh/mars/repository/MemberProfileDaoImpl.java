@@ -38,4 +38,9 @@ public class MemberProfileDaoImpl implements MemberProfileDao{
 		return sqlSession.selectOne("memberProfile.one", memberNo);
 	}
 
+	@Override
+	public void delete(int memberNo) {
+		sqlSession.delete("memberProfile.delete",memberNo);
+	}
+
 }

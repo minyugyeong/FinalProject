@@ -4,28 +4,8 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <div class="container-fluid">
-등급 : ${memberDto.memberGrade }
-	<!-- 메뉴 -->
-	<div class="row">
-        <div class="col-4">
-          <div class="list-group" id="list-tab" role="tablist">
-            <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">프로필 편집</a>
-            <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">비밀번호 변경</a>
-            <c:if test="${memberDto.memberGrade =='일반회원'}">
-            <a href="professional" class="btn">프로페셔널 계정 전환</a>
-            </c:if>
-            
-            <c:if test="${memberDto.memberGrade =='비즈니스회원'}">
-            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-			  개인 계정으로 전환
-			</button>
-            </c:if>
-            
-          </div>
-        </div>
-   </div>
-   
-   <!-- 개인 계정으로 전환하는 모달 -->
+
+	<!-- 개인 계정으로 전환하는 모달 -->
 		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
@@ -46,24 +26,57 @@
 		    </div>
 		  </div>
 		</div>
+
+	<!-- 메뉴 -->
+	<div class="row">
+        <div class="col-3">
+          <div class="list-group" id="list-tab" role="tablist">
+            <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">프로필 편집</a>
+            <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">비밀번호 변경</a>
+            <c:if test="${memberDto.memberGrade =='일반회원'}">
+            <a href="professional" class="btn">프로페셔널 계정 전환</a>
+            </c:if>
+            
+            <c:if test="${memberDto.memberGrade =='비즈니스회원'}">
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+			  개인 계정으로 전환
+			</button>
+            </c:if>
+            
+          </div>
+        </div>
    
-   <div class="row"></div>
+   
+
+   
+   
    <!-- 프로필 편집 -->
-        <div class="col-8">
+        <div class="col-6 offset-1">
           <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
 
 	<!-- 프로필 사진 편집 -->
 				<div class="mb-3 row">
-					<form action="profile" method="post" enctype="multipart/form-data">
-						<input type="file" name="memberProfile" class="form-input fill input-round" accept=".jpg, .png">
-						<button type="submit" class="btn btn-primary mt-3">변경</button>
+					<form action="profile" method="post" id="profileEditBtn" enctype="multipart/form-data">
+						<label class="btn" for="memberProfile">프로필 사진 바꾸기</label>
+						<input type="file" id="memberProfile" name="memberProfile" class="form-input fill input-round" accept=".jpg, .png" style="display:none;">
+						<div class="col-6">
+						<button type="submit"  class="btn btn-primary mt-3">변경</button>
+						</div>
 					</form>
+					
+					
+					<form action="deleteProfile" method="post">
+					
+						<c:if test="${attachNo != 0 }"><button type="submit" class="btn btn-danger">삭제</button></c:if>
+					
+					</form>
+					
 					<div>
 						<img src="${pageContext.request.contextPath}${profileUrl}"
-		 				width = "150">
+		 				width = "150" style="border-radius: 70%;">
 	 				</div>
-					프로필 사진 ${memberDto.memberNick }
+					${memberDto.memberNick }
 				</div>
 				
 	<!-- 프로필 정보 편집 -->
@@ -159,23 +172,23 @@
             <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
                 <form action="changePassword" method="post">
                 <div class="mb-3 row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">이전 비밀번호</label>
+                    <label for="inputPassword1" class="col-sm-2 col-form-label">이전 비밀번호</label>
                     <div class="col-sm-5">
-                      <input type="password" class="form-control" id="inputPassword" name="currentPassword">
+                      <input type="password" class="form-control" id="inputPassword1" name="currentPassword">
                     </div>
                 </div>
 
                 <div class="mb-3 row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">새 비밀번호</label>
+                    <label for="inputPassword2" class="col-sm-2 col-form-label">새 비밀번호</label>
                     <div class="col-sm-5">
-                      <input type="password" class="form-control" id="inputPassword" name="changePassword">
+                      <input type="password" class="form-control" id="inputPassword2" name="changePassword">
                     </div>
                 </div>
 
                 <div class="mb-3 row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">새 비밀번호 확인</label>
+                    <label for="inputPassword3" class="col-sm-2 col-form-label">새 비밀번호 확인</label>
                     <div class="col-sm-5">
-                      <input type="password" class="form-control" id="inputPassword" name="checkPassword">
+                      <input type="password" class="form-control" id="inputPassword3" name="checkPassword">
                     </div>
                 </div>
                 
@@ -187,6 +200,21 @@
           </div>
         
 
-    </div>
-    </div>
+    	</div>
+    	</div>
+   </div>
+    
+    <script>
+    	$(function(){
+    		
+    		console.log($("#memberProfile").val());
+    		$("#profileEditBtn").submit(function(){
+    			if($("#memberProfile").val()!=""){
+    				return true;
+    			}else{
+    				return false;
+    			}
+    		})
+    	})
+    </script>
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
