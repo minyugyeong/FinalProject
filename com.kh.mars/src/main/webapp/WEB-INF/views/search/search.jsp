@@ -110,7 +110,7 @@
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchLikeList[2].attachNo" style="width:100%; height:250px;" @click="promise(searchLikeList[2].boardNo,searchLikeList[2].type)">
 	                </div>
 	            </div>
-        	<div v-for="(board, index) in searchLikeList" class="media-height" :key="index">
+        	<div v-for="(board, index) in searchLikeList" :key="index">
 	            <div v-if="index%3==2" style="margin-bottom:10px;display: flex;flex-direction: row; width: 100%;">
 	                <div v-if="searchLikeList[index+1] != null" class="media-height" style="margin-right: 10px;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchLikeList[index+1].attachNo" style="width:100%; height:250px;" @click="promise(searchLikeList[index+1].boardNo,searchLikeList[index+1].type)">

@@ -63,4 +63,12 @@ public class DmDaoImpl implements DmDao{
 		return dmRecordDto;
 	}
 
+	@Override
+	public List<Integer> roomMember(int memberNo, int roomNo) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("memberNo", memberNo);
+		param.put("roomNo", roomNo);
+		return sqlSession.selectList("dm.roomMember", param);
+	}
+
 }

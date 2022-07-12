@@ -21,5 +21,7 @@ public interface DmDao {
 	DmDto insertDm(DmDto dmDto);
 
 	DmRecordDto insertDmRecordDto(DmRecordDto dmRecordDto);
+
+	List<Integer> roomMember(int memberNo, int roomNo);
 	
 }

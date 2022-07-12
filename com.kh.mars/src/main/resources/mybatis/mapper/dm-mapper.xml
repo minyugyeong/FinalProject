@@ -50,11 +50,11 @@
 	<!-- 메세지 기록 등록 -->
 	<insert id="insertRecord" parameterType="DmRecordDto">
 		insert into dm_record (dm_no, who, room_no, target, dm_record_time, dm_record_check)
-		values (#{dmNo}, #{who}, #{roomNo}, #{target}, sysdate, #{dmRecordCheck})
+		values (#{dmNo}, #{who}, #{roomNo}, #{target}, sysdate, 0)
 	</insert>
 	
 	
-	<!-- 메시지 리스트 마지막 content 조회 -->
+	<!-- 방 리스트 마지막 content 조회 -->
 	<select id="roomList" parameterType="int" resultType="RoomVO">
 		select final.*, m.member_nick from (
 	    select ac.*, dm.dm_content from (
@@ -72,11 +72,23 @@
 	
 	<!-- 메세지 상세조회 -->
 	<select id="roomDetail" parameterType="map" resultType="RoomRecordVO">
-		select c.*, dm.dm_content from (
-	    select a.* from (
-	    select * from dm_record where room_no = #{roomNo}
-	    )a inner join (select * from room_enter where member_no = #{memberNo})b on a.room_no = b.room_no where a.dm_record_time >= b.room_enter_time
-		)c inner join dm on c.dm_no = dm.dm_no
+		select 
+			dr.*, d.dm_content 
+		from 
+			dm_record dr
+			    inner join dm d on dr.dm_no = d.dm_no
+			    inner join room_enter re on dr.room_no = re.room_no
+	    where dr.room_no = #{roomNo} 
+	    	and (dr.who = #{memberNo} or dr.target = #{memberNo}) 
+	    	and re.member_no = #{memberNo} 
+	    	<![CDATA[
+	    	and re.room_enter_time <= dr.dm_record_time
+	    	]]>
+	</select>
+	
+	<select id="roomMember" parameterType="map" resultType="Integer">
+		select member_no from room_enter
+		    where room_no = #{roomNo} and member_no != #{memberNo}
 	</select>
 	
  </mapper> 

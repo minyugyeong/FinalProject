@@ -18,7 +18,6 @@ public class DMController {
 						HttpSession session,
 						Model model
 						) {
-		session.setAttribute("login", 31);//지우기
 		int memberNo = (Integer) session.getAttribute("login");
 		model.addAttribute("memberNo", memberNo);
 		return "dm/chat";

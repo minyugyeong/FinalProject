@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class ReceiveVO {
 	
+	private int target;
 	private int type;
 	private int roomNo;
 	private String message;

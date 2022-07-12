@@ -10,8 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class MessageVO {
-	private int memberNo;
-	private String memberNick;
-	private String content;
-	private Date time;
+	private int dmNo;
+	private int who;
+	private String dmContent;
+	private int roomNo;
+	private Date dmRecordTime;
 }
