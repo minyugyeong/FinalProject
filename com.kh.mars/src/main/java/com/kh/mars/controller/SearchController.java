@@ -31,7 +31,6 @@ public class SearchController {
 							HttpSession session,
 							Model model
 							) {
-		session.setAttribute("login", 42);
 		int memberNo = (Integer)session.getAttribute("login");
 		MemberDto memberDto = memberDao.myInfo(memberNo);
 		String hashTagName = hashtagDao.hashTagName(hashTagNo);
