@@ -59,7 +59,7 @@
                     <a class="navbar-brand" href="${pageContext.request.contextPath}">
                         <img src="${pageContext.request.contextPath}/image/logo.png" width="150">
                     </a>
-                    <c:if test="${memberDto != null }">
+                    <c:if test="${login != null }">
                     <div class="collapse navbar-collapse" id="navbarColor03">
                         
                         <div class="d-flex search0503" style="position: relative;" @click.stop>
@@ -67,14 +67,14 @@
                             <div v-if="searchValue" style="position: absolute; top: 50px; right: -70px; width: 350px; height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;background-color:white;" @click.stop="">
                                 <div class="card border-light" style="border:none!important;">
                                     <div v-if="keyword == ''" class="card-body">
-                                      <h5 class="card-title">최근 검색 목록</h5>
+                                      <h5 class="card-title">검색어를 입력해주세요</h5>
                                       <p class="card-text"></p>
                                     </div>
                                     <div v-else class="card-body" style="padding-bottom:0;">
 	                                    <p v-if="searchList.length == 0" class="card-text">검색 결과가 없습니다.</p>
 	                                    <div v-for="(search, index) in searchList" class="card-text">
 		                                    <a v-if="search.type == 0" :href="'${pageContext.request.contextPath}/member/page?memberNo='+search.no" style="text-decoration:none;color:black;position:relative;">
-		                                      <img v-if="search.attach != 0" :src="'${pageContext.request.contextPath}/file/download/'+search.attach" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                      <img v-if="search.attach != 0" :src="'${pageContext.request.contextPath}/file/download/'+search.attachNo" width="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                      <img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                      <p style="margin-bottom:0;padding-left:2.5em;">
 		                                       {{search.main}}
@@ -83,7 +83,7 @@
 		                                       {{search.sub}}
 		                                      </p>
 		                                    </a>
-		                                    <a v-else :href="'${pageContext.request.contextPath}/member/page?memberNo='+search.no" style="text-decoration:none;color:black;position:relative;">
+		                                    <a v-else :href="'${pageContext.request.contextPath}/search/'+search.no" style="text-decoration:none;color:black;position:relative;">
 		                                      <img src="${pageContext.request.contextPath}/image/hashtag.png" width="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                      <p style="margin-bottom:0;padding-left:2.5em;">
 		                                       {{search.main}}
@@ -131,7 +131,7 @@
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/member/page?memberNo=${memberDto.memberNo}">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/member/page?memberNo=${login}">
                                     <i class="fa-solid fa-user-astronaut fa-lg"></i>
                                 </a>
                             </li>
@@ -161,7 +161,88 @@
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
-    
-        
+
+    <script>
+        //div[id=app]을 제어할 수 있는 Vue instance를 생성
+        const navi = Vue.createApp({
+            //data : 화면을 구현하는데 필요한 데이터를 작성해둔다
+            data(){
+                return {
+                	noticeValue:false,
+                    searchValue:false,
+                    keyword:"",
+                    
+                    searchList:[],
+                    searchLength:null,
+              
+                };
+            },
+            //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
+            // - 3줄보다 많다면 사용하지 않는 것을 권장한다(복잡한 계산 시 성능 저하가 발생)
+            computed:{
+                
+            },
+            //method : 애플리케이션 내에서 언제든 호출 가능한 코드 집합이 필요한 경우 작성한다.
+            methods:{
+            	noticeOn(){
+                    if(this.noticeValue) {
+                        this.noticeValue = false;
+                    }else{
+                        this.noticeValue = true;
+                        this.searchValue = false;
+                    }
+                    
+                },
+                searchOn(){
+                        this.searchValue = true;
+                        this.noticeValue = false;
+                },
+                searchOff(){
+                        /* this.searchValue = false; */
+                        this.noticeValue = false;
+                }
+            },
+            // watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다
+            watch:{
+            	keyword:_.throttle(function(){
+            		if(!this.searchValue) this.searchValue=true;
+            		if(this.keyword == "") return;
+                    axios({
+                        url:"${pageContext.request.contextPath}/rest/search",
+                        method:"get",
+                        params:{
+                        	keyword : this.keyword
+                        }
+                    })
+                    .then((resp)=>{
+                    	this.searchLength = resp.data.length;
+                        this.searchList = resp.data;
+                    })
+                }, 200),
+            },
+            //데이터 및 구성요소 초기화 전
+            beforeCreate(){},
+            //데이터 및 구성요소 초기화 후, data에 접근 가능하므로 ajax를 여기서 사용하여 데이터를 불러온다
+            created(){
+            	if(${hashTagName != null}){
+            		this.keyword = "${hashTagName}"
+            		
+            	}
+            },
+            boeforeMount(){},
+            mounted(){
+            	$("body,html").click(resp=>{
+                    this.noticeValue = false;
+                    this.searchValue = false;
+                });
+            	this.searchValue=false;
+            },
+            beforeUpdate(){},
+            updated(){},
+            
+        });
+        navi.mount("#navi");
+    </script>
+
         <section>
         

@@ -39,6 +39,10 @@
  		insert into board_reply(reply_no, board_no) values(#{replyNo}, #{boardNo})
  	</insert>
  	
+ 	<insert id="boardAdReplyInsert" parameterType="map">
+ 		insert into board_ad_reply(reply_no, board_ad_no) values(#{replyNo}, #{boardNo})
+ 	</insert>
+ 	
  	<delete id="delete" parameterType="int">
  		delete reply where reply_no = #{replyNo}
  	</delete>

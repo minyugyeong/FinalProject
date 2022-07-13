@@ -40,6 +40,10 @@
 	 		select * from hashtag where hashtag_name = #{hashtagName}
 	 </select>
 	 
+	 <select id="oneName" resultType="String" parameterType="int">
+	 		select hashtag_name from hashtag where hashtag_no = #{hashTagNo}
+	 </select>
+	 
 	 
 		
  </mapper> 

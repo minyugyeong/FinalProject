@@ -8,6 +8,8 @@ import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.BoardAdAttachVO;
 import com.kh.mars.vo.BoardAdListSearchVO;
 import com.kh.mars.vo.BoardAdMemberVO;
+import com.kh.mars.vo.BoardMainListVO;
+import com.kh.mars.vo.BoardReplyVO;
 
 public interface BoardAdDao {
 	
@@ -21,6 +23,9 @@ public interface BoardAdDao {
 
 	void edit(BoardAdDto boardAdDto);
 
+	List<BoardReplyVO> adDetailReply(int memberNo, int boardNo);
+
+	List<BoardMainListVO> mainList(int memberNo);
 	void delete(int boardAdNo);
 
 	List<BoardAdAttachNoVO> selectList(int memberNo);
@@ -30,8 +35,6 @@ public interface BoardAdDao {
 	BoardAdDto update(BoardAdDto boardAdDto);
 
 	int count(BoardAdListSearchVO vo);
-
-	
 
 
 }

@@ -15,6 +15,8 @@ import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.BoardAdAttachVO;
 import com.kh.mars.vo.BoardAdListSearchVO;
 import com.kh.mars.vo.BoardAdMemberVO;
+import com.kh.mars.vo.BoardMainListVO;
+import com.kh.mars.vo.BoardReplyVO;
 
 @Repository
 public class BoardAdDaoImpl implements BoardAdDao{
@@ -63,6 +65,19 @@ public class BoardAdDaoImpl implements BoardAdDao{
 		
 		sqlSession.update("board_ad.edit", boardAdDto);
 		
+	}
+	
+	@Override
+	public List<BoardReplyVO> adDetailReply(int memberNo, int boardNo) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("memberNo", memberNo);
+		param.put("boardNo", boardNo);
+		return sqlSession.selectList("board_ad.detailReply", param);
+	}
+
+	@Override
+	public List<BoardMainListVO> mainList(int memberNo) {
+		return sqlSession.selectList("board_ad.AdTreeSearch", memberNo);
 	}
 
 	@Override

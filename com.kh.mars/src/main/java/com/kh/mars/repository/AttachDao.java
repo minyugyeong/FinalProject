@@ -8,4 +8,6 @@ public interface AttachDao {
 	
 	int save(MultipartFile attach) throws IllegalStateException, IOException;
 
+	void delete(int profileIsNull);
+
 }

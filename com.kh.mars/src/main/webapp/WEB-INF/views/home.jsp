@@ -87,9 +87,6 @@
             transition:all 0.3s;
         }
         
-        .modalOn{
-        }
-		
 		.card-scroll{
         	overflow-y: auto;
         	-ms-overflow-style: none;
@@ -122,10 +119,12 @@
                     <div class="row">
                         <div class="main-feed">
                         
-                            <div v-for="(board, index) in boardList" :key="index" class="card mb-3" style="width: 470px; padding: 0px 0px;">
+                        <div v-for="(board, index) in boardList" :key="index">
+                       
+                            <div class="card mb-3" style="width: 470px; padding: 0px 0px;">
                                 <div class="card-body">
                                     <p class="card-text">
-                                    	<img v-if="board.boardListVO.writerProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+board.boardListVO.writerProfile" width="30" style="border-radius: 70%">
+                                    	<img v-if="board.boardListVO.writerProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+board.boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
                                     	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
                                         {{board.boardListVO.memberNick}}
                                     </p>
@@ -184,6 +183,76 @@
                                       </div>
                                 </div>
                             </div>
+                            
+                            
+                            <!-- 광고게시물띄우기용 -->
+                            <div v-if="index%3==2" class="card mb-3" style="width: 470px; padding: 0px 0px;">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                    	<img v-if="adList[((index+1)/3)-1].boardListVO.writerProfile>0" :src="'${pageContext.request.contextPath}/file/download/'+adList[((index+1)/3)-1].boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
+                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
+                                        {{adList[((index+1)/3)-1].boardListVO.memberNick}} 이것은 광고
+                                        {{adList[((index+1)/3)-1].boardListVO.writerProfile}}
+                                    </p>
+                                </div>
+                                    <div v-bind:id="'adcarouselExampleControls'+index" class="carousel slide" data-bs-interval="false">
+                                        <div class="carousel-indicators">
+	                                            <button v-for="(attach, index2) in adList[((index+1)/3)-1].attachList" :key="index2" type="button" :data-bs-target="'#adcarouselExampleControls'+index" :data-bs-slide-to="index2" :class="{'active':index2==0}" :aria-current="index2==0" :aria-label="'Slide'+(index2+1)"></button>
+                                        </div>
+                                        <div class="carousel-inner">
+	                                            <div v-for="(attach, index2) in adList[((index+1)/3)-1].attachList" :key="index2" class="carousel-item" :class="{'active':index2==0}" style="min-height: 468px; background-color: var(--bs-dark); position:relative;">
+	                                                <img :src="'${pageContext.request.contextPath}/file/download/'+attach.attachNo" class="d-block position-absolute top-50 start-50 translate-middle" style="object-position: left; width: 101%;">
+	                                            </div>
+                                        </div>
+                                        <button v-if="adList[((index+1)/3)-1].attachList.length>1" class="carousel-control-prev" type="button" v-bind:data-bs-target="'#adcarouselExampleControls'+index" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button v-if="adList[((index+1)/3)-1].attachList.length>1" class="carousel-control-next" type="button" v-bind:data-bs-target="'#adcarouselExampleControls'+index" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <i v-if="adList[((index+1)/3)-1].boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="likeAd(adList[((index+1)/3)-1].boardListVO.boardNo,((index+1)/3)-1)"></i>
+                                        <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="likeAd(adList[((index+1)/3)-1].boardListVO.boardNo,((index+1)/3)-1)"></i>
+                                        &nbsp;
+                                        <i class="fa-regular fa-comment fa-lg"></i>
+                                        &nbsp;
+                                        <i class="fa-regular fa-newspaper fa-lg"></i>
+
+                                    </p>
+                                    <p class="card-text" v-if="adList[((index+1)/3)-1].boardListVO.likecount > 0">
+                                        좋아요 {{adList[((index+1)/3)-1].boardListVO.likecount}}개
+                                    </p>
+                                    <p class="card-text">
+                                        {{adList[((index+1)/3)-1].boardListVO.memberNick}}
+                                    </p>
+                                    <p class="card-text">
+                                        {{adList[((index+1)/3)-1].boardListVO.boardContent}}
+                                    </p>
+                                    <p class="card-text">
+                                       <button class="btn" @click="detailViewOn(),boardAdDetailSearch(adList[((index+1)/3)-1])" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
+                                    </p>
+                                    <p class="card-text text-muted" style="font-size: 0.4em;">
+                                    	{{dateCount(adList[((index+1)/3)-1].boardListVO.boardDate)}}
+                                    </p>
+                                </div>
+                                <hr style="margin-top: 0; margin-bottom: 0;">
+                                <div class="card-body" style="padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
+                                    <span style="position: absolute; left:0; top: 6px; z-index: 30;">임티</span>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="댓글" v-model="replyContent" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="promiseAd(((index+1)/3)-1)">
+                                        <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="promiseAd(((index+1)/3)-1)">작성</button>
+                                      </div>
+                                </div>
+                            </div>
+                            
+                             </div>
+                            
+                            
                         </div>
                     </div>
                     
@@ -202,7 +271,7 @@
                           <h4 class="card-title">회원 추천</h4>
                           <div v-for="(recommend, index) in recommendList" class="card-text">
                           		<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+recommend.followTarget" style="text-decoration:none;color:black;position:relative;">
-	                          		<img v-if="recommend.targetAttach > 0" :src="'${pageContext.request.contextPath}/file/download/'+recommend.targetAttach" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+	                          		<img v-if="recommend.targetAttach > 0" :src="'${pageContext.request.contextPath}/file/download/'+recommend.targetAttach" width="30" height="30" style="border-radius: 70%;position:absolute;top:10%;">
 	                                <img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                          <p style="padding-left:3em;margin-bottom:0;">
 	                          		{{recommend.targetNick}}
@@ -221,7 +290,7 @@
                 </div>
                 
                 
-                
+                <!-- 상세보기 모달창 -->
                 	<div v-if="detailView" class="container-fluid fullscreen active beforeanimation" :class="{'animation':animation}" @click="detailViewOn" style="position: fixed; z-index: 100;">
 	                <div>
 	                    <i class="fa-solid fa-x fa-2xl" style="position:absolute; right: 30px; top: 40px;cursor: pointer;"></i>
@@ -231,18 +300,18 @@
 	                                        
 	                        <div id="detailCarousel" class="carousel slide" data-bs-ride="carousel" style="height: 40vw;" data-bs-interval="false">
 	                            <div class="carousel-indicators">
-                                     <button v-for="(attach, index) in boardList[boardDetailIndex].attachList" :key="index" type="button" data-bs-target="#detailCarousel" :data-bs-slide-to="index" :class="{'active':index==0}" :aria-current="index==0" :aria-label="'Slide'+(index+1)"></button>
+                                     <button v-for="(attach, index) in boardDetail.attachList" :key="index" type="button" data-bs-target="#detailCarousel" :data-bs-slide-to="index" :class="{'active':index==0}" :aria-current="index==0" :aria-label="'Slide'+(index+1)"></button>
                                 </div>
                                 <div class="carousel-inner" style="height:100%!important;background-color: var(--bs-dark);">
-                                     <div v-for="(attach, index) in boardList[boardDetailIndex].attachList" :key="index" class="carousel-item" :class="{'active':index==0}" style="height:100%;background-color: var(--bs-dark); position:relative;">
+                                     <div v-for="(attach, index) in boardDetail.attachList" :key="index" class="carousel-item" :class="{'active':index==0}" style="height:100%;background-color: var(--bs-dark); position:relative;">
                                          <img :src="'${pageContext.request.contextPath}/file/download/'+attach.attachNo" class="d-block position-absolute top-50 start-50 translate-middle" style="object-position: left; width: 101%;transform:translate(-50%,0);">
                                      </div>
                                 </div>
-                                <button v-if="boardList[boardDetailIndex].attachList.length>1" class="carousel-control-prev" type="button" data-bs-target="#detailCarousel" data-bs-slide="prev">
+                                <button v-if="boardDetail.attachList.length>1" class="carousel-control-prev" type="button" data-bs-target="#detailCarousel" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                                 </button>
-                                <button v-if="boardList[boardDetailIndex].attachList.length>1" class="carousel-control-next" type="button" data-bs-target="#detailCarousel" data-bs-slide="next">
+                                <button v-if="boardDetail.attachList.length>1" class="carousel-control-next" type="button" data-bs-target="#detailCarousel" data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
                                 </button>
@@ -251,10 +320,10 @@
 	                    <div class="col-4 board-detail-card" style="padding-left: 0; max-height: 30rem;" @click.stop>
 	                                        
 	                        <div class="card bg-light" style="height: 40vw; border-radius: 0;">
-	                            <div class="card-header">{{boardDetail.memberNick}}</div>
+	                            <div class="card-header">{{boardDetail.boardListVO.memberNick}}</div>
 	                            <div class="card-body card-scroll" style="height: 60%;">
 	                                <h4 class="card-title"></h4>
-	                                <p class="card-text">{{boardDetail.boardContent}}</p><br><br>
+	                                <p class="card-text">{{boardDetail.boardListVO.boardContent}}</p><br><br>
 	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" style="position:relative;">
 	                                	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+reply.replyMemberNo" style="text-decoration:none;color:black;position:relative;">
 			                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -285,7 +354,7 @@
 	                
 	                
 	            </div>
-                <!-- Modal -->
+                <!-- 댓글 Modal -->
 				<div class="modal fade" id="exampleModal" tabindex="200" aria-labelledby="exampleModalLabel" aria-hidden="true" @click.stop="targetInput('')">
 				  <div class="modal-dialog">
 				    <div class="modal-content" style="width:400px;">
@@ -316,6 +385,8 @@
                         	uptoNo:0,
         					pageCount: 1,
         					boardList:[],
+        					
+        					//추천친구 리스트
         					recommendList:[],
         					
         					//게시글 상세보기용 변수
@@ -328,8 +399,16 @@
                             //댓글용 변수
                             replyContent:"",
                             superNo:0,
-                            
                             replyTarget:"",
+                            
+							//광고 게시글용 변수 5개씩 랜덤을 불러올 예정
+							adList:[{
+	                            	attachList:[],
+	                            	boardListVO:{},
+							}],
+							type:"",
+							
+                            
                             
                         };
                     },
@@ -346,6 +425,19 @@
 	                        	.then(resp=>{
 	                        		this.boardList.push(...resp.data);
 	                        		this.pageCount++;
+	                        		if(this.boardList.length % 15 == 0){
+	                        			this.adLoading();
+	                        		}
+	                        	});
+                    		},250),
+                    		//광고 더불러오기
+                    		adLoading:_.debounce(function(){
+	                    		axios({
+	                        		url: "${pageContext.request.contextPath}/rest/board_ad/main",
+	                        		method: "get"
+	                        	})
+	                        	.then(resp=>{
+	                        		this.adList.push(...resp.data);
 	                        	});
                     		},250),
                     		//게시글 올린시간계산 함수
@@ -378,6 +470,25 @@
                         			}
                         		});
                         	},
+                        	//광고 좋아요기능
+                        	likeAd(likeNo,index){
+                        		const boardNo = likeNo;
+                        		axios({
+                        			url: "${pageContext.request.contextPath}/rest/board_ad/like",
+                        			method: "post",
+                        			data:{ 
+                        				boardNo : boardNo,
+                        			}
+                        		})
+                        		.then(resp=>{
+                        			this.adList[index].boardListVO.isLike = resp.data;
+                        			if(resp.data > 0){
+                        				this.adList[index].boardListVO.likecount += 1
+                        			}else{
+                        				this.adList[index].boardListVO.likecount -= 1
+                        			}
+                        		});
+                        	},
                         	// 상세보기 모달창 작동 함수
                         	detailViewOn(){
                                 if(!this.detailView){
@@ -401,44 +512,103 @@
                             boardDetailSearch(index){
                             	if(index != null){
                             		this.boardDetailIndex = index;
-	                            	this.boardDetail = this.boardList[index].boardListVO;
+	                            	this.boardDetail = this.boardList[index];
                             	}
-                            	console.log(this.boardDetail.boardNo);
                             	axios({
-                            		url: "${pageContext.request.contextPath}/rest/board/detail/" + this.boardDetail.boardNo,
+                            		url: "${pageContext.request.contextPath}/rest/board/detail_reply/" + this.boardDetail.boardListVO.boardNo,
                             		method: "get"
                             	})
                             	.then(resp=>{
                             		this.boardDetailReply = resp.data;
+                            		this.type = 0;
+                            	});
+                            },
+                            boardAdDetailSearch(board){
+                            	if(board != null){
+		                            this.boardDetail = board;
+                            	}
+                            	axios({
+                            		url: "${pageContext.request.contextPath}/rest/board_ad/detail_reply/" + this.boardDetail.boardListVO.boardNo,
+                            		method: "get"
+                            	})
+                            	.then(resp=>{
+                            		this.boardDetailReply = resp.data;
+                            		this.type = 1;
                             	});
                             },
                             //댓글 입력
-                            replyEnter(boardNo2){
-                            	let boardNo3;
-                            	if(boardNo2 != 0){
-                            		boardNo3 = boardNo2;
+                            replyEnter(boardNo){
+	                            	let boardNo2;
+                            	if(this.type==0){
+	                            	if(boardNo != 0){
+	                            		boardNo2 = boardNo;
+	                            	}else{
+	                            		boardNo2 = this.boardDetail.boardListVO.boardNo;
+	                            	}
+	                            	axios({
+	                            		url : "${pageContext.request.contextPath}/rest/reply/insert",
+	                            		method : "post",
+	                            		params : {
+	                            			replyContent : this.replyContent,
+	                            			superNo : this.superNo,
+	                            			boardNo : boardNo2,
+	                            		}
+	                            	})
+	                            	.then(resp=>{
+	                            		this.boardDetailSearch();
+	                            		this.replyContent = "";
+	                            	});
                             	}else{
-                            		boardNo3 = this.boardDetail.boardNo;
+                            		//광고 댓글 작성
+                                   	if(boardNo != 0){
+                                   		boardNo2 = boardNo;
+                                   	}else{
+                                   		boardNo2 = this.boardDetail.boardListVO.boardNo;
+                                   	}
+                                   	axios({
+                               			url : "${pageContext.request.contextPath}/rest/reply/insert_ad",
+                               			method : "post",
+                               			params : {
+                               				replyContent : this.replyContent,
+                               				superNo : this.superNo,
+                               				boardNo : boardNo2,
+                               			}
+                               		})
+                               		.then(resp=>{
+                               			this.boardAdDetailSearch();
+                   	            		this.replyContent = "";
+                   	            		this.superNo = 0;
+                               		});
+                            	}
+                            },
+                            //광고 댓글 작성
+                            replyAdEnter(boardNo, boardAd){
+                            	let boardNo2;
+                            	if(boardNo != 0){
+                            		boardNo2 = boardNo;
+                            	}else{
+                            		boardNo2 = this.boardDetail.boardListVO.boardNo;
                             	}
                             	axios({
-                            		url : "${pageContext.request.contextPath}/rest/reply/insert",
-                            		method : "post",
-                            		params : {
-                            			replyContent : this.replyContent,
-                            			superNo : this.superNo,
-                            			boardNo : boardNo3,
-                            		}
-                            	})
-                            	.then(resp=>{
-                            		this.boardDetailSearch();
-                            		this.replyContent = "";
-                            	});
+                        			url : "${pageContext.request.contextPath}/rest/reply/insert_ad",
+                        			method : "post",
+                        			params : {
+                        				replyContent : this.replyContent,
+                        				superNo : this.superNo,
+                        				boardNo : boardNo2,
+                        			}
+                        		})
+                        		.then(resp=>{
+                        			this.boardAdDetailSearch(boardAd);
+            	            		this.replyContent = "";
+            	            		this.superNo = 0;
+                        		})
                             },
                             //댓글 지정
                             targetInput(replyNo){
                             	this.replyTarget = replyNo;
                             },
-                            deleteReply(){
+                            deleteReply(type){
                             	axios({
                             		url : "${pageContext.request.contextPath}/rest/reply/delete/"+this.replyTarget,
                             		method : "delete",
@@ -446,7 +616,12 @@
                             	.then(resp=>{
                             		$('#exampleModal').modal('hide');
                             		this.replyTarget = "";
-                            		this.boardDetailSearch();
+                            		if(this.type==0){
+	                            		this.boardDetailSearch();
+                            		}else{
+                            			this.boardAdDetailSearch(this.boardDetail.boardListVO.boardNo);
+                            		}
+                            		
                             	});
                             },
                             async promise(index){
@@ -455,26 +630,14 @@
                             	await this.boardDetailSearch(index);
                             	await this.detailViewOn();
                             },
+                            async promiseAd(index){
+                            	const boardNo = this.adList[index].boardListVO.boardNo;
+                            	const boardAd = this.adList[index];
+                            	await this.replyAdEnter(boardNo, boardAd);
+                            	await this.boardAdDetailSearch(boardAd);
+                            	await this.detailViewOn();
+                            },
                             
-                            /* async replyEnter2(){
-                            	const resp = await axios({
-                            		url : "${pageContext.request.contextPath}/rest/reply/insert",
-                            		method : "post",
-                            		params : {
-                            			replyContent : this.replyContent,
-                            			superNo : this.superNo,
-                            			boardNo : this.boardDetail.boardNo,
-                            		}
-                            	});
-                            	const resp2 = await axios({
-                            		url: "${pageContext.request.contextPath}/rest/board/detail/" + this.boardDetail.boardNo,
-                            		method: "get"
-                            	})
-                            	.then(resp=>{
-                            		console.log(resp.data);
-                            		this.boardDetailReply = resp.data;
-                            	});
-                            }, */
                     },
                     watch:{
                     	
@@ -500,6 +663,15 @@
                     	.then(resp=>{
                     		this.recommendList = resp.data;
                     	});
+                    	
+                    	//첫화면 로딩시 광고게시물 5개 로드
+                    	axios({
+                    		url : "${pageContext.request.contextPath}/rest/board_ad/main",
+                    		method : "get",
+                    	})
+                    	.then(resp=>{
+                    		this.adList = resp.data;
+                    	})
                     },
                     boeforeMount(){},
                     mounted(){

@@ -31,6 +31,98 @@
 		select board_ad_seq.nextval from dual
 	</select>
 	
+	
+	
+	<!-- 광고게시글용 게시글 탐색 구문 -->
+	
+	<resultMap type="BoardMainListVO" id="boardAdMap">
+	
+		<association property="boardListVO" javaType="BoardListVO">
+			<result column="board_ad_no" property="boardNo"/>
+			<result column="member_no" property="memberNo"/>
+			<result column="board_ad_date" property="boardDate"/>
+			<result column="board_ad_content" property="boardContent"/>
+			<result column="board_ad_is_reply" property="boardIsReply"/>
+			<result column="board_ad_link" property="boardAdLink"/>
+			<result column="member_nick" property="memberNick"/>
+			<result column="writer_profile" property="writerProfile"/>
+			<result column="is_like" property="isLike"/>
+			<result column="replycount" property="replycount"/>
+			<result column="likecount" property="likecount"/>
+		</association>
+
+		 <collection property="attachList" javaType="list" ofType="BoardAttachVO" 
+		 	select="adTreeSearchSubquery" column="board_ad_no">
+		 	
+			<result column="attach_no" property="attachNo"/>		 	
+			<result column="board_ad_no" property="boardNo"/>		 	
+			<result column="attach_uploadname" property="attachUploadname"/>		 	
+			<result column="attach_type" property="attachType"/>		 	
+			<result column="attach_size" property="attachSize"/>		 	
+		 </collection>
+	</resultMap>
+	
+	
+	<select id="AdTreeSearch" resultMap="boardAdMap" parameterType="map">
+	select * from(
+    	select * from(
+	        select 
+	            ba.board_ad_no, ba.member_no, ba.board_ad_content, ba.board_ad_date, ba.board_ad_is_reply, ba.board_ad_link, m.member_nick, mp.attach_no "writer_profile", bal.member_no "is_like", bar."replycount", balc."likecount"
+	        from 
+	            board_ad ba
+	            inner join (select m2.* from member m1        
+	                            inner join member m2 on m1.member_interest = m2.member_interest
+	                        where m1.member_no = #{member_no} and m2.member_no != #{member_no}
+	                        ) m on ba.member_no = m.member_no
+	            inner join member_profile mp on ba.member_no = mp.member_no
+	            left outer join (select * from board_ad_like where member_no = #{member_no}) bal on bal.board_ad_no = ba.board_ad_no
+	            left outer join (select board_ad_no, count(reply_no)"replycount" from board_ad_reply group by board_ad_no) bar on bar.board_ad_no = ba.board_ad_no 
+	            left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like group by board_ad_no) balc on balc.board_ad_no = ba.board_ad_no
+	    union
+	        select
+	            ba.board_ad_no, ba.member_no, ba.board_ad_content, ba.board_ad_date, ba.board_ad_is_reply, ba.board_ad_link, m.member_nick, mp.attach_no "member_profile", bal.member_no "is_like", bar."replycount", balc."likecount"
+	        from
+	            board_ad ba
+	            inner join (select m.* from follow f
+	                        inner join member m on f.follow_target = m.member_no
+	                        where f.follow_who = #{member_no} and m.member_grade = '비즈니스회원') m on m.member_no = ba.member_no
+	            inner join member_profile mp on ba.member_no = mp.member_no
+	            left outer join (select * from board_ad_like where member_no = #{member_no}) bal on bal.board_ad_no = ba.board_ad_no
+	            left outer join (select board_ad_no, count(reply_no)"replycount" from board_ad_reply group by board_ad_no) bar on bar.board_ad_no = ba.board_ad_no 
+	            left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like group by board_ad_no) balc on balc.board_ad_no = ba.board_ad_no
+    	) order by dbms_random.value
+    	<![CDATA[
+    ) where rownum <= 5
+    	]]>
+	</select>
+	<select id="adTreeSearchSubquery" resultType="BoardAttachVO" parameterType="int">
+		select ba.board_ad_no, attach.* from (
+		      select * from board_ad_attach where board_ad_no = #{board_ad_no}
+		)ba inner join attach on ba.attach_no = attach.attach_no
+	</select>
+	
+	
+	<!-- 광고 게시글 댓글조회 -->
+	<select id="detailReply" resultType="BoardReplyVO" parameterType="map">
+		select c.*, mm.member_nick from (
+		select b.*, mp.attach_no "reply_member_profile" from (
+		select aa.*, rp."re_replycount" from (
+		select r.* from (
+		select * from board_ad_reply where board_ad_no = #{boardNo}
+		)a inner join reply r on a.reply_no = r.reply_no
+		)aa left outer join (
+		select super_no, count(*) "re_replycount" from reply group by super_no
+		)rp on aa.reply_no = rp.super_no
+		)b left outer join member_profile mp on b.reply_member_no = mp.member_no
+		)c inner join member mm on c.reply_member_no = mm.member_no
+		CONNECT BY PRIOR c.reply_no = c.super_no 
+		START WITH c.super_no = 0 
+		ORDER siblings BY c.reply_no desc
+	</select>
+	
+	
+	
+	
 	<insert id="insert" parameterType="BoardAdDto">
 		insert into board_ad(board_ad_no, member_no, ad_no, board_ad_date, board_ad_content, board_ad_link, board_ad_count, board_ad_is_reply, board_ad_price) 
 		values (#{boardAdNo}, #{memberNo}, #{adNo}, sysdate, #{boardAdContent}, #{boardAdLink}, #{boardAdCount}, #{boardAdIsReply}, #{boardAdPrice})
