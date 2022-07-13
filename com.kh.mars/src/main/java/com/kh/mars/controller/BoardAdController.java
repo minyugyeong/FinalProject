@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -28,11 +27,13 @@ import com.kh.mars.repository.HashtagDao;
 import com.kh.mars.repository.MemberDao;
 import com.kh.mars.repository.MemberProfileDao;
 import com.kh.mars.service.BoardAdService;
+import com.kh.mars.vo.BoardAdAttachNoMemberVO;
+import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.BoardAdAttachVO;
+import com.kh.mars.vo.BoardAdListSearchVO;
 import com.kh.mars.vo.BoardAdMemberVO;
 
 @Controller
-@RequestMapping("/boardAd")
 public class BoardAdController {
 
 	@Autowired
@@ -59,7 +60,7 @@ public class BoardAdController {
 	
 	
 	// 등록
-	@GetMapping("/insert")
+	@GetMapping("/boardAd/insert")
 	public String insert(HttpSession session, Model model) {
 		
 
@@ -78,7 +79,7 @@ public class BoardAdController {
 	}
 	
 
-	@PostMapping("/insert")
+	@PostMapping("/boardAd/insert")
 	public String insert(@ModelAttribute BoardAdDto boardAdDto, HttpSession session, RedirectAttributes attr,
 			@RequestParam(value = "boardAdAttach", required = false) List<MultipartFile> boardAdAttach, Model model,
 			@ModelAttribute HashtagDto hashtagDto, @ModelAttribute BoardAdHashtagDto boardAdHashtagDto)
@@ -124,7 +125,7 @@ public class BoardAdController {
 	
 	
 	//수정
-	@GetMapping("/edit")
+	@GetMapping("/boardAd/edit")
 	public String edit(@RequestParam int boardAdNo, Model model) {
 		
 		
@@ -155,7 +156,7 @@ public class BoardAdController {
 		return "boardAd/edit";
 	}
 	
-	@PostMapping("/edit")
+	@PostMapping("/boardAd/edit")
 	public String edit(
 			@ModelAttribute BoardAdDto boardAdDto,
 			@ModelAttribute HashtagDto hashtagDto,
@@ -204,7 +205,7 @@ public class BoardAdController {
 		return "redirect:/member/page";
 	}
 	
-	@GetMapping("/delete")
+	@GetMapping("/boardAd/delete")
 	public String delete(RedirectAttributes attr, @RequestParam int boardAdNo, HttpSession session) {
 		
 		boardAdService.delete(boardAdNo);
@@ -214,6 +215,48 @@ public class BoardAdController {
 		
 		return "redirect:/member/page";
 	}
+	
+	//비즈니스 회원 광고 신청 목록
+	@GetMapping("/member/ad")
+	public String pay(@RequestParam int memberNo, Model model) {
+		
+		List<BoardAdAttachNoVO> list = boardAdDao.selectList(memberNo);
+		model.addAttribute("list", list);
+		
+		return "/member/ad";
+	}
+	
+	//비즈니스 회원 광고 현황 목록 - 관리자
+	@GetMapping("/admin/boardAdList")
+	public String list( 
+			@ModelAttribute BoardAdListSearchVO vo,
+			Model model,
+			@RequestParam(required = false, defaultValue = "1") int p,
+			@RequestParam(required = false, defaultValue = "10") int s
+			) {
+		
+		List<BoardAdAttachNoMemberVO> list = boardAdDao.selectList(vo, p, s);
+		model.addAttribute("list", list);
+		
+		int count = boardAdDao.count(vo);
+		int lastPage = (count + s-1)/s;
+		
+		int blockSize = 10;
+		int endBlock = (p+blockSize-1) / blockSize * blockSize;
+		int startBlock = endBlock - (blockSize - 1);
+		if(endBlock > lastPage) {
+			endBlock = lastPage;	
+		}
+		
+		model.addAttribute("p", p);
+		model.addAttribute("s", s);
+		model.addAttribute("startBlock", startBlock);
+		model.addAttribute("endBlock", endBlock);
+		model.addAttribute("lastPage", lastPage);
+		
+		return "/admin/boardAdList";
+	}
+
 	
 	
 

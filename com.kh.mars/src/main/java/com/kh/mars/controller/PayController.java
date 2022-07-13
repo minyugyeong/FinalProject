@@ -1,5 +1,6 @@
 package com.kh.mars.controller;
 
+
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.mars.entity.AdDto;
-import com.kh.mars.entity.BoardAdDto;
 import com.kh.mars.repository.BoardAdDao;
 import com.kh.mars.repository.MemberDao;
 import com.kh.mars.repository.PaymentDao;
@@ -28,6 +28,7 @@ import com.kh.mars.vo.KakaoPayReadyResponseVO;
 import com.kh.mars.vo.PurchaseVO;
 
 
+
 @Controller
 public class PayController {
 	@Autowired
@@ -39,6 +40,8 @@ public class PayController {
 	@Autowired
 	private BoardAdDao boardAdDao;
 	
+
+
 	@Autowired
 	private PaymentDao paymentDao;
 	
@@ -107,7 +110,5 @@ public class PayController {
 		
 		return "redirect:미정";//상의하기
 	}
-	
-	
-	
+
 }

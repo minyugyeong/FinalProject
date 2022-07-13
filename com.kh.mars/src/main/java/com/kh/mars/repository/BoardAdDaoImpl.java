@@ -10,8 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mars.entity.AdDto;
 import com.kh.mars.entity.BoardAdDto;
+import com.kh.mars.vo.BoardAdAttachNoMemberVO;
 import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.BoardAdAttachVO;
+import com.kh.mars.vo.BoardAdListSearchVO;
 import com.kh.mars.vo.BoardAdMemberVO;
 import com.kh.mars.vo.BoardMainListVO;
 import com.kh.mars.vo.BoardReplyVO;
@@ -91,8 +93,36 @@ public class BoardAdDaoImpl implements BoardAdDao{
 		return sqlSession.selectList("board_ad.treeSearch", memberNo);
 	}
 
+	@Override
+	public List<BoardAdAttachNoMemberVO> selectList(BoardAdListSearchVO vo, int p, int s) {
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("vo", vo);
+		
+		int end = p * s;
+		int begin = end - (s-1);
+		param.put("end", end);
+		param.put("begin", begin);
+		
+		return sqlSession.selectList("board_ad.treeSearchAdmin", param);
+	}
 
-	
+	@Override
+	public BoardAdDto update(BoardAdDto boardAdDto) {
+		
+		sqlSession.update("board_ad.updateAd", boardAdDto);
+		
+		return sqlSession.selectOne("board_ad.selectOne", boardAdDto.getBoardAdNo());  
+	}
+
+	@Override
+	public int count(BoardAdListSearchVO vo) {
+		
+		return sqlSession.selectOne("board_ad.count", vo);
+	}
+
+
+
 
 }
 
