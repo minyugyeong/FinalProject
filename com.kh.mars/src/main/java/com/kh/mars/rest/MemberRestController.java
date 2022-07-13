@@ -162,11 +162,19 @@ public class MemberRestController {
 			return 0;
 		}
 		
+	}
+		
+	@GetMapping("/list")
+	@ResponseBody
+	public List<PageBoardListVO> list(
+			@RequestParam int memberNo,
+			@RequestParam int ){
+		
+	}
 		
 	
 
-	}
-	
+
 }
 
 
