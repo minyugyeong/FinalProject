@@ -36,11 +36,6 @@ public class PayController {
 	
 	@Autowired
 	KakaoPayService kakaoPayService;
-	
-	@Autowired
-	private BoardAdDao boardAdDao;
-	
-
 
 	@Autowired
 	private PaymentDao paymentDao;
@@ -48,14 +43,7 @@ public class PayController {
 	@Autowired
 	private PaymentService paymentService;
 	
-	@GetMapping("/member/ad")
-	public String pay(@RequestParam int memberNo, Model model) {
-		
-		List<BoardAdAttachNoVO> list = boardAdDao.selectList(memberNo);
-		model.addAttribute("list", list);
-		
-		return "/member/ad";
-	}
+	
 	
 	@PostMapping("/pay_purchase")
 	public String payPurchase(@ModelAttribute PurchaseVO purchaseVO, HttpSession session) throws URISyntaxException {
