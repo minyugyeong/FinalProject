@@ -402,7 +402,10 @@
                             replyTarget:"",
                             
 							//광고 게시글용 변수 5개씩 랜덤을 불러올 예정
-							adList:[],
+							adList:[{
+	                            	attachList:[],
+	                            	boardListVO:{},
+							}],
 							type:"",
 							
                             

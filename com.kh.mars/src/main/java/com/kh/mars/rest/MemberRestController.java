@@ -164,13 +164,13 @@ public class MemberRestController {
 		
 	}
 		
-	@GetMapping("/list")
-	@ResponseBody
-	public List<PageBoardListVO> list(
-			@RequestParam int memberNo,
-			@RequestParam int ){
-		
-	}
+//	@GetMapping("/list")
+//	@ResponseBody
+//	public List<PageBoardListVO> list(
+//			@RequestParam int memberNo,
+//			@RequestParam int ){
+//		
+//	}
 		
 	
 

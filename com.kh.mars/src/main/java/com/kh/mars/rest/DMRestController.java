@@ -31,7 +31,6 @@ public class DMRestController {
 	@GetMapping("/room")
 	public List<RoomVO> roomlist(
 								HttpSession session){
-		session.setAttribute("login", 31);//지우기
 		int memberNo = (Integer) session.getAttribute("login");
 		return dmDao.roomList(memberNo);
 	}
@@ -41,7 +40,6 @@ public class DMRestController {
 										@PathVariable int roomNo,
 										HttpSession session
 										){
-		session.setAttribute("login", 31);//지우기
 		int memberNo = (Integer) session.getAttribute("login");
 		List<RoomRecordVO> list = dmDao.roomRecord(memberNo, roomNo);
 		System.out.println("리스트사이즈 = " + list.size());
@@ -49,6 +47,14 @@ public class DMRestController {
 		return list;
 	}
 	
+	@GetMapping("room_member/{roomNo}")
+	public List<Integer> roomMember(
+							@PathVariable int roomNo,
+							HttpSession session) {
+		int memberNo = (Integer) session.getAttribute("login");
+		List<Integer> list = dmDao.roomMember(memberNo, roomNo);
+		return list;
+	}
 	/*
 	 * @PostMapping("") public RoomEnterDto insert(@RequestBody RoomEnterDto
 	 * roomEnterDto) { return dmDao.insertRoomEnter(roomEnterDto); }
