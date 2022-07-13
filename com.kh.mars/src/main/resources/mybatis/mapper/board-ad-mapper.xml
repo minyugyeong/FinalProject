@@ -55,7 +55,7 @@
 	</select>
 	
 	
-	<!-- 비즈니스 회원 광고 신청 목록 계층형 (첨부파일도 같이) -->
+	<!-- 비즈니스 회원 광고 신청 목록 계층형 (첨부파일도 같이) - 신청자한테 출력됨 -->
 	<resultMap type="BoardAdAttachNoVO" id="boardAdAttachNo">
 	
 			<result column="board_ad_no" property="boardAdNo"/>
@@ -78,12 +78,203 @@
 	</resultMap>
 	
 	<select id="treeSearch" resultMap="boardAdAttachNo" parameterType="int">
-		select * from board_ad where member_no=#{memberNo} 
+		select * from board_ad where member_no=#{memberNo}
 	</select>
 	
 	<select id="treeSearchSubquery" resultType="BoardAdAttachDto" parameterType="int">
 		select * from board_ad_attach where board_ad_no = #{boardAdNo} 
 		order by attach_no asc
+	</select>
+	
+	
+	<!-- 비즈니스 회원 광고 신청 목록 계층형 (첨부파일도 같이) - 관리자한테 출력됨 -->
+	<resultMap type="BoardAdAttachNoMemberVO" id="boardAdAttachNoMember">
+	
+			<result column="board_ad_no" property="boardAdNo"/>
+			<result column="member_no" property="memberNo"/>
+			<result column="ad_no" property="adNo"/>
+			<result column="board_ad_date" property="boardAdDate"/>
+			<result column="board_ad_content" property="boardAdContent"/>
+			<result column="board_ad_link" property="boardAdLink"/>
+			<result column="board_ad_count" property="boardAdCount"/>
+			<result column="board_ad_check" property="boardAdCheck"/>
+			<result column="board_ad_is_reply" property="boardAdIsReply"/>
+			<result column="board_ad_price" property="boardAdPrice"/>
+			<result column="member_email" property="memberEmail"/>
+			<result column="member_gender" property="memberGender"/>
+			<result column="member_nick" property="memberNick"/>
+			<result column="member_phone" property="memberPhone"/>
+			<result column="member_grade" property="memberGrade"/>
+			<result column="member_interest" property="memberInterest"/>
+			<result column="member_name" property="memberName"/>
+		
+			<collection property="attachNoListAdmin" javaType="List" ofType="BoardAdAttachDto" select="treeSearchSubqueryAdmin" column="board_ad_no">
+				<result column="board_ad_attach_no" property="boardAdAttachNo"/>
+				<result column="board_ad_no" property="boardAdNo"/>
+				<result column="attach_no" property="attachNo"/>
+			</collection>
+		
+	</resultMap>
+	
+	<select id="treeSearchAdmin" resultMap="boardAdAttachNoMember" parameterType="BoardAdListSearchVO">
+		
+		<bind name="memberEmailExist" value="vo.memberEmail != null and !vo.memberEmail.equals('')"/>
+		<bind name="memberInterestExist" value="vo.memberInterest != null and !vo.memberInterest.equals('')"/>
+		<bind name="minCountExist" value="vo.minCount != null and vo.minCount > 0"/>
+		<bind name="maxCountExist" value="vo.maxCount != null and vo.maxCount > 0"/>
+		<bind name="minPriceExist" value="vo.minPrice != null and vo.minPrice > 0"/>
+		<bind name="maxPriceExist" value="vo.maxPrice != null and vo.maxPrice > 0"/>
+		<bind name="beginDateExist" value="vo.beginDate != null and !vo.beginDate.equals('')"/>
+		<bind name="endDateExist" value="vo.endDate != null and !vo.endDate.equals('')"/>
+		<bind name="boardAdCheckExist" value="vo.boardAdCheck != null and !vo.boardAdCheck.equals('')"/>
+		
+		select * from (
+			select rownum rn, TMP.* from(
+				select * from board_ad B left outer join member M on B.member_no = M.member_no 
+				
+				<where>
+					
+					<!-- 신청자 -->
+					<if test="memberEmailExist">
+						<![CDATA[and instr(member_email, #{vo.memberEmail}) > 0]]>
+					</if>
+					
+					<!-- 분야 -->
+					<if test="memberInterestExist">
+						and member_interest = #{vo.memberInterest}
+					</if>
+					
+					<!-- 노출횟수 -->
+					<choose>
+						<when test="minCountExist and maxCountExist">
+							and board_ad_count between #{vo.minCount} and #{vo.maxCount}
+						</when>
+						<when test="minCountExist and !maxCountExist">
+							<![CDATA[and board_ad_count >= #{vo.minCount}]]>
+						</when>
+						<when test="maxCountExist and !minCountExist">
+							<![CDATA[and board_ad_count <= #{vo.maxCount}]]>
+						</when>
+					</choose>
+					
+					<!-- 가격 -->
+					<choose>
+						<when test="minPriceExist and maxPriceExist">
+							and board_ad_price between #{vo.minPrice} and #{vo.maxPrice}
+						</when>
+						<when test="minPriceExist and !maxPriceExist">
+							<![CDATA[and board_ad_price >= #{vo.minPrice}]]>
+						</when>
+						<when test="maxPriceExist and !minPriceExist">
+							<![CDATA[and board_ad_price <= #{vo.maxPrice}]]>
+						</when>
+					</choose>
+					
+					<!-- 신청일자 -->
+					<choose>
+						<when test="beginDateExist and endDateExist">
+							and board_ad_date between 
+							to_date(#{vo.beginDate} || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+							and to_date(#{vo.endDate} || ' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')
+						</when>
+						<when test="beginDateExist">
+							<![CDATA[and board_ad_date >= to_date(#{vo.beginDate} || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS')]]>
+						</when>
+						<when test="endDateExist">
+							<![CDATA[and board_ad_date <= to_date(#{vo.endDate} || ' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')]]>
+						</when>
+					</choose>
+					
+					<!-- 진행현황 -->
+					<if test="boardAdCheckExist">
+						and board_ad_check = #{vo.boardAdCheck}
+					</if>
+					
+				</where>
+				
+			)TMP
+		)where rn between #{begin} and #{end} order by board_ad_no desc
+		
+	</select>
+	
+	<select id="treeSearchSubqueryAdmin" resultType="BoardAdAttachDto">
+		select * from board_ad_attach where board_ad_no = #{boardAdNo} order by attach_no asc
+	</select>
+	
+	
+	<select id="count" resultType="int" parameterType="BoardAdListSearchVO">
+	
+		<bind name="memberEmailExist" value="memberEmail != null and !memberEmail.equals('')"/>
+		<bind name="memberInterestExist" value="memberInterest != null and !memberInterest.equals('')"/>
+		<bind name="minCountExist" value="minCount != null and !minCount.equals('')"/>
+		<bind name="maxCountExist" value="maxCount != null and !maxCount.equals('')"/>
+		<bind name="minPriceExist" value="minPrice != null and !minPrice.equals('')"/>
+		<bind name="maxPriceExist" value="maxPrice != null and !maxPrice.equals('')"/>
+		<bind name="beginDateExist" value="beginDate != null and !beginDate.equals('')"/>
+		<bind name="endDateExist" value="endDate != null and !endDate.equals('')"/>
+		<bind name="boardAdCheckExist" value="boardAdCheck != null and !boardAdCheck.equals('')"/>
+		
+		select count(*) from board_ad
+		
+		<where>
+					
+			<!-- 신청자 -->
+			<if test="memberEmailExist">
+				<![CDATA[and instr(member_email, #{memberEmail}) > 0]]>
+			</if>
+			
+			<!-- 분야 -->
+			<if test="memberInterestExist">
+				and member_interest = #{memberInterest}
+			</if>
+			
+			<!-- 노출횟수 -->
+			<choose>
+				<when test="minCountExist and maxCountExist">
+					and board_ad_count between #{minCount} and #{maxCount}
+				</when>
+				<when test="minCountExist">
+					<![CDATA[and board_ad_count >= #{minCount}]]>
+				</when>
+				<when test="maxCountExist">
+					<![CDATA[and board_ad_count <= #{maxCount}]]>
+				</when>
+			</choose>
+			
+			<!-- 가격 -->
+			<choose>
+				<when test="minPriceExist and maxPriceExist">
+					and board_ad_price between #{minPrice} and #{maxPrice}
+				</when>
+				<when test="minPriceExist">
+					<![CDATA[and board_ad_price >= #{minPrice}]]>
+				</when>
+				<when test="maxPriceExist">
+					<![CDATA[and board_ad_price <= #{maxPrice}]]>
+				</when>
+			</choose>
+			
+			<!-- 신청일자 -->
+			<choose>
+				<when test="beginDateExist and endDateExist">
+					and board_ad_date between 
+					to_date(#{beginDate} || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+					and to_date(#{endDate} || ' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')
+				</when>
+				<when test="beginDateExist">
+					<![CDATA[and board_ad_date >= to_date(#{beginDate} || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS')]]>
+				</when>
+				<when test="endDateExist">
+					<![CDATA[and board_ad_date <= to_date(#{endDate} || ' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')]]>
+				</when>
+			</choose>
+			
+			<!-- 진행현황 -->
+			<if test="boardAdCheckExist">
+				and board_ad_check = #{boardAdCheck}
+			</if>
+			
+		</where>
 	</select>
 	
 	
@@ -96,6 +287,11 @@
 		board_ad_link=#{boardAdLink},
 		board_ad_price=#{boardAdPrice},
 		board_ad_is_reply=#{boardAdIsReply} where board_ad_no=#{boardAdNo}
+	</update>
+	
+	<!-- 관리자 광고 신청 현황 수정 -->
+	<update id="updateAd" parameterType="int">
+		update board_ad set board_ad_check = #{boardAdCheck} where board_ad_no = #{boardAdNo}
 	</update>
 	
 	<!-- 광고 게시글 삭제 -->
