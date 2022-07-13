@@ -81,7 +81,7 @@
 								<td>${list.boardAdCount}</td>
 								<td>${list.boardAdPrice}</td>
 								<td>${list.boardAdDate}</td>
-								<td v-if="${list.boardAdCheck == '결제 대기'}"><a href="#" class="btn btn-primary btn-sm">결제하기</a></td>
+								<td v-if="${list.boardAdCheck == '결제 대기'}"><a href="${pageContext.request.contextPath}/pay_purchase?adNo=${adNo}" class="btn btn-primary btn-sm">결제하기</a></td>
 								<td v-else>${list.boardAdCheck}</td>
 								<td><i class="fa-solid fa-angle-down"></i></td>
 							</tr>
