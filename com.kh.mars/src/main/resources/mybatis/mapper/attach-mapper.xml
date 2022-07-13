@@ -35,6 +35,10 @@
 		values (#{attachNo}, #{attachUploadname}, #{attachType}, #{attachSize})
 	</insert>
 	
+	<delete id="delete" parameterType="int">
+		delete from attach where attach_no = #{profileIsNull}
+	</delete>
+	
  </mapper> 
  
  

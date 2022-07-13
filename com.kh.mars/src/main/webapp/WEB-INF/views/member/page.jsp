@@ -11,7 +11,7 @@
     <!-- Button trigger modal -->
     <div class="row">
             <div class="col-4">
-                <img src="${pageContext.request.contextPath}${profileUrl}"
+                <img style="border-radius: 70%;" src="${pageContext.request.contextPath}${profileUrl}"
  				width = "150">
             </div>
             <div class="col-8">
@@ -132,6 +132,8 @@
       </div>
     </div>
   </div>
+  
+  <div class="border-bottom mt-5"></div>
   
   <!-- 사진영역 -->
   
