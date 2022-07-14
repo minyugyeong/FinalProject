@@ -28,13 +28,20 @@ public interface BoardAdDao {
 	List<BoardMainListVO> mainList(int memberNo);
 	void delete(int boardAdNo);
 
-	List<BoardAdAttachNoVO> selectList(int memberNo);
+	List<BoardAdAttachNoVO> selectList(int memberNo, int p, int s);
 
 	List<BoardAdAttachNoMemberVO> selectList(BoardAdListSearchVO vo, int p, int s);
 
-	BoardAdDto update(BoardAdDto boardAdDto);
+	void updateFirst(int boardAdNo);
 
 	int count(BoardAdListSearchVO vo);
+
+	void updateSecond(int boardAdNo);
+
+	void updateThird(int boardAdNo);
+
+	int count(int memberNo);
+
 
 
 }
