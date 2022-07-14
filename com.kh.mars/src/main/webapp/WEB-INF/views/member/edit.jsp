@@ -35,17 +35,17 @@
 		        <h5 class="modal-title" id="deleteModalLabel">회원 탈퇴</h5>
 		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		      </div>
+		      <form action="exit" method="post">
 		      <div class="modal-body">
 		        <p>회원 탈퇴를 진행하시겠습니까?
 		        <br><br>비밀번호를 입력해 주세요</p>
 		        <input type="password" name="memberPassword" class="form-control">
 		      </div>
 		      <div class="modal-footer">
-		      <form action="personal" method="post">
 		        <button type="submit" class="btn btn-primary">탈퇴하기</button>
 		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-		      </form>
 		      </div>
+		      </form>
 		    </div>
 		  </div>
 		</div>

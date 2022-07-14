@@ -93,7 +93,7 @@
                     <label>관심사</label>
                     </div>
                         <select class="form-select" name="memberInterest">
-                            <option>선택</option>
+                            <option value="">선택</option>
                             <option>예술</option>
                             <option>패션</option>
                             <option>요리</option>
