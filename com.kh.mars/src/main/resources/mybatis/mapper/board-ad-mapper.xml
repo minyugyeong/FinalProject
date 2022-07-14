@@ -407,6 +407,11 @@
 		delete board_ad where board_ad_no = #{boardAdNo}
 	</delete>
 	
+	<!-- 광고 결제상태 변경 -->
+	<update id="updateCheck">
+		update board_ad set board_ad_check = '광고 진행' where board_ad_no = #{boardAdNo} 
+	</update>
+	
 
 
 	

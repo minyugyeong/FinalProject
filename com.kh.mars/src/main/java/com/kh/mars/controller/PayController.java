@@ -8,19 +8,20 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.mars.entity.AdDto;
+import com.kh.mars.entity.BoardAdDto;
+import com.kh.mars.repository.AdDao;
 import com.kh.mars.repository.BoardAdDao;
 import com.kh.mars.repository.MemberDao;
 import com.kh.mars.repository.PaymentDao;
 import com.kh.mars.service.KakaoPayService;
 import com.kh.mars.service.PaymentService;
-import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.KakaoPayApproveRequestVO;
 import com.kh.mars.vo.KakaoPayApproveResponseVO;
 import com.kh.mars.vo.KakaoPayReadyRequestVO;
@@ -43,23 +44,27 @@ public class PayController {
 	@Autowired
 	private PaymentService paymentService;
 	
+	@Autowired
+	private BoardAdDao boardAdDao;
+	
 	
 	
 	@PostMapping("/pay_purchase")
 	public String payPurchase(@ModelAttribute PurchaseVO purchaseVO, HttpSession session) throws URISyntaxException {
-		AdDto adDto = paymentDao.find(purchaseVO.getAd_no());
-		if(adDto == null) {
+		BoardAdDto boardAdDto = paymentDao.find(purchaseVO.getBoardAdNo());
+		if(boardAdDto == null) {
 			return "redirect:pay_purcahse";
 		}
 		int memberNo = (Integer)session.getAttribute("login");
 		String memberNick= memberDao.nick(memberNo);
-		int price= adDto.getAdPrice();
+		int price= boardAdDto.getBoardAdPrice();
 		int paymentNo= paymentDao.sequence();
 		
 		KakaoPayReadyRequestVO requestVO = KakaoPayReadyRequestVO.builder()
 																			.partner_order_id(String.valueOf(paymentNo))
 																			.partner_user_id(memberNick)
-																			.item_name(String.valueOf (adDto.getAdNo()))
+																			.item_name(String.valueOf (boardAdDto.getAdNo()))
+																			.quantity(purchaseVO.getQuantity())
 																			.total_amount(price)
 																	.build();
 		KakaoPayReadyResponseVO responseVO = kakaoPayService.ready(requestVO);
@@ -70,16 +75,17 @@ public class PayController {
 																			.partner_user_id(requestVO.getPartner_user_id())
 																		.build());
 		session.setAttribute("purchase", List.of(purchaseVO));
-		
+		session.setAttribute("boardNo", boardAdDto.getBoardAdNo());
 		session.setAttribute("paymentNo", paymentNo);
 		
 		return "redirect:"+responseVO.getNext_redirect_pc_url();
 	}
 	
 	@GetMapping("/pay/approve")
-	public String paySuccess(@RequestParam int memberNo, @RequestParam String pg_token, HttpSession session) throws URISyntaxException {
+	public String paySuccess(@RequestParam String pg_token, HttpSession session, RedirectAttributes attr ) throws URISyntaxException {
 	
-		memberNo=(Integer)session.getAttribute("login");
+		int memberNo=(Integer)session.getAttribute("login");
+		int boardAdNo=(Integer) session.getAttribute("boardNo");
 		KakaoPayApproveRequestVO requestVO = 
 									(KakaoPayApproveRequestVO) session.getAttribute("pay");
 		session.removeAttribute("pay");
@@ -95,8 +101,10 @@ public class PayController {
 		KakaoPayApproveResponseVO responseVO = kakaoPayService.approve(requestVO);
 		
 		paymentService.insert(memberNo, paymentNo, responseVO, purchaseList);
-		
-		return "redirect:미정";//상의하기
+		boardAdDao.updateCheck(boardAdNo);
+		session.removeAttribute("boardNo");
+		attr.addAttribute("memberNo", memberNo);
+		return "redirect:/member/ad";
 	}
 
 }

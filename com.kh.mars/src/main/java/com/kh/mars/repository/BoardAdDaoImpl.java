@@ -128,10 +128,17 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	}
 
 	@Override
+	public void updateCheck(int boardAdNo) {
+		sqlSession.update("board_ad.updateCheck", boardAdNo);
+		
+	}
+
+
 	public void updateSecond(int boardAdNo) {
 		
 		sqlSession.update("board_ad.updateSecond", boardAdNo);
 	}
+
 
 	@Override
 	public void updateThird(int boardAdNo) {
