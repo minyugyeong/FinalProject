@@ -54,6 +54,7 @@
 
         <div class="row form-floating mb-3">
             <input type="text" class="form-control" id="floatingNumber" placeholder="PhoneNumber" name="memberPhone">
+            <span style="color:red"></span>
             <label for="floatingNumber">전화번호</label>
             <div class="invalid-feedback">올바른 형식이 아닙니다</div>
         </div>
@@ -266,14 +267,35 @@
 
             $("input[name=memberPhone]").blur(function(){
                 var regex = /^01([0|1|6|7|8|9]?)?([0-9]{3,4})?([0-9]{4})$/;
-                var memberPhone = regex.test($(this).val());
+                var memberPhone = $(this).val();
+                var memberPhoneTest = regex.test(memberPhone);
 
-                $(this).removeClass("is-valid is-invalid");
-                $(this).addClass(memberPhone ? "is-valid" : "is-invalid");
-                if(memberPhone == true){
-                	status.memberPhoneCheck = true;
+                if(memberPhoneTest == true){//정규표현식 통과 시
+                	$.ajax({
+                		url : "${pageContext.request.contextPath}/checkPhone",
+                		method : "get",
+                		data : {
+                			memberPhone : memberPhone
+                		},
+                		success:(resp)=>{
+                			if(resp == true){//중복검사 통과
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).addClass("is-valid");
+                				$(this).next("span").text("");
+                				status.memberPhoneCheck = true;
+                			}
+                			else{//중복검사 실패
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).next("span").text("이미 가입된 전화번호 입니다");
+                				status.memberPhoneCheck = false;
+                			}
+                		}
+                	});
                 }
-                else{
+                else{//정규표현식 실패 시
+                	$(this).removeClass("is-valid is-invalid");
+                    $(this).addClass("is-invalid");
+                    $(this).next("span").text("");
                 	status.memberPhoneCheck = false;	
                 }
             });

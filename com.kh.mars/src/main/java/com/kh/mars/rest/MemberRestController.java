@@ -175,6 +175,18 @@ public class MemberRestController {
 			@RequestParam int pageCount){
 		return boardDao.pageList(memberNo,pageCount);
 	}
+	
+	@GetMapping("/checkPhone")
+	@ResponseBody
+	public boolean phoneCheck(@RequestParam String memberPhone) {
+		String phoneCheck = memberDao.checkPhone(memberPhone);
+		if(phoneCheck == null) {//중복되지 않으면
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 		
 	
 

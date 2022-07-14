@@ -391,7 +391,7 @@ public class MemberController {
 			return "redirect:login";
 		}
 		else {
-			return "redirect:edit";
+			return "redirect:edit?passworderror";
 		}
 	}
 	

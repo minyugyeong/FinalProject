@@ -199,6 +199,11 @@ public class MemberDaoImpl implements MemberDao{
 		}
 		}
 
+	@Override
+	public String checkPhone(String memberPhone) {
+		return sqlSession.selectOne("member.checkPhone", memberPhone);
+	}
+
 
 }
 

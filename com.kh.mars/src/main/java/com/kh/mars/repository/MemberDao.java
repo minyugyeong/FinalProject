@@ -51,6 +51,8 @@ public interface MemberDao {
 
 	boolean exit(int memberNo, String memberPassword);
 
+	String checkPhone(String memberPhone);
+
 
 
 }

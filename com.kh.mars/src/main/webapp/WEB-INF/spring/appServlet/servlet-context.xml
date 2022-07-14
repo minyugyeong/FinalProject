@@ -71,6 +71,7 @@
 	 		<mvc:exclude-mapping path="/sendMail"/>
 	 		<mvc:exclude-mapping path="/certCheck"/>
 	 		<mvc:exclude-mapping path="/image/**"/>
+	 		<mvc:exclude-mapping path="/checkPhone"/>
 	 		
 	 		<ref bean="memberNonLoginInterceptor"/>
 	 	</mvc:interceptor>

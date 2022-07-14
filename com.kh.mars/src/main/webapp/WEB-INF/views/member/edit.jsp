@@ -243,6 +243,13 @@
     		var error = ${param.error != null}
     		console.log(error);
     		
+    		var passworderror = ${param.passworderror != null}
+    		console.log(passworderror);
+    		
+    		if(passworderror == true){
+    			alert("비밀번호가 다릅니다");
+    		}
+    		
     		if(error == true){
 				$(".first").removeClass("active show");
 				$(".second").addClass("active show");
