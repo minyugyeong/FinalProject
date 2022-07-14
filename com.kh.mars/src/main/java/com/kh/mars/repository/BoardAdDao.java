@@ -36,5 +36,7 @@ public interface BoardAdDao {
 
 	int count(BoardAdListSearchVO vo);
 
+	void updateCheck(int boardAdNo);
+
 
 }

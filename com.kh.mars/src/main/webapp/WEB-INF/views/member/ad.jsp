@@ -81,7 +81,13 @@
 								<td>${list.boardAdCount}</td>
 								<td>${list.boardAdPrice}</td>
 								<td>${list.boardAdDate}</td>
-								<td v-if="${list.boardAdCheck == '결제 대기'}"><a href="${pageContext.request.contextPath}/pay_purchase?adNo=${adNo}" class="btn btn-primary btn-sm">결제하기</a></td>
+								<td v-if="${list.boardAdCheck == '결제 대기'}">
+								<form action="${pageContext.request.contextPath}/pay_purchase" method="post">
+									<input type="hidden" name="boardAdNo" value="${list.boardAdNo}">
+									<input type="hidden" name="quantity" value="1">
+									<input type="submit" value="결제하기" class="btn btn-primary btn-sm">
+								</form>
+								</td>
 								<td v-else>${list.boardAdCheck}</td>
 								<td><i class="fa-solid fa-angle-down"></i></td>
 							</tr>

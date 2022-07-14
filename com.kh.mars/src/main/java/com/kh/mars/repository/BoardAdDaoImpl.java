@@ -121,6 +121,12 @@ public class BoardAdDaoImpl implements BoardAdDao{
 		return sqlSession.selectOne("board_ad.count", vo);
 	}
 
+	@Override
+	public void updateCheck(int boardAdNo) {
+		sqlSession.update("board_ad.updateCheck", boardAdNo);
+		
+	}
+
 
 
 
