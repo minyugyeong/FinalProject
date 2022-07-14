@@ -216,6 +216,10 @@
 				member_no = #{memberNo}
 	</update>
 	
+	<delete id="exit" parameterType="int">
+		delete member where member_no = #{memberNo}
+	</delete>
+	
  </mapper> 
 
  

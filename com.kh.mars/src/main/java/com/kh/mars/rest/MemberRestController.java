@@ -18,6 +18,7 @@ import com.kh.mars.entity.BlockDto;
 import com.kh.mars.entity.CertDto;
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.repository.BlockDao;
+import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
 import com.kh.mars.repository.MemberDao;
@@ -26,6 +27,7 @@ import com.kh.mars.service.EmailService;
 import com.kh.mars.service.FollowService;
 import com.kh.mars.vo.FollowVO;
 import com.kh.mars.vo.FollowerVO;
+import com.kh.mars.vo.SearchListVO;
 
 @Controller
 @CrossOrigin(origins = "http://127.0.0.1:5500")
@@ -52,6 +54,8 @@ public class MemberRestController {
 	@Autowired
 	private BlockService blockService;
 	
+	@Autowired
+	private BoardDao boardDao;
 	
 	@PostMapping("/sendMail")
 	@ResponseBody
@@ -141,13 +145,13 @@ public class MemberRestController {
 	
 	@PostMapping("/block")
 	@ResponseBody
-	public int block(
+	public boolean block(
 			@RequestParam int memberNo, 
-			HttpSession session) {
+			HttpSession session,
+			Model model) {
 		
 		int followWho = (Integer)session.getAttribute("login");
 
-		
 		
 		//차단 상태 검사
 		BlockDto blockDto = blockDao.selectOne(followWho, memberNo);
@@ -155,22 +159,22 @@ public class MemberRestController {
 		//차단
 		if(blockDto == null) {//차단
 			blockService.block(memberNo, followWho);
-			return 1;
+			return true;
 		}
 		else {//차단 취소
 			blockService.block(memberNo, followWho);
-			return 0;
+			return false;
 		}
 		
 	}
 		
-//	@GetMapping("/list")
-//	@ResponseBody
-//	public List<PageBoardListVO> list(
-//			@RequestParam int memberNo,
-//			@RequestParam int ){
-//		
-//	}
+	@GetMapping("/list")
+	@ResponseBody
+	public List<SearchListVO> list(
+			@RequestParam int memberNo,
+			@RequestParam int pageCount){
+		return boardDao.pageList(memberNo,pageCount);
+	}
 		
 	
 

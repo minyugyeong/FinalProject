@@ -3,8 +3,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
-	
-	
+<style>
+@media screen and (max-width: 770px){
+            .media-width{
+                width: 100%!important;
+            }
+        }
+        .media-height{
+        	width: 250px; 
+        	height:250px; 
+        	overflow: hidden;
+        }
+        
+</style>	
+
 	<!-- 특정 영역을 생성하여 이 부분만 vue로 제어한다 -->
     <div id="app" class="container-fluid" style="width:70%!important;">
     <!-- 화면 영역 -->
@@ -24,16 +36,17 @@
                         <a href="edit"><button class="btn">프로필 편집</button></a>
                         </c:if>
                         
-                        <c:if test="${!isOwner }">
-                        <button v-if="confirm == 1" class="btn" @click="following(${memberDto.memberNo})">
+                        
+                        <c:if test="${!isOwner}">
+                        <button v-if="confirm == 1 && block == false" class="btn" @click="following(${memberDto.memberNo})">
                         언팔로우
                         </button>
                         
-                        <button v-if="confirm == 2" class="btn" @click="following(${memberDto.memberNo})">
+                        <button v-if="confirm == 2 && block == false"  class="btn" @click="following(${memberDto.memberNo})">
                         팔로우
                         </button>
                         
-                        <button v-if="confirm == 0" class="btn" @click="following(${memberDto.memberNo})">
+                        <button v-if="confirm == 0 && block == false" class="btn" @click="following(${memberDto.memberNo})">
                         팔로우 신청됨
                         </button>
                 		</c:if>
@@ -45,9 +58,13 @@
                     </div>
                     <c:if test="${!isOwner }">
                     <div class="col-4">
-                    	<button class="btn" v-if="block == null" @click="blockMember(${memberDto.memberNo })">차단하기</button>
                     	
-                    	<button class="btn" v-if="block == 1" @click="blockMember(${memberDto.memberNo })">차단해제</button>
+                    	<button class="btn" v-if="block == false" @click="blockMember(${memberDto.memberNo })">차단하기</button>
+                    	
+                    	
+                    	
+                    	<button class="btn" v-if="block == true" @click="blockMember(${memberDto.memberNo })">차단해제</button>
+                    	
                     </div>
                     </c:if>
                 </div>
@@ -56,6 +73,7 @@
                         <h6>게시물 ${boardNum }</h6>
                     </div>
                     
+                    <!-- 비공개인데 팔로우가 아닌 경우 -->
                     <c:if test="${isPrivate && !isFollower && !isOwner}">
                     <div class="col-4 mt-3">
 						   <h6>팔로워 ${follower }</h6>
@@ -65,6 +83,21 @@
                     </div>
                     </c:if>
                     
+                    <!-- 비공개인데 팔로우인 경우 -->
+                    <c:if test="${isPrivate && isFollower && !isOwner}">
+                    <div class="col-4">
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal2" @click="followerList">
+						   팔로워 ${follower }
+						</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="followList">
+						   팔로우 ${follow}
+						</button>
+                    </div>
+                    </c:if>
+                    
+                    <!-- 비공개인 경우 -->
                     <c:if test="${!isPrivate || isOwner}">
                     <div class="col-4">
                         <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal2" @click="followerList">
@@ -136,7 +169,35 @@
   <div class="border-bottom mt-5"></div>
   
   <!-- 사진영역 -->
-  
+  <!-- 비공개가 아니거나 비공개인데 팔로우인 경우 -->
+<c:if test="${!isPrivate || isPrivate && isFollower || isOwner}">
+	<div class="position-absolute mt-5 start-50 translate-middle-x media-width" style="display: flex; flex-direction: column; width: 770px;">
+		<div style="margin-bottom:10px;display: flex;flex-direction: row; width: 100%;">     
+		    <div v-if="pageBoardList[0] != null" class="media-height" style="margin-right: 10px; ">
+		        <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[0].attachNo" style="width:100%; height:250px;">
+		    </div>
+		    <div v-if="pageBoardList[1] != null" class="media-height " >
+		        <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[1].attachNo" style="width:100%; height:250px;">
+		    </div>
+		    <div v-if="pageBoardList[2] != null" class="media-height " style="margin-left: 10px;">
+		        <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[2].attachNo" style="width:100%; height:250px;">
+		    </div>
+		</div>
+		<div v-for="(board, index) in pageBoardList" :key="index">
+	         <div v-if="index%3==2" style="margin-bottom:10px;display: flex;flex-direction: row; width: 100%;">
+	             <div v-if="pageBoardList[index+1] != null" class="media-height " style="margin-right: 10px;">
+	                 <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[index+1].attachNo" style="width:100%; height:250px;">
+	             </div>
+	             <div v-if="pageBoardList[index+2] != null" class="media-height ">
+	                 <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[index+2].attachNo" style="width:100%; height:250px;">
+	             </div>
+	             <div v-if="pageBoardList[index+3] != null" class="media-height " style="margin-left: 10px;">
+	                 <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[index+3].attachNo" style="width:100%; height:250px;">
+	             </div>
+	         </div>
+	 	</div>
+	</div>
+</c:if>
   <!-- 비공개 계정+ 팔로우 상태가 아닐 경우+ 내 계정이 아닐경우 -->
   <c:if test="${isPrivate && !isFollower && !isOwner}"> 
   <div class="card mt-5" style="width: 100%;">
@@ -163,6 +224,14 @@
                     follow:[],
                     follower:[],
                     confirm:${followDto.followConfirm},
+                    block:${isBlock},
+                    
+                    //게시글 목록
+                    pageBoardList:[],
+                    pageCount : 1,
+                    memberNo : ${memberDto.memberNo}, 
+                    
+                    //게시글 상세보기
                     
                 };
             },
@@ -204,10 +273,13 @@
                 	.then(resp=>{
                 		console.log(resp.data);
                 		if(resp.data > 0){
+                			this.block == true;
                 			this.confirm = 1;//언팔
                 		}else if(resp.data == 0){
+                			this.block == true;
                 			this.confirm = 2;//팔로우
                 		}else{
+                			this.block == true;
                 			this.confirm = 0;//신청
                 		}
                 	});
@@ -241,22 +313,60 @@
                 		if(resp.data == 1){//차단
                 			
                 				console.log("차단");
-                				this.block == null;
+                				this.block == false;
                 				
                 			}
                 		
                 		else{//차단취소
                 				console.log("차단해제");
-                				this.block == 1;
+                				this.block == true;
                 			
                 			
                 		}
                 	});
-                }
+                },
+                //게시글
+                boardList:_.debounce(function(){
+                	axios({
+                		url : "${pageContext.request.contextPath}/list",
+                		method : "get",
+                		params : {
+                			memberNo : this.memberNo,
+                			pageCount : this.pageCount,
+                		}
+                	})
+                	.then(resp=>{
+                		this.pageBoardList.push(...resp.data);
+                		this.pageCount++;
+                	});
+                })
+                
             },
             created(){
-               
-            }
+               axios({
+            	   url : "${pageContext.request.contextPath}/list",
+            	   method : "get",
+            	   params : {
+            		   memberNo : this.memberNo,
+            		   pageCount : this.pageCount,
+            	   }
+               })
+               .then(resp=>{
+            	   this.pageBoardList = resp.data;
+            	   console.log(resp.data);
+            	   console.log(this.pageBoardList);
+            	   this.pageCount++;
+               })
+            },
+            mounted(){
+            	$(window).scroll((resp)=>{
+            		var scrT = $(window).scrollTop();
+            		const bottom = ($(document).height() - $(window).height() - 10);
+            		if(scrT > bottom){
+            			this.boardList();
+            		}
+            	})
+            },
         });
         app.mount("#app");
     </script>

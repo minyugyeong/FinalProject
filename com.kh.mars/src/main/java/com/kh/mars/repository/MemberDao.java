@@ -49,6 +49,8 @@ public interface MemberDao {
 
 	void personal(int memberNo);
 
+	boolean exit(int memberNo, String memberPassword);
+
 
 
 }

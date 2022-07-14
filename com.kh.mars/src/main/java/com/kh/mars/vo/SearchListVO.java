@@ -11,4 +11,6 @@ public class SearchListVO {
 	private int attachNo;
 	private int attachCount;
 	private int type;
+	private int likeCount;
+	private int replyCount;
 }

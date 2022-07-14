@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.mars.entity.BlockDto;
 import com.kh.mars.entity.CertDto;
 import com.kh.mars.entity.FollowDto;
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.error.UnauthorizeException;
 import com.kh.mars.repository.AttachDao;
+import com.kh.mars.repository.BlockDao;
 import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
@@ -32,8 +34,6 @@ import com.kh.mars.repository.MemberProfileDao;
 import com.kh.mars.service.EmailService;
 import com.kh.mars.service.MemberService;
 import com.kh.mars.vo.MemberSearchVO;
-
-import oracle.jdbc.proxy.annotation.Post;
 
 
 @Controller
@@ -63,6 +63,9 @@ public class MemberController {
 	
 	@Autowired
 	private AttachDao attachDao;
+	
+	@Autowired
+	private BlockDao blockDao;
 
 	//회원가입 페이지
 	@GetMapping("/join")
@@ -232,6 +235,11 @@ public class MemberController {
 		//팔로우 상태
 		boolean isFollower = followDao.isFollower(followWho,memberNo);
 		model.addAttribute("isFollower", isFollower);
+		
+		//차단 상태
+		BlockDto blockDto = blockDao.selectOne(followWho, memberNo);
+		boolean isBlock = blockDto != null;
+		model.addAttribute("isBlock", isBlock);
 
 		
 		return "member/page";
@@ -371,5 +379,21 @@ public class MemberController {
 	public String block() {
 		return "member/block";
 	}
+	
+	//탈퇴
+	@PostMapping("/exit")
+	public String exit(@RequestParam String memberPassword, HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		boolean success = memberDao.exit(memberNo, memberPassword);
+		if(success) {
+			session.removeAttribute("login");
+			session.removeAttribute("auth");
+			return "redirect:login";
+		}
+		else {
+			return "redirect:edit";
+		}
+	}
+	
 	
 }
