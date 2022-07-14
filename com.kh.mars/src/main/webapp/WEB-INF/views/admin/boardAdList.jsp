@@ -45,6 +45,24 @@ $(function(){
 		
 	});
 	
+/* 	$(".change").click(function(){
+		
+		let currentRow = $(this).closest('span');
+		let detail = currentRow.next('span');
+		
+		currentRow.hide();
+		detail.show();
+	});
+	
+	$(".cancel").click(function(){
+
+		let currentRow = $(this).closest('span');
+		let detail = currentRow.prev('span');
+		
+		currentRow.hide();
+		detail.show();
+	}); */
+	
 });
 
 
@@ -98,11 +116,11 @@ $(function(){
 				<div class="col-6">
 					<div class="row">
 						<div class="col-5">
-							<input type="number" name="minPrice" placeholder="가격" class="form-control" autocomplete="off" min="0" step="1000" value="${param.minPrice}">
+							<input type="number" name="minPrice" placeholder="가격" class="form-control" autocomplete="off" min="0" step="10000" value="${param.minPrice}">
 						</div>
 						<div class="col-2 text-center" style="font-size: x-large; font-weight: bold;">~</div>
 						<div class="col-5">
-							<input type="number" name="maxPrice" placeholder="가격" class="form-control" autocomplete="off" min="0" step="1000" value="${param.maxPrice}">
+							<input type="number" name="maxPrice" placeholder="가격" class="form-control" autocomplete="off" min="0" step="10000" value="${param.maxPrice}">
 						</div>
 					</div>
 				</div>
@@ -126,10 +144,9 @@ $(function(){
 						<option value="" style="display:none;">진행현황</option>
 						<option value="신청 완료" <c:if test="${param.boardAdCheck == '신청 완료'}">selected</c:if>>신청 완료</option>
 						<option value="결제 대기" <c:if test="${param.boardAdCheck == '결제 대기'}">selected</c:if>>결제 대기</option>
-						<option value="결제 완료" <c:if test="${param.boardAdCheck == '결제 완료'}">selected</c:if>>결제 완료</option>
 						<option value="광고 진행" <c:if test="${param.boardAdCheck == '광고 진행'}">selected</c:if>>광고 진행</option>
 						<option value="광고 마감" <c:if test="${param.boardAdCheck == '광고 마감'}">selected</c:if>>광고 마감</option>
-						<option value="반려" <c:if test="${param.boardAdCheck == '반려'}">selected</c:if>>반려</option>
+						<option value="반려" <c:if test="${param.boardAdCheck == '신청 반려'}">selected</c:if>>신청 반려</option>
 					</select>
 				</div>
 			</div>
@@ -149,7 +166,7 @@ $(function(){
 		
 	</form>
 	
-	
+	<!-- 리스트 영역 -->
 	
 		<div class="row">
 			<div class="col">
@@ -169,25 +186,31 @@ $(function(){
 					</thead>
 					
 					<tbody>
-						<c:forEach var="list" items="${list}">
+						<c:forEach var="list" items="${list}" varStatus="status">
 							<tr class="text-center align-middle">
-								<td>${list.boardAdNo}</td>
+								<td width="10%">${list.boardAdNo}</td>
 								<td>${list.memberEmail}</td>
-								<td>${list.memberInterest}</td>
-								<td>${list.boardAdCount}</td>
-								<td>${list.boardAdPrice}</td>
-								<td>${list.boardAdDate}</td>
+								<td width="10%">${list.memberInterest}</td>
+								<td width="10%">${list.boardAdCount}</td>
+								<td width="10%">${list.boardAdPrice}</td>
+								<td width="15%">${list.boardAdDate}</td>
 								<td>
-									<select class="form-select" style="width: 70%; display: inline-block;">
-										<option value="신청 완료" <c:if test="${list.boardAdCheck == '신청 완료'}">selected</c:if>>신청 완료</option>
-										<option value="결제 대기" <c:if test="${list.boardAdCheck == '결제 대기'}">selected</c:if>>결제 대기</option>
-										<option value="결제 완료" <c:if test="${list.boardAdCheck == '결제 완료'}">selected</c:if>>결제 완료</option>
-										<option value="광고 진행" <c:if test="${list.boardAdCheck == '광고 진행'}">selected</c:if>>광고 진행</option>
-										<option value="광고 마감" <c:if test="${list.boardAdCheck == '광고 마감'}">selected</c:if>>광고 마감</option>
-										<option value="반려" <c:if test="${list.boardAdCheck == '반려'}">selected</c:if>>반려</option>
-									</select>
-									<button class="btn btn-primary btn-sm" style="margin-left: 2px;">변경</button>
+									<c:choose>
+										<c:when test="${list.boardAdCheck == '신청 완료'}">
+											<span class="first">
+												${list.boardAdCheck}&nbsp;
+												
+												<button class="btn btn-primary btn-sm change" style="margin-left: 2px;" @click="editCheckFirst(${list.boardAdNo})">승인</button>
+												<button class="btn btn-secondary btn-sm change" style="margin-left: 2px;" @click="editCheckSecond(${list.boardAdNo})">반려</button>
+											</span>										
+										</c:when>
+										<c:otherwise>
+											${list.boardAdCheck}
+										</c:otherwise>
+									</c:choose>
+	
 								</td>
+
 								<td><i class="fa-solid fa-angle-down"></i></td>
 							</tr>
 						
@@ -219,7 +242,7 @@ $(function(){
 					<c:choose>
 						<c:when test="${param.memberEmail ne null || param.memberInterest ne null || param.minCount > 0 || param.maxCount > 0 || param.minPrice > 0 || param.maxPrice > 0 || param.beginDate ne null || param.endDate ne null || param.boardAdCheck ne null}">
 							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=1&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
-							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${endDate}&boardAdCheck=${boardAdCheck}">&laquo;</a>
+							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${param.endDate}&boardAdCheck=${param.boardAdCheck}">&laquo;</a>
 						</c:when>
 						<c:otherwise>
 							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=1&s=${s}">&laquo;</a>
@@ -232,8 +255,8 @@ $(function(){
 				<c:if test="${startBlock > 1}">
 					<c:choose>
 						<c:when test="${param.memberEmail ne null || param.memberInterest ne null || param.minCount > 0 || param.maxCount > 0 || param.minPrice > 0 || param.maxPrice > 0 || param.beginDate ne null || param.endDate ne null || param.boardAdCheck ne null}">
-							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=1&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
-							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${endDate}&boardAdCheck=${boardAdCheck}">&lt;</a>
+							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=${startBlock-1}&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
+							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${param.endDate}&boardAdCheck=${param.boardAdCheck}">&lt;</a>
 						</c:when>
 						<c:otherwise>
 							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=${startBlock-1}&s=${s}">&lt;</a>
@@ -250,14 +273,14 @@ $(function(){
 						<c:choose>
 							<c:when test="${i == p}">
 								<li class="page-item active">
-									<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=1&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
-							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${endDate}&boardAdCheck=${boardAdCheck}">${i}</a>
+									<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=${i}&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
+							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${param.endDate}&boardAdCheck=${param.boardAdCheck}">${i}</a>
 								</li>
 							</c:when>
 							<c:otherwise>
 								<li class="page-item">
-									<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=1&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
-							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${endDate}&boardAdCheck=${boardAdCheck}">${i}</a>
+									<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=${i}&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
+							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${param.endDate}&boardAdCheck=${param.boardAdCheck}">${i}</a>
 								</li>
 							</c:otherwise>
 						</c:choose>
@@ -287,8 +310,8 @@ $(function(){
 				<c:if test="${endBlock < lastPage}">
 					<c:choose>
 						<c:when test="${param.memberEmail ne null || param.memberInterest ne null || param.minCount > 0 || param.maxCount > 0 || param.minPrice > 0 || param.maxPrice > 0 || param.beginDate ne null || param.endDate ne null || param.boardAdCheck ne null}">
-							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=1&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
-							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${endDate}&boardAdCheck=${boardAdCheck}">&gt;</a>
+							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=${endBlock+1}&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
+							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${param.endDate}&boardAdCheck=${param.boardAdCheck}">&gt;</a>
 						</c:when>
 						<c:otherwise>
 							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=${endBlock+1}&s=${s}">&gt;</a>
@@ -301,8 +324,8 @@ $(function(){
 				<c:if test="${p < lastPage}">
 					<c:choose>
 						<c:when test="${param.memberEmail ne null || param.memberInterest ne null || param.minCount > 0 || param.maxCount > 0 || param.minPrice > 0 || param.maxPrice > 0 || param.beginDate ne null || param.endDate ne null || param.boardAdCheck ne null}">
-							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=1&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
-							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${endDate}&boardAdCheck=${boardAdCheck}">&raquo;</a>
+							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=${lastPage}&s=${s}&memberEmail=${param.memberEmail}&memberInterest=${param.memberInterest}&minCount=${param.minCount}
+							&maxCount=${param.maxCount}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&beginDate=${param.beginDate}&endDate=${param.endDate}&boardAdCheck=${param.boardAdCheck}">&raquo;</a>
 						</c:when>
 						<c:otherwise>
 							<a class="page-link" href="${pageContext.request.contextPath}/admin/boardAdList?p=${lastPage}&s=${s}">&raquo;</a>
@@ -318,33 +341,73 @@ $(function(){
 </div>
 
 <script>
-//div[id=app]을 제어할 수 있는 Vue instance를 생성
-	const app = Vue.createApp({
-	  //data 영역 : 화면을 구현하는데 필요한 데이터를 작성해둔다.
-	  data(){
-	    return {
-	      
-	    };
-	  },
-	
-	  //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
-	  //- 3줄보다 많다면 사용하지 않는 것을 권장한다.(복잡한 계산 시 성능 저하가 발생)
-	  computed:{
-	    
-	  },
-	
-	  //methods : 애플리케이션 내에서 언제든 호출 가능한 코드 집합이 필요한 경우 작성한다.
-	  methods:{
-	   
-	  },
-	
-	  //watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다.
-	  watch:{
-	    
-	  },
-	
-	});
-	app.mount("#app");
+  //div[id=app]을 제어할 수 있는 Vue instance를 생성
+  const app = Vue.createApp({
+    //data 영역 : 화면을 구현하는데 필요한 데이터를 작성해둔다.
+    data(){
+      return {
+        
+      };
+    },
+
+    //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
+    //- 3줄보다 많다면 사용하지 않는 것을 권장한다.(복잡한 계산 시 성능 저하가 발생)
+    computed:{
+      
+    },
+
+    //methods : 애플리케이션 내에서 언제든 호출 가능한 코드 집합이 필요한 경우 작성한다.
+    methods:{
+    	
+    	editCheckFirst(no){
+    		
+    		let result = confirm('해당 게시물을 승인하시겠습니까?');
+    		if(result){
+	    		axios({
+	    			url: "${pageContext.request.contextPath}/admin/boardAdList/first",
+	    			method: "put",
+	    			params: {
+	    				boardAdNo: no,
+	    			},
+	    		})
+	    		.then(resp=>{
+	    			location.replace('${pageContext.request.contextPath}/admin/boardAdList');	
+	    		});
+    		}
+    	},
+    	
+    	editCheckSecond(no){
+    		
+    		let result = confirm('해당 게시물의 신청을 반려하시겠습니까?');
+    		if(result){
+    			axios({
+    				url: "${pageContext.request.contextPath}/admin/boardAdList/second",
+    				method: "put",
+    				params: {
+    					boardAdNo: no,
+    				},
+    			})
+    			.then(resp=>{
+    				location.replace('${pageContext.request.contextPath}/admin/boardAdList');
+    			});
+    		}
+    	},
+    	
+    	
+     
+    },
+
+    //watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다.
+    watch:{
+      
+    },
+    
+		created(){
+    	
+    }
+  });
+  app.mount("#app");
 </script>
+
 
 

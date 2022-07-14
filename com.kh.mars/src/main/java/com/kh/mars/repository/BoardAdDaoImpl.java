@@ -88,9 +88,17 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	}
 
 	@Override
-	public List<BoardAdAttachNoVO> selectList(int memberNo) {
+	public List<BoardAdAttachNoVO> selectList(int memberNo, int p, int s) {
 		
-		return sqlSession.selectList("board_ad.treeSearch", memberNo);
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberNo", memberNo);
+		
+		int end = p * s;
+		int begin = end - (s-1);
+		param.put("end", end);
+		param.put("begin", begin);
+		
+		return sqlSession.selectList("board_ad.treeSearch", param);
 	}
 
 	@Override
@@ -108,11 +116,9 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	}
 
 	@Override
-	public BoardAdDto update(BoardAdDto boardAdDto) {
+	public void updateFirst(int boardAdNo) {
 		
-		sqlSession.update("board_ad.updateAd", boardAdDto);
-		
-		return sqlSession.selectOne("board_ad.selectOne", boardAdDto.getBoardAdNo());  
+		sqlSession.update("board_ad.updateFirst", boardAdNo);
 	}
 
 	@Override
@@ -128,7 +134,25 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	}
 
 
+	public void updateSecond(int boardAdNo) {
+		
+		sqlSession.update("board_ad.updateSecond", boardAdNo);
+	}
 
+
+	@Override
+	public void updateThird(int boardAdNo) {
+		
+		sqlSession.update("board_ad.updateThird", boardAdNo);
+	}
+
+	@Override
+	public int count(int memberNo) {
+		
+		return sqlSession.selectOne("board_ad.countMemberAd", memberNo);
+	}
+
+	
 
 }
 

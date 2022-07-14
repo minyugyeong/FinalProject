@@ -218,10 +218,31 @@ public class BoardAdController {
 	
 	//비즈니스 회원 광고 신청 목록
 	@GetMapping("/member/ad")
-	public String pay(@RequestParam int memberNo, Model model) {
+	public String pay(
+			@RequestParam int memberNo,
+			Model model,
+			@RequestParam(required = false, defaultValue = "1") int p,
+			@RequestParam(required = false, defaultValue = "10") int s
+			) {
 		
-		List<BoardAdAttachNoVO> list = boardAdDao.selectList(memberNo);
+		List<BoardAdAttachNoVO> list = boardAdDao.selectList(memberNo, p, s);
 		model.addAttribute("list", list);
+		
+		int count = boardAdDao.count(memberNo);
+		int lastPage = (count + s-1)/s;
+		
+		int blockSize = 10;
+		int endBlock = (p+blockSize-1) / blockSize * blockSize;
+		int startBlock = endBlock - (blockSize - 1);
+		if(endBlock > lastPage) {
+			endBlock = lastPage;
+		}
+		
+		model.addAttribute("p", p); 
+		model.addAttribute("s", s);
+		model.addAttribute("startBlock", startBlock);
+		model.addAttribute("endBlock", endBlock);
+		model.addAttribute("lastPage", lastPage);
 		
 		return "/member/ad";
 	}
@@ -256,7 +277,6 @@ public class BoardAdController {
 		
 		return "/admin/boardAdList";
 	}
-
 	
 	
 

@@ -75,9 +75,10 @@
 					</thead>
 					
 					<tbody>
+						<c:set var="lengthList" value="${fn:length(list)}"></c:set>
 						<c:forEach var="list" items="${list}" varStatus="status">
 							<tr class="text-center align-middle">
-								<td>${status.count}</td>
+								<td>${lengthList - status.index}</td>
 								<td>${list.boardAdCount}</td>
 								<td>${list.boardAdPrice}</td>
 								<td>${list.boardAdDate}</td>
@@ -110,7 +111,62 @@
 			
 		</div>
 	</div>
+	
+	<!-- 페이지네이션 -->
+	<div class="row pagination">
+	
+		<ul class="pagination justify-content-center">
+			
+			<!-- 이전 버튼 -->
+			<li class="page-item">
+				<c:if test="${p > 1}">
+					<a class="page-link" href="${pageContext.request.contextPath}/member/ad?memberNo=${param.memberNo}&p=1&s=${s}">&laquo;</a>
+				</c:if>
+			</li>
+			
+			<li class="page-item">
+				<c:if test="${startBlock > 1}">
+					<a class="page-link" href="${pageContext.request.contextPath}//member/ad?memberNo=${param.memberNo}&p=${startBlock-1}&s=${s}">&lt;</a>
+				</c:if>
+			</li>
+			
+			<!-- 숫자 링크 -->
+			<c:forEach var="i" begin="${startBlock}" end="${endBlock}" step="1">
+				
+				<c:choose>
+					<c:when test="${i == p}">
+						<li class="page-item active">
+							<a class="page-link" href="${pageContext.request.contextPath}/member/ad?memberNo=${param.memberNo}&p=${i}&s=${s}">${i}</a>
+						</li>
+					</c:when>
+					<c:otherwise>
+						<li class="page-item">
+							<a class="page-link" href="${pageContext.request.contextPath}/member/ad?memberNo=${param.memberNo}&p=${i}&s=${s}">${i}</a>
+						</li>
+					</c:otherwise>
+				</c:choose>
+
+			</c:forEach>
+			
+			<!-- 다음 버튼 -->
+			<li class="page-item">
+				<c:if test="${endBlock < lastPage}">
+					<a class="page-link" href="${pageContext.request.contextPath}/member/ad?memberNo=${param.memberNo}&p=${endBlock+1}&s=${s}">&gt;</a>	
+				</c:if>
+			</li>
+			
+			<li class="page-item">
+				<c:if test="${p < lastPage}">
+					<a class="page-link" href="${pageContext.request.contextPath}/member/ad?memberNo=${param.memberNo}&p=${lastPage}&s=${s}">&raquo;</a>
+				</c:if>
+			</li>
+			
+		</ul>
+		
+	</div>
+	
 </div>
+
 <script>
  
  const app = Vue.createApp({

@@ -169,13 +169,21 @@
 		
 	</resultMap>
 	
-	<select id="treeSearch" resultMap="boardAdAttachNo" parameterType="int">
-		select * from board_ad where member_no=#{memberNo}
+	<select id="treeSearch" resultMap="boardAdAttachNo" parameterType="Map">
+		select * from (
+			select rownum rn, TMP.* from(
+				select * from board_ad where member_no=#{memberNo} 
+				)TMP
+		)where rn between #{begin} and #{end} order by board_ad_no desc
 	</select>
 	
 	<select id="treeSearchSubquery" resultType="BoardAdAttachDto" parameterType="int">
 		select * from board_ad_attach where board_ad_no = #{boardAdNo} 
 		order by attach_no asc
+	</select>
+	
+	<select id="countMemberAd" resultType="int" parameterType="int">
+		select count(*) from board_ad where member_no=#{memberNo}
 	</select>
 	
 	
@@ -298,15 +306,15 @@
 	
 		<bind name="memberEmailExist" value="memberEmail != null and !memberEmail.equals('')"/>
 		<bind name="memberInterestExist" value="memberInterest != null and !memberInterest.equals('')"/>
-		<bind name="minCountExist" value="minCount != null and !minCount.equals('')"/>
-		<bind name="maxCountExist" value="maxCount != null and !maxCount.equals('')"/>
-		<bind name="minPriceExist" value="minPrice != null and !minPrice.equals('')"/>
-		<bind name="maxPriceExist" value="maxPrice != null and !maxPrice.equals('')"/>
+		<bind name="minCountExist" value="minCount != null and minCount > 0"/>
+		<bind name="maxCountExist" value="maxCount != null and maxCount > 0"/>
+		<bind name="minPriceExist" value="minPrice != null and minPrice > 0"/>
+		<bind name="maxPriceExist" value="maxPrice != null and maxPrice > 0"/>
 		<bind name="beginDateExist" value="beginDate != null and !beginDate.equals('')"/>
 		<bind name="endDateExist" value="endDate != null and !endDate.equals('')"/>
 		<bind name="boardAdCheckExist" value="boardAdCheck != null and !boardAdCheck.equals('')"/>
 		
-		select count(*) from board_ad
+		select count(*) from board_ad B left outer join member M on B.member_no = M.member_no
 		
 		<where>
 					
@@ -382,8 +390,16 @@
 	</update>
 	
 	<!-- 관리자 광고 신청 현황 수정 -->
-	<update id="updateAd" parameterType="int">
-		update board_ad set board_ad_check = #{boardAdCheck} where board_ad_no = #{boardAdNo}
+	<update id="updateFirst" parameterType="int">
+		update board_ad set board_ad_check = '결제 대기' where board_ad_no = #{boardAdNo}
+	</update>
+	
+	<update id="updateSecond" parameterType="int">
+		update board_ad set board_ad_check = '신청 반려' where board_ad_no = #{boardAdNo}
+	</update>
+	
+	<update id="updateThird" parameterType="int">
+		update board_ad set board_ad_check = '광고 진행' where board_ad_no = #{boardAdNo}
 	</update>
 	
 	<!-- 광고 게시글 삭제 -->
