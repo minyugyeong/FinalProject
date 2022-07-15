@@ -124,9 +124,10 @@
                 </div>
                 
                 <div class="mb-3 row">
-                    <label for="inputmemberIntroduce" class="col-sm-5 col-form-label">소개</label>
+                    <label for="inputmemberIntroduce" id="intro" class="col-sm-5 col-form-label">소개</label>
                     <div class="col-7">
-                    	<textarea name="memberIntroduce" class="form-control">${memberDto.memberIntroduce }</textarea>
+                    	<textarea name="memberIntroduce" id="introduce" class="form-control">${memberDto.memberIntroduce }</textarea>
+                    <div id="cnt">(0/1000)</div>
                     </div>
                 </div>
 
@@ -245,6 +246,23 @@
     		
     		var passworderror = ${param.passworderror != null}
     		console.log(passworderror);
+    		
+    		//소개 글자수 제한
+		
+		   $(document).ready(function(){
+			  $('#introduce').on('keyup', function(){
+				  $('#cnt').html("("+$(this).val().length+" / 1000)");
+				  
+		            if($(this).val().length > 1000) {
+		                $(this).val($(this).val().substring(0, 1000));
+		                $('#cnt').html("(1000 / 1000)");
+		            }
+			  });
+		   });
+
+		    
+
+    		
     		
     		if(passworderror == true){
     			alert("비밀번호가 다릅니다");
@@ -423,6 +441,8 @@
 			                }
 			            });
 			        });
+        
+        
     		
     	})
     </script>
