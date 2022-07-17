@@ -56,34 +56,53 @@
 	
 	<!-- 방 리스트 마지막 content 조회 -->
 	<select id="roomList" parameterType="int" resultType="RoomVO">
-		select final.*, m.member_nick from (
-	    select ac.*, dm.dm_content from (
-	    select aaa.member_no, aaa.room_no, aaa.room_enter_is, bbb.dm_no, bbb.dm_record_time, bbb.target from (
-	    select aa.*, bb."dm_no" from (
-	    select ff.room_enter_is ,fa.member_no, fa.room_no from (
-	    select room_no, room_enter_is from room_enter where member_no = #{memberNo}
-	    )ff inner join room_enter fa on ff.room_no = fa.room_no where fa.member_no != #{memberNo}
-	    )aa inner join (select room.room_no, max(dm_record.dm_no) "dm_no" from room inner join dm_record on room.room_no = dm_record.room_no group by room.room_no)
-	    bb on aa.room_no = bb.room_no
-	    )aaa inner join dm_record bbb on aaa."dm_no" = bbb.dm_no
-	    )ac inner join dm on ac.dm_no = dm.dm_no
-		)final inner join member m on final.member_no = m.member_no
+		select re2.*, m.member_nick, mp.attach_no, d.dm_no, d.dm_content, d.dm_record_time, d.dm_record_check, d.target, ur."unreadcount" from room_enter re 
+		    
+		    inner join room_enter re2 on re.room_no = re2.room_no
+		    inner join (
+		                select dr.room_no, d.*, dr2.dm_record_time, dr2.dm_record_check, dr2.target from dm d
+		                inner join(
+		                    select room.room_no, max(dm_record.dm_no) "dm_no" from room 
+		                    inner join dm_record on room.room_no = dm_record.room_no 
+		                    group by room.room_no) dr on d.dm_no = dr."dm_no"
+		                inner join dm_record dr2 on d.dm_no = dr2.dm_no
+		                ) d on re2.room_no = d.room_no
+		    inner join (
+		                select * from member
+		                    minus
+		                select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo}
+		                ) m on m.member_no = re2.member_no
+		    left outer join (
+		    	select r.room_no, count(dm_no) "unreadcount" from room r inner join dm_record dr on r.room_no = dr.room_no where dr.dm_record_check = 0 and dr.target = #{memberNo} group by r.room_no
+		    		)ur on re.room_no = ur.room_no
+		    left outer join member_profile mp on re2.member_no = mp.member_no
+	    where re.member_no = #{memberNo} and re.room_enter_is = 1 and re2.member_no != #{memberNo} order by dm_no desc
 	</select>
 	
 	<!-- 메세지 상세조회 -->
 	<select id="roomDetail" parameterType="map" resultType="RoomRecordVO">
-		select 
-			dr.*, d.dm_content 
-		from 
-			dm_record dr
-			    inner join dm d on dr.dm_no = d.dm_no
-			    inner join room_enter re on dr.room_no = re.room_no
-	    where dr.room_no = #{roomNo} 
-	    	and (dr.who = #{memberNo} or dr.target = #{memberNo}) 
-	    	and re.member_no = #{memberNo} 
-	    	<![CDATA[
-	    	and re.room_enter_time <= dr.dm_record_time
-	    	]]>
+		select * from (
+		    select rownum "rn", tmp.* from (
+		        select 
+					dr.*, d.dm_content 
+				from 
+					dm_record dr
+					    inner join dm d on dr.dm_no = d.dm_no
+					    inner join room_enter re on dr.room_no = re.room_no
+			    where dr.room_no = #{roomNo} 
+			    	and (dr.who = #{memberNo} or dr.target = #{memberNo}) 
+			    	and re.member_no = #{memberNo}
+			    	<![CDATA[
+			    	and re.room_enter_time <= dr.dm_record_time
+			    	]]>
+			    	<if test="uptoNo != 0">
+		           	<![CDATA[
+		            and dr.dm_no <= #{uptoNo}
+		            ]]>
+			    	</if>
+		        order by dr.dm_no desc
+		    )tmp
+		) where "rn" between (#{dmCount} * 20 - 19) and (#{dmCount} * 20) order by dm_no
 	</select>
 	
 	<select id="roomMember" parameterType="map" resultType="Integer">
@@ -91,4 +110,67 @@
 		    where room_no = #{roomNo} and member_no != #{memberNo}
 	</select>
 	
+	<select id="chooseDm" resultType="RecommendListVO" parameterType="int">
+		select * from (
+        	select * from (
+	        	select m.member_no, m.member_nick, m.member_name, mp.attach_no from follow f
+	        
+	        	inner join member m on f.follow_target = m.member_no
+	        	left outer join member_profile mp on mp.member_no = m.member_no
+	        
+	        	where f.follow_who = #{memberNo}
+        	) order by dbms_random.value
+        <![CDATA[
+        )where rownum <= 10
+        ]]>
+	</select>
+	
+	<select id="roomSearch" resultType="int" parameterType="map">
+		select re.room_no from (select * from room_enter where member_no = #{memberNo})re
+			inner join (
+			select * from room_enter where member_no = #{targetNo}
+			)re2 on re.room_no = re2.room_no
+		where rownum = 1
+	</select>
+	
+	<select id="dmMemberSearch" resultType="RecommendListVO" parameterType="map">
+		select m.member_no, m.member_nick, m.member_name, mp.attach_no from (
+	        select * from member where member_no != #{memberNo}
+	        minus
+	        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
+	        minus
+	        select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo}
+	    ) m left outer join member_profile mp on m.member_no = mp.member_no
+	    where instr(member_nick, #{keyword}) > 0
+	    union
+	    select m.member_no, m.member_nick, m.member_name, mp.attach_no from (
+	        select * from member where member_no != #{memberNo}
+	        minus
+	        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
+	        minus
+	        select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo}
+    	) m left outer join member_profile mp on m.member_no = mp.member_no
+    	where instr(member_name, #{keyword}) > 0
+	</select>
+	
+	<insert id="roomCreate" parameterType="int">
+		insert into room values(#{roomNo})
+	</insert>
+	
+	<select id="roomSeq" resultType="int">
+		select room_seq.nextval from dual
+	</select>
+	
+	<insert id="roomEnter" parameterType="map">
+		insert into room_enter(member_no, room_no, room_enter_time, room_enter_is)
+				 values(#{memberNo}, #{roomNo}, sysdate, 0)
+	</insert>
+	
+	<update id="dmCheck" parameterType="map">
+		update dm_record set dm_record_check = 1 where target = #{memberNo} and dm_record_check = 0 and room_no = ${roomNo}
+	</update>
+	
+	<update id="roomEnterUpdate" parameterType="int">
+		update room_enter set room_enter_is = 1 where room_no = #{roomNo} and room_enter_is = 0
+	</update>
  </mapper> 

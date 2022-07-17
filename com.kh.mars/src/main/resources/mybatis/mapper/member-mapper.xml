@@ -49,8 +49,8 @@
 	<!-- 내정보 조회 -->
 	<select id="myInfo" resultType="MemberDto" parameterType="int">
 		select member_no, member_email, member_gender, member_nick, member_phone, 
-				member_grade, member_private, member_interest, member_highschool, member_university
-		 from member where member_no = #{memberNo}
+			member_grade, member_private, member_interest, member_highschool, member_university
+		from member where member_no = #{memberNo}
 	</select>
 	
 	<select id="myProfile" resultType="int" parameterType="int">
