@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.vo.MemberSearchVO;
+import com.kh.mars.vo.MemberVO;
 
 @Repository
 public class MemberDaoImpl implements MemberDao{
@@ -174,6 +175,11 @@ public class MemberDaoImpl implements MemberDao{
 	@Override
 	public void personal(int memberNo) {
 		sqlSession.update("member.personal",memberNo);
+	}
+
+	@Override
+	public MemberVO dmMemberInfo(int targetNo) {
+		return sqlSession.selectOne("member.DmMemberInfo", targetNo);
 	}
 
 

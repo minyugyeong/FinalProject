@@ -151,9 +151,11 @@
                             <div class="card mb-3" style="width: 470px; padding: 0px 0px;">
                                 <div class="card-body">
                                     <p class="card-text">
-                                    	<img v-if="board.boardListVO.writerProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+board.boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
-                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
-                                        {{board.boardListVO.memberNick}}
+                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+board.boardListVO.memberNo" style="color:black;text-decoration:none;">
+	                                    	<img v-if="board.boardListVO.writerProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+board.boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
+	                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
+	                                        {{board.boardListVO.memberNick}}
+                                    	</a>
                                     </p>
                                 </div>
                                     <div v-bind:id="'carouselExampleControls'+index" class="carousel slide" data-bs-interval="false">
@@ -188,15 +190,23 @@
                                     <p class="card-text" v-if="board.boardListVO.likecount > 0">
                                         좋아요 {{board.boardListVO.likecount}}개
                                     </p>
-                                    <p class="card-text">
+                                    <p class="card-text" style="font-weight:900;">
+                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+board.boardListVO.memberNo" style="color:black;text-decoration:none;">
                                         {{board.boardListVO.memberNick}}
+                                        </a>
                                     </p>
-                                    <p class="card-text" style="height: 20px;overflow: hidden;width: 200px;white-space: nowrap;text-overflow: ellipsis;">
-                                        <span class="textHide">{{board.boardListVO.boardContent}}</span>
-	                                    <a style="color:grey;cursor: pointer;display:none;margin-left:10px;text-decoration:none;">더보기</a>
+                                    <p class="card-text" style="height: 20px;overflow: hidden;width: 200px;white-space: nowrap;text-overflow: ellipsis;margin-bottom:5px;">
+                                        <span class="textHide">
+                                        	{{board.boardListVO.boardContent}}
+                                        	<br v-if="board.hashtagList.length>0"><br v-if="board.hashtagList.length>0">
+                                        	<a v-for="(tag,index3) in board.hashtagList" :href="'${pageContext.request.contextPath}/search/'+tag.hashtagNo" :key="index3">{{tag.hashtagName}}</a>
+                                        </span>
                                     </p>
+                                    
+                                    <a style="color:grey;cursor: pointer;display:none;margin-bottom:10px;text-decoration:none;font-size:0.8em;">더보기</a>
+                                    
                                     <p class="card-text">
-                                       <button class="btn" @click="detailViewOn(0,index),boardDetailSearch(index)" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
+                                       <button v-if="board.boardListVO" class="btn" @click="detailViewOn(0,index),boardDetailSearch(index)" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
                                     </p>
                                     <p class="card-text text-muted" style="font-size: 0.4em;">
                                     	{{dateCount(board.boardListVO.boardDate)}}
@@ -221,10 +231,11 @@
                             <div v-if="index%3==2" class="card mb-3" style="width: 470px; padding: 0px 0px;">
                                 <div class="card-body">
                                     <p class="card-text">
-                                    	<img v-if="adList[((index+1)/3)-1].boardListVO.writerProfile>0" :src="'${pageContext.request.contextPath}/file/download/'+adList[((index+1)/3)-1].boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
-                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
-                                        {{adList[((index+1)/3)-1].boardListVO.memberNick}}
-                                        {{adList[((index+1)/3)-1].boardListVO.writerProfile}}
+                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+adList[((index+1)/3)-1].boardListVO.memberNo" style="color:black;text-decoration:none;">
+	                                    	<img v-if="adList[((index+1)/3)-1].boardListVO.writerProfile>0" :src="'${pageContext.request.contextPath}/file/download/'+adList[((index+1)/3)-1].boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
+	                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
+	                                        {{adList[((index+1)/3)-1].boardListVO.memberNick}}
+                                        </a>
                                     </p>
                                 </div>
                                     <div v-bind:id="'adcarouselExampleControls'+index" class="carousel slide" data-bs-interval="false">
@@ -262,12 +273,21 @@
                                     <p class="card-text" v-if="adList[((index+1)/3)-1].boardListVO.likecount > 0">
                                         좋아요 {{adList[((index+1)/3)-1].boardListVO.likecount}}개
                                     </p>
-                                    <p class="card-text">
+                                    <p class="card-text" style="font-weight:900;">
+                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+adList[((index+1)/3)-1].boardListVO.memberNo" style="color:black;text-decoration:none;">
                                         {{adList[((index+1)/3)-1].boardListVO.memberNick}}
+                                        </a>
                                     </p>
-                                    <p class="card-text">
-                                        {{adList[((index+1)/3)-1].boardListVO.boardContent}} &nbsp;&nbsp;&nbsp; <a @click="detailViewOn(1,((index+1)/3)-1),boardAdDetailSearch(adList[((index+1)/3)-1])" style="color:grey;cursor: pointer;">더보기</a>
+                                    <p class="card-text" style="height: 20px;overflow: hidden;width: 200px;white-space: nowrap;text-overflow: ellipsis;margin-bottom:5px;">
+                                    	<span class="textHide">
+                                        	{{adList[((index+1)/3)-1].boardListVO.boardContent}}
+                                        	<br v-if="adList[((index+1)/3)-1].hashtagList!=null&&adList[((index+1)/3)-1].hashtagList.length>0"><br v-if="adList[((index+1)/3)-1].hashtagList!=null&&adList[((index+1)/3)-1].hashtagList.length>0">
+                                        	<a v-for="(tag,index3) in adList[((index+1)/3)-1].hashtagList" :href="'${pageContext.request.contextPath}/search/'+tag.hashtagNo" :key="index3">{{tag.hashtagName}}</a>
+                                        </span>
                                     </p>
+                                    
+                                       <a style="color:grey;cursor: pointer;display:none;margin-bottom:10px;text-decoration:none;font-size:0.8em;">더보기</a>
+                                       
                                     <p class="card-text">
                                        <button class="btn" @click="detailViewOn(1,((index+1)/3)-1),boardAdDetailSearch(adList[((index+1)/3)-1])" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
                                     </p>
@@ -301,10 +321,15 @@
 
                     <div class="card border-light" style="width: 20rem;padding: 0 0;">
                         <div class="card-header">
+                        	<a href="${pageContext.request.contextPath}/member/page?memberNo=${memberDto.memberNo}" style="color:black;text-decoration:none;">
                         	<c:if test="${memberProfile == 0}">
 	                        	<img src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
 	                        </c:if>
+	                        <c:if test="${memberProfile != 0}">
+	                        	<img src="${pageContext.request.contextPath}/file/download/${memberProfile}" width="30" height="30" style="border-radius: 70%;">
+	                        </c:if>
                         	${memberDto.memberNick}
+                        	</a>
                         </div>
                         <div class="card-body">
                           <h4 class="card-title">회원 추천</h4>
@@ -366,11 +391,13 @@
 	                                        
 	                        <div class="card bg-light" style="height: 40vw; border-radius: 0;">
 	                            <div class="card-header">
-	                            	<img v-if="boardDetail.boardListVO.memberProfile>0" :src="'${pageContext.request.contextPath}/file/download/'+boardDetail.boardListVO.memberProfile" width="30" height="30" style="border-radius: 70%;">
-	                            	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
-	                            	<span>
-		                            	{{boardDetail.boardListVO.memberNick}}
-	                            	</span>
+	                            	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+boardDetail.boardListVO.memberNo" style="color:black;text-decoration:none;">
+		                            	<img v-if="boardDetail.boardListVO.memberProfile>0" :src="'${pageContext.request.contextPath}/file/download/'+boardDetail.boardListVO.memberProfile" width="30" height="30" style="border-radius: 70%;">
+		                            	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
+		                            	<span>
+			                            	{{boardDetail.boardListVO.memberNick}}
+		                            	</span>
+	                            	</a>
 	                            	<span v-if="detailViewType==1" style="position:absolute;right:10px;">
 	                            		<i v-if="boardDetail.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
                                         <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
@@ -382,7 +409,20 @@
 	                            </div>
 	                            <div class="card-body card-scroll" style="height: 60%;">
 	                                <h4 class="card-title"></h4>
-	                                <p class="card-text">{{boardDetail.boardListVO.boardContent}}</p><br><br>
+	                                <p class="card-text">
+	                                	{{boardDetail.boardListVO.boardContent}}
+	                                	<br v-if="boardDetail.hashtagList.length>0">
+	                                	<br v-if="boardDetail.hashtagList.length>0">
+	                                	<a v-for="(tag,index3) in boardDetail.hashtagList" :href="'${pageContext.request.contextPath}/search/'+tag.hashtagNo" :key="index3">{{tag.hashtagName}}</a>
+	                                </p>
+	                                
+	                                <br><br>
+	                                <div v-if="boardDetailReply.length==0" style="color:gray;text-align:center;">
+	                                	<label for="detailReply">
+	                                	<i class="fa-solid fa-satellite-dish fa-lg"></i>
+	                                	첫 번째 댓글을 남겨주세요.
+	                                	</label>
+	                                </div>
 	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" style="position:relative;">
 	                                	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+reply.replyMemberNo" style="text-decoration:none;color:black;position:relative;">
 			                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -402,10 +442,12 @@
 	                            </div>
 	                            <div class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
 	                                <span style="position: absolute; left:10px; top: 6px; z-index: 999;">
-	                                <i class="fa-solid fa-satellite-dish fa-lg"></i>
+	                                	<label for="detailReply">
+		                                	<i class="fa-solid fa-satellite-dish fa-lg"></i>
+	                                	</label>
 	                                </span>
 	                                <div class="input-group">
-	                                    <input type="text" class="form-control" v-model="replyContent" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter(0)">
+	                                    <input id="detailReply" type="text" class="form-control" v-model="replyContent" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter(0)">
 	                                    <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="replyEnter(0)">작성</button>
 	                                  </div>
 	                            </div>
@@ -691,6 +733,7 @@
                             		
                             	});
                             },
+                            //댓글입력 프로미스패턴
                             async promise(index){
                             	const boardNo = this.boardList[index].boardListVO.boardNo;
                             	await this.replyEnter(boardNo);
@@ -705,6 +748,19 @@
                             	await this.detailViewOn();
                             },
                             
+                            //광고 카운트용 비동기요청
+                           adCountFunc:_.debounce(function(){
+                            	axios({
+                            		url:"${pageContext.request.contextPath}/rest/board_ad/ad_count",
+                            		method:"Post",
+                            		params:{
+                            			boardAdNo:this.adList[this.pageCount-2].boardListVO.boardNo,
+                            		}
+                            	})
+                            	.then(resp=>{
+                            		console.log("광고 카운트 끝");
+                            	});
+                            }, 250)
                             
                     },
                     watch:{
@@ -754,6 +810,7 @@
                     		  //console.log("값 = " + bottom);
                     		  if(scrT > bottom){
                     			  this.loading();
+                    			  this.adCountFunc();  
                     		  }
                     	})
                     	
@@ -764,17 +821,17 @@
                     	console.log("몇번 실행될까");
                     	console.log($(".textHide").width());
                     	$(".textHide").each(function(){
-                    		if($(this).width()>20){
-	                    		$(this).next("a").addClass("moreText");
+                    		if($(this).width()>200||$(this).height()>20){
+	                    		$(this).parent("p").next("a").addClass("moreText");
                     		}
                     	});
                     	$(".moreText").unbind("click");
                     	$(".moreText").click(function(){
                     		console.log("실행횟수");
-                    		if($(this).parent("p").hasClass("moreContent")){
-                    			$(this).parent("p").removeClass("moreContent");
+                    		if($(this).prev("p").hasClass("moreContent")){
+                    			$(this).prev("p").removeClass("moreContent");
                     		}else{
-	                    		$(this).parent("p").addClass("moreContent");
+	                    		$(this).prev("p").addClass("moreContent");
                     		}
                     		
                     	});

@@ -71,9 +71,12 @@
     .roomList:hover{
     	background-color: #eb68640f;
     }
+    .dateShow{
+    	display:block!important;
+    }
 </style>
 
-<h2>로그인? ${login}</h2>
+<%-- <h2>로그인? ${login}</h2> --%>
 
 <article>
 
@@ -102,6 +105,9 @@
 				<span v-if="dmTarget!=null" style="padding-left:30px;word-wrap:normal;">
  					{{dmTarget.memberNick}}
 				</span>
+				<button type="button" v-if="roomNo!=''" class="btn btn-outline-primary" style="position:absolute; right:20px; top:6px; padding: 5px 10px;" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+					나가기
+				</button>
 			</div>
 	
 		</div>
@@ -143,6 +149,9 @@
 		   <!-- 메세지 출력 공간 -->
 					<div class="message-wrapper" :class="{'overflowY':roomNo!=''}" style="height:500px;padding-top:5px;" @scroll="scrollCheck">
 						<div v-for="(dm, index) in messageList" :key="index">
+							<div :class="{'dateShow':dateCheck(index)}" style="text-align: center;color: gray;font-size: 0.9em;display:none;">
+								-------------------- {{dateFormat2(dm.dmRecordTime)}} --------------------
+							</div>
 							<div class="message-space" :class="{'lend':myNum!=dm.who, 'send':myNum==dm.who}" style="margin-bottom:5px; padding-right:20px;">
 								<span style="margin-right:5px; font-size:0.7em;vertical-align: bottom;display:inline-block;">
 										<span :class="{'hide':myNum!=dm.who||timeCheck(index)}">{{dateFormat(dm.dmRecordTime)}}</span>
@@ -174,7 +183,7 @@
 	</div>
 	</div>
 	
-		<!-- Modal -->
+		<!-- 디엠할 사람 찾기 Modal -->
 		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-scrollable" style="width:350px;">
 		    <div class="modal-content" style="align-content: center;flex-wrap: wrap;">
@@ -214,6 +223,26 @@
 		    </div>
 		  </div>
 		</div>
+		
+		<!-- 방 나가기 Modal -->
+			<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="exampleModalLabel2">채팅을 삭제하시겠습니까?</h5>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+			      <div class="modal-body" style="color:grey;font-size:0.9em;">
+			        삭제하면 회원님의 받은 메시지함에서 채팅이 삭제됩니다. <br>
+			        다른 사람의 받은 메시지함에는 계속 표시됩니다.
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+			        <button type="button" class="btn btn-primary" @click="exitRoom" data-bs-dismiss="modal" aria-label="Close">삭제</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
 </div>
 
 </article>
@@ -359,6 +388,9 @@ const app = Vue.createApp({
     	dateFormat(milliSec){
     		return moment(milliSec).format('LT');
     	},
+    	dateFormat2(milliSec){
+    		return moment(milliSec).format('YYYY-MM-DD');
+    	},
     	dateCount(date){
     		if(date == null) return;
 			const curTime = moment();
@@ -438,6 +470,21 @@ const app = Vue.createApp({
     		return false;
     	},
     	
+    	//날짜 묶기
+    	dateCheck(index){
+    		if(index!=0){
+	    		const firstT = moment(this.messageList[index].dmRecordTime).format('YYYY-MM-DD');
+	    		const secondT = moment(this.messageList[index-1].dmRecordTime).format('YYYY-MM-DD');
+	    		
+	    		if(firstT==secondT){
+	    			return false;
+	    		}else{
+	    			return true;
+	    		}
+    		}
+    		return true;
+    	},
+    	
     	//dm 읽은지 체크
     	dmCheck(checkNo){
     		if(checkNo==0){
@@ -509,7 +556,39 @@ const app = Vue.createApp({
     			this.messageList = [];
     			this.selectIndex = 0;
     		})
+    	},
+    	
+    	//채팅방 나가기
+    	exitRoom(){
+    		axios({
+    			url:"${pageContext.request.contextPath}/rest/dm/room_exit",
+    			method:"post",
+    			params:{
+    				roomNo: this.roomNo
+    			}
+    		})
+    		.then(resp=>{
+    			this.roomNo = "";
+    			this.messageList = [];
+    			this.selectIndex = -1;
+    			this.roomMember = [];
+    			this.dmTarget = null;
+    			this.uptoNo=0;
+    			this.dmCount=1;
+    			this.pointTarget="";
+    			this.inputMessage="";
+    			this.bottomFlag=true;
+    			this.scrollHeight="";
+    			axios({
+    	    		url: "${pageContext.request.contextPath}/rest/dm/room",
+    	    		method: "get"
+    	    	})
+    	    	.then(resp=>{
+    				this.roomList = resp.data;    		
+    	    	});
+    		});
     	}
+    	
 
     },
     //watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다
@@ -602,25 +681,6 @@ const app = Vue.createApp({
 				this.selectIndex = index;
 	    	});
 		};
-			
-			
-		
-		/* $(".btn-send").click((resp)=>{
-			//채팅메세지를 보내야 한다
-			var text = $(".send-input").val();
-			if(!text) return;
-			
-			var message = {
-				type:2,
-				roomNo:this.roomNo,
-				message:text,
-				
-			};
-			var json = JSON.stringify(message);
-			socket.send(json);//전송 명령
-			
-			$(".send-input").val("");//초기화
-		}); */
 		
 		function connectOperation(){//연결되면 처리할 화면 작업을 구현
 			$(".send-input").prop("disabled", false);//입력창 활성화
@@ -631,6 +691,45 @@ const app = Vue.createApp({
 			$(".btn-send").prop("disabled", true);//전송버튼 비활성화
 		}
 		this.socket = socket;
+		
+		
+		//param이 있으면 방에 바로입장시키기
+		if(${param.targetNo != null && param.targetNo != 0}){
+			const targetNo2 = "${param.targetNo}";
+			const targetAttachNo = "${targetVO.attachNo}";
+			const targetMemberNo = "${targetVO.memberNo}";
+			const targetMemberNick = "${targetVO.memberNick}";
+			axios({
+	    			url:"${pageContext.request.contextPath}/rest/dm/room_search",
+	    			method:"Post",
+	    			params:{
+	    				targetNo:targetNo2,
+	    			}
+	    		})
+	    		.then(resp=>{
+	    			console.log(resp.data);
+	    			const index = this.roomList.findIndex(v => v.roomNo == resp.data);
+	    			if(index!=-1){
+	    				this.enterRoom(resp.data, index);
+	    				return;
+	    			}
+	    			this.roomNo = resp.data;
+	    			this.roomMember = [targetNo2];
+	    			this.roomList.unshift({
+	    								attachNo:targetAttachNo,
+	    								memberNick:targetMemberNick,
+	    								roomNo:resp.data,
+	    								memberNo:targetMemberNo,
+	    									});
+	    			this.messageList = [];
+	    			this.selectIndex = 0;
+	    			history.replaceState(null,null,'dm');
+	    		});
+		}
+		
+		
+		
+		
     },
     updated(){
     },
@@ -643,76 +742,3 @@ app.mount("#app");
 </script>
 
 
-<!-- <script>
-	$(function(){
-		
-		var uri = "${pageContext.request.contextPath}/ws/dm";
-		
-		//접속
-		socket = new SockJS(uri);
-		
-		socket.onopen = function(e){
-			connectOperation();
-			
-			//접속하자마자 나의 채널명을 서버로 전송해야한다(입장메세지)
-			var message = {
-				type:1,
-				roomNo:"${no}"
-			};
-			var json = JSON.stringify(message);
-			socket.send(json);
-		};
-		socket.onclose = function(e){
-			disconnectOperation();
-		};
-		socket.onerror = function(){
-			alert("서버와의 연결 오류가 발생하였습니다");
-			disconnectOperation();
-		};
-		socket.onmessage = function(e){
-			var data = JSON.parse(e.data);//json을 객체로 복구
-			var timeObject = moment(data.time).format("YYYY-MM-DD hh:mm:ss");//날짜 객체로 변환(momentJS)
-			
-			var div = $("<div>").addClass("message");
-			
-			var span1 = $("<span>").addClass("user").text(data.memberNo);
-			var span2 = $("<span>").addClass("text").text(data.content);
-			var span3 = $("<span>").addClass("time").text(timeObject);
-			
-			div.append(span1).append(span2).append(span3);
-			$(".message-wrapper").append(div);
-		};
-			
-		
-		$(".btn-send").click(function(){
-			//채팅메세지를 보내야 한다
-			var text = $(".send-input").val();
-			if(!text) return;
-			
-			var message = {
-				type:2,
-				roomNo:"${no}",
-				message:text
-			};
-			var json = JSON.stringify(message);
-			socket.send(json);//전송 명령
-			
-			$(".send-input").val("");//초기화
-		});
-		
-		function connectOperation(){//연결되면 처리할 화면 작업을 구현
-			$(".send-input").prop("disabled", false);//입력창 활성화
-			$(".btn-send").prop("disabled", false);//전송버튼 활성화
-		}
-		function disconnectOperation(){//연결 종료되면 처리할 화면 작업을 구현
-			$(".send-input").prop("disabled", true);//입력창 비활성화
-			$(".btn-send").prop("disabled", true);//전송버튼 비활성화
-		}
-		//내 메시지 오른쪽 정렬
-		/* function resive(data) {
-		var LR = (data.senderName != myName)? "left" : "right";
-		 appendMessageTag("right", data.senderName, data.message);
-			    } */
-		
-	});
-</script> -->

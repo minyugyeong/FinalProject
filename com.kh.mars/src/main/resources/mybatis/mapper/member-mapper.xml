@@ -216,6 +216,12 @@
 				member_no = #{memberNo}
 	</update>
 	
+	<select id="DmMemberInfo" resultType="MemberVO" parameterType="int">
+		select m.member_no, m.member_nick, mp.attach_no from member m
+				left outer join member_profile mp on m.member_no = mp.member_no
+				where m.member_no = #{memberNo}
+	</select>
+	
  </mapper> 
 
  

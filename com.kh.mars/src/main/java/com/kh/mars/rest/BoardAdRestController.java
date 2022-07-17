@@ -23,6 +23,7 @@ import com.kh.mars.entity.BoardDto;
 import com.kh.mars.repository.BoardAdDao;
 import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.BoardLikeDao;
+import com.kh.mars.service.BoardAdService;
 import com.kh.mars.service.BoardLikeService;
 import com.kh.mars.vo.BoardDetailVO;
 import com.kh.mars.vo.BoardListVO;
@@ -40,6 +41,9 @@ public class BoardAdRestController {
 	
 	@Autowired
 	private BoardLikeService boardLikeService;
+	
+	@Autowired
+	private BoardAdService boardAdService;
 	
 	@GetMapping("/detail_reply/{boardNo}")
 	public List<BoardReplyVO> adDetailReply(
@@ -67,6 +71,14 @@ public class BoardAdRestController {
 		int board = Integer.parseInt(json.get("boardNo").toString());
 		int memberNo = (Integer)session.getAttribute("login");
 		return boardLikeService.boardAdLike(memberNo, board);
+	}
+	
+	@PostMapping("/ad_count")
+	public void boardAdCount(
+							@RequestParam int boardAdNo,
+							HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		boardAdService.boardAdCount(memberNo, boardAdNo);
 	}
 }
 

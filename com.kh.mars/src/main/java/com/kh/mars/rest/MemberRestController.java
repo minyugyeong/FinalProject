@@ -162,10 +162,8 @@ public class MemberRestController {
 			return 0;
 		}
 		
-		
-		
-		
 	}
+	
 	
 }
 

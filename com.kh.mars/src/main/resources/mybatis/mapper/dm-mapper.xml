@@ -171,6 +171,10 @@
 	</update>
 	
 	<update id="roomEnterUpdate" parameterType="int">
-		update room_enter set room_enter_is = 1 where room_no = #{roomNo} and room_enter_is = 0
+		update room_enter set room_enter_is = 1, room_enter_time = sysdate where room_no = #{roomNo} and room_enter_is = 0
+	</update>
+	
+	<update id="roomExit" parameterType="map">
+		update room_enter set room_enter_is = 0, room_enter_time = sysdate where member_no = #{memberNo} and room_no = #{roomNo}
 	</update>
  </mapper> 

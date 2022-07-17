@@ -38,4 +38,6 @@ public interface DmDao {
 	void roomEnterUpdate(int roomNo);
 
 	List<RecommendListVO> dmMemberSearch(int memberNo, String keyword);
+
+	void roomExit(int memberNo, int roomNo);
 }

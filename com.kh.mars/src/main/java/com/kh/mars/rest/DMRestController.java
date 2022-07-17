@@ -19,6 +19,7 @@ import com.kh.mars.entity.DmRecordDto;
 import com.kh.mars.entity.RoomEnterDto;
 import com.kh.mars.repository.DmDao;
 import com.kh.mars.service.DmService;
+import com.kh.mars.vo.MemberVO;
 import com.kh.mars.vo.RecommendListVO;
 import com.kh.mars.vo.RoomRecordVO;
 import com.kh.mars.vo.RoomVO;
@@ -112,4 +113,14 @@ public class DMRestController {
 		int memberNo = (Integer) session.getAttribute("login");
 		return dmDao.dmMemberSearch(memberNo, keyword);
 	}
+	
+	@PostMapping("/room_exit")
+	public void roomExit(
+						@RequestParam int roomNo,
+						HttpSession session
+						) {
+		int memberNo = (Integer) session.getAttribute("login");
+		dmDao.roomExit(memberNo, roomNo);
+	}
+	
 }
