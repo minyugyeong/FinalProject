@@ -121,18 +121,23 @@
                                 </a>
                             </li>
                             <li class="nav-item" style="position: relative;">
-                                <a class="nav-link" style="cursor: pointer;" @click.stop="noticeOn()">
+                                <a class="nav-link" style="cursor: pointer;" @click.stop="noticeOn(),loadAlram()">
                                     <i class="fa-solid fa-rocket fa-lg"></i>
                                 </a>
                                 <div v-if="noticeValue" :class="{'show':noticeValue}" style="position: absolute; right: -150px; width: 450px; max-height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;display:none;" @click.stop>
                                     <div class="card border-light">
-                                        <div class="card-body">
-                                          <h5 class="card-title">Light card title</h5>
-                                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                        <div v-for="(alram, index) in alramList" :key="index" class="card-body" style="padding:0;">
+                                          <p class="card-title"><hr v-if="alramTime(index)!=''&&alramTime(index)!='오늘'">{{alramTime(index)}}</p>
+                                          <div style="position:relative;font-size:0.8em;">
+                                          	<img v-if="alram.attachNo > 0" :src="'${pageContext.request.contextPath}/file/download/'+alram.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:0;">
+		                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:0;">
+											<span style="padding-left:35px;">{{alram.memberNick}}</span>
+											<span></span>
+											
+											
+                                          </div>
                                         </div>
-                                      </div>
+                                    </div>
                                 </div>
                             </li>
                             <li class="nav-item">
@@ -179,6 +184,8 @@
                     
                     searchList:[],
                     searchLength:null,
+                    
+                    alramList:[],
               
                 };
             },
@@ -206,6 +213,51 @@
                         /* this.searchValue = false; */
                         this.noticeValue = false;
                 },
+                
+                loadAlram(){
+                	axios({
+                		url:"${pageContext.request.contextPath}/rest/alram",
+                		method:"get",
+                	})
+                	.then(resp=>{
+                		console.log("허허");
+						this.alramList = resp.data;       		
+                	});
+                	
+                },
+                alramTime(index){
+                		const today = moment().format("YYYY-MM-DD");
+                		const target = moment(this.alramList[index].alramTime).format("YYYY-MM-DD");
+                		console.log(index +"ㅎ"+target);
+                		if(index==0&&today==target){
+                			return "오늘";
+                		}
+                		else if(index!=0&&today==target){
+                			return "";
+                		}
+                		
+                		if(index!=0){
+	                		const target2 = moment(this.alramList[index-1].alramTime).format("YYYY-MM-DD");
+	                		const thisWeek = moment(moment().startOf('week').valueOf()).format("YYYY-MM-DD");
+                		
+	                		if(thisWeek<=target&&today==target2){
+			                	return "이번 주";
+	                		}else if(thisWeek<=target&&target2!=today){
+	                			return "";
+	                		}
+	                		const thisMonth = moment(moment().startOf('month').valueOf()).format("YYYY-MM-DD");
+	                		console.log(thisMonth);
+	               			if(thisMonth<=target&&thisWeek<=target2){
+	               				return "이번 달";
+	               			}else if(thisMonth<=target&&thisWeek>target2){
+	               				return "";
+	               			}else if(thisMonth>target&&thisMonth<=target2){
+		                		return "이전 활동";
+	               			}
+                		}
+                		return "";
+                },	
+                
             },
             // watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다
             watch:{
