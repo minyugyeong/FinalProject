@@ -2,23 +2,26 @@ package com.kh.mars.repository;
 
 import java.util.List;
 
-import com.kh.mars.vo.AdStatusVO;
 import com.kh.mars.vo.JoinGenderVO;
-import com.kh.mars.vo.MemberInterestVO;
+import com.kh.mars.vo.StatusVO;
 
 
 public interface StatusDao {
 
 	List<JoinGenderVO> joinGender();
 
-	List<MemberInterestVO> memberInterest();
+	List<StatusVO> memberInterest();
 
-	List<MemberInterestVO> manInterest();
+	List<StatusVO> manInterest();
 
-	List<MemberInterestVO> womenInterest();
+	List<StatusVO> womenInterest();
 
-	List<AdStatusVO> interestAd();
+	List<StatusVO> interestAd();
 
-	List<AdStatusVO> adSum();
+	List<StatusVO> adSum();
+
+	List<StatusVO> yearSales();
+
+	List<StatusVO> monthSales(int year);
 
 }
