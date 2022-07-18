@@ -60,11 +60,18 @@
 			<result column="attach_type" property="attachType"/>		 	
 			<result column="attach_size" property="attachSize"/>		 	
 		 </collection>
+		 <collection property="hashtagList" javaType="list" ofType="BoardHashTagVO" 
+		 	select="adTagSearchSubquery" column="board_ad_no">
+		 	
+			<result column="hashtag_no" property="hashtagNo"/>		 	
+			<result column="hashtag_name" property="hashtagName"/>		 	
+		 </collection>
 	</resultMap>
 	
 	
-	<select id="AdTreeSearch" resultMap="boardAdMap" parameterType="map">
+	<select id="AdTreeSearch" resultMap="boardAdMap" parameterType="int">
 	select * from(
+select * from(
     	select * from(
 	        select 
 	            ba.board_ad_no, ba.member_no, ba.board_ad_content, ba.board_ad_date, ba.board_ad_is_reply, ba.board_ad_link, m.member_nick, mp.attach_no "writer_profile", bal.member_no "is_like", bar."replycount", balc."likecount"
@@ -72,12 +79,17 @@
 	            board_ad ba
 	            inner join (select m2.* from member m1        
 	                            inner join member m2 on m1.member_interest = m2.member_interest
-	                        where m1.member_no = #{member_no} and m2.member_no != #{member_no}
+	                        where m1.member_no = #{memberNo} and m2.member_no != #{memberNo} and m2.member_grade = '비즈니스회원' 
+	                        minus 
+                            select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo}
+                            minus 
+                            select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo}
 	                        ) m on ba.member_no = m.member_no
 	            inner join member_profile mp on ba.member_no = mp.member_no
-	            left outer join (select * from board_ad_like where member_no = #{member_no}) bal on bal.board_ad_no = ba.board_ad_no
+	            left outer join (select * from board_ad_like where member_no = #{memberNo}) bal on bal.board_ad_no = ba.board_ad_no
 	            left outer join (select board_ad_no, count(reply_no)"replycount" from board_ad_reply group by board_ad_no) bar on bar.board_ad_no = ba.board_ad_no 
-	            left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like group by board_ad_no) balc on balc.board_ad_no = ba.board_ad_no
+	            left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like group by board_ad_no) balc on balc.board_ad_no = ba.board_ad_no 
+	            where ba.board_ad_check = '광고 진행'
 	    union
 	        select
 	            ba.board_ad_no, ba.member_no, ba.board_ad_content, ba.board_ad_date, ba.board_ad_is_reply, ba.board_ad_link, m.member_nick, mp.attach_no "member_profile", bal.member_no "is_like", bar."replycount", balc."likecount"
@@ -85,20 +97,51 @@
 	            board_ad ba
 	            inner join (select m.* from follow f
 	                        inner join member m on f.follow_target = m.member_no
-	                        where f.follow_who = #{member_no} and m.member_grade = '비즈니스회원') m on m.member_no = ba.member_no
+	                        where f.follow_who = #{memberNo} and m.member_grade = '비즈니스회원') m on m.member_no = ba.member_no
 	            inner join member_profile mp on ba.member_no = mp.member_no
-	            left outer join (select * from board_ad_like where member_no = #{member_no}) bal on bal.board_ad_no = ba.board_ad_no
+	            left outer join (select * from board_ad_like where member_no = #{memberNo}) bal on bal.board_ad_no = ba.board_ad_no
 	            left outer join (select board_ad_no, count(reply_no)"replycount" from board_ad_reply group by board_ad_no) bar on bar.board_ad_no = ba.board_ad_no 
-	            left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like group by board_ad_no) balc on balc.board_ad_no = ba.board_ad_no
+	            left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like group by board_ad_no) balc on balc.board_ad_no = ba.board_ad_no 
+	            where ba.board_ad_check = '광고 진행'
     	) order by dbms_random.value
     	<![CDATA[
-    ) where rownum <= 5
+    ) where rownum <= 4
+    	]]>
+    union all
+    select * from(
+    	select * from(
+            select 
+	            ba.board_ad_no, ba.member_no, ba.board_ad_content, ba.board_ad_date, ba.board_ad_is_reply, ba.board_ad_link, m.member_nick, mp.attach_no "writer_profile", bal.member_no "is_like", bar."replycount", balc."likecount"
+	        from 
+	            board_ad ba
+	            inner join (select * from member where member_grade = '비즈니스회원' 
+	                        minus 
+                            select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo}
+                            minus 
+                            select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo}
+	                        ) m on ba.member_no = m.member_no
+	            inner join member_profile mp on ba.member_no = mp.member_no
+	            left outer join (select * from board_ad_like where member_no = #{memberNo}) bal on bal.board_ad_no = ba.board_ad_no
+	            left outer join (select board_ad_no, count(reply_no)"replycount" from board_ad_reply group by board_ad_no) bar on bar.board_ad_no = ba.board_ad_no 
+	            left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like group by board_ad_no) balc on balc.board_ad_no = ba.board_ad_no 
+	            where ba.board_ad_check = '광고 진행'
+        ) order by dbms_random.value
+	   ) 
+	   <![CDATA[
+	   where rownum <= 5
+	   ) 
+	   where rownum <= 5
     	]]>
 	</select>
 	<select id="adTreeSearchSubquery" resultType="BoardAttachVO" parameterType="int">
 		select ba.board_ad_no, attach.* from (
 		      select * from board_ad_attach where board_ad_no = #{board_ad_no}
 		)ba inner join attach on ba.attach_no = attach.attach_no
+	</select>
+	<select id="adTagSearchSubquery" resultType="BoardHashTagVO" parameterType="int">
+		select h.* from board_ad_hashtag bh
+		    inner join hashtag h on bh.hashtag_no = h.hashtag_no
+		where bh.board_ad_no = #{board_ad_no}
 	</select>
 	
 	
@@ -405,6 +448,35 @@
 	<!-- 광고 게시글 삭제 -->
 	<delete id="delete" parameterType="int">
 		delete board_ad where board_ad_no = #{boardAdNo}
+	</delete>
+	
+	
+	<!-- 광고 카운트용 구문들 -->
+	<!-- 내가 봤는지 먼저 조회 -->
+	<select id="checkedAd" resultType="Integer" parameterType="map">
+		select board_ad_no from board_ad_check 
+			where member_no = #{memberNo} and board_ad_no = #{boardAdNo}
+	</select>
+	
+	<!-- 광고카운트 1빼기 -->
+	<update id="adCountMinus" parameterType="int">
+		update board_ad set board_ad_count = board_ad_count -1 
+			where board_ad_count > 0 and board_ad_check = '광고 진행' and board_ad_no = #{boardAdNo}
+	</update>
+	
+	<!-- 내가 봤다고 추가 -->
+	<insert id="checkAd" parameterType="map">
+		insert into board_ad_check values (#{memberNo}, #{boardAdNo})
+	</insert>
+	
+	<!-- 광고 마감 -->
+	<update id="adIsEnd">
+		update board_ad set board_ad_check = '광고 마감' where board_ad_count = 0 and board_ad_check = '광고 진행'
+	</update>
+	
+	<!-- 광고를 봤는지 목록 하루마다 초기화(기간은 조절가능 스케쥴러) -->
+	<delete id="deleteCheckedAd">
+		delete board_ad_check
 	</delete>
 	
 	<!-- 광고 결제상태 변경 -->

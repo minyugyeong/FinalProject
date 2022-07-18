@@ -27,7 +27,8 @@
  <mapper namespace="follow">
 
 	<select id="recommend" resultType="FollowRecommendVO" parameterType="int">
-		select * from(
+		select * from (
+		select * from (
 		    select * from (
 		        select abcd.*, mp.attach_no "target_attach" from (
 		        select abc.follow_target, abc."target_nick", abc."followcount", mm.member_nick "who_nick" from (
@@ -47,17 +48,82 @@
 		        group by a.follow_target, b."followcount"
 		        )ab
 		        inner join (
-		        select * from member where member_private = 0
+		        select * from member
                 minus
-                select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo}
+                select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
+                minus
+                select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo}
 		        ) m on m.member_no = ab.follow_target
 		        )abc
 		        inner join member mm on mm.member_no = abc."who_no"
-				)abcd left outer join member_profile mp on abcd.follow_target = mp.member_no    
+				)abcd left outer join member_profile mp on abcd.follow_target = mp.member_no 
+            union
+                select m2.member_no, m2.member_nick,-1 "followcount", m2.member_university"who_nick", mp.attach_no from member m
+                    inner join(
+                        select * from member
+                        minus
+                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
+                        minus
+                        select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo} 
+                        minus
+                        select m.* from follow f inner join member m on f.follow_target = m.member_no where f.follow_who = #{memberNo}
+                        minus
+                        select m.* from (
+                        select distinct f.follow_target from (
+                            select follow_target from follow f where f.follow_who = #{memberNo}
+                        )ft inner join follow f on ft.follow_target = f.follow_who
+                        minus
+                        select follow_target from follow f 
+                            inner join member m on f.follow_target = m.member_no
+                        where f.follow_who = #{memberNo}
+                        )f inner join member m on f.follow_target = m.member_no
+                    )m2 on m.member_university = m2.member_university and m.member_no != m2.member_no 
+                left outer join member_profile mp on m2.member_no = mp.member_no 
+                where m.member_no = #{memberNo}
+                group by m2.member_no, m2.member_nick, m2.member_university, mp.attach_no
+            union
+                select m2.member_no, m2.member_nick,-1 "followcount", m2.member_highschool"who_nick", mp.attach_no from member m
+                        inner join(
+                            select * from member
+                            minus
+                            select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
+                            minus
+                            select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo} 
+                            minus
+                            select m.* from follow f inner join member m on f.follow_target = m.member_no where f.follow_who = #{memberNo}
+                            minus
+                            select m.* from (
+                            select distinct f.follow_target from (
+                                select follow_target from follow f where f.follow_who = #{memberNo}
+                            )ft inner join follow f on ft.follow_target = f.follow_who
+                            minus
+                            select follow_target from follow f 
+                                inner join member m on f.follow_target = m.member_no
+                            where f.follow_who = #{memberNo}
+                            )f inner join member m on f.follow_target = m.member_no
+                        )m2 on m.member_highschool = m2.member_highschool and m.member_no != m2.member_no 
+                    left outer join member_profile mp on m2.member_no = mp.member_no 
+                    where m.member_no = #{memberNo}
+                    group by m2.member_no, m2.member_nick, m2.member_highschool, mp.attach_no
 		    ) order by DBMS_RANDOM.value
 		    <![CDATA[
 		) where rownum <= 5
 		    ]]>
+		union all
+        select m.member_no, m.member_nick, -2 "followcount", null "who_nick", mp.attach_no from (
+        select * from (
+        select * from member 
+        minus
+        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
+        minus
+        select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo}
+        ) order by DBMS_RANDOM.value
+        )m 
+        left outer join member_profile mp on m.member_no = mp.member_no
+        <![CDATA[
+        where rownum <= 5
+        ) where rownum <= 5
+        ]]>
 	</select>
 	
 	<select id="followCount" parameterType="int" resultType="int">

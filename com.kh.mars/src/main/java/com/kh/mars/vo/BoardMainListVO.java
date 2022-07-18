@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 public class BoardMainListVO {
 	private BoardListVO boardListVO;
 	private List<BoardAttachVO> attachList;
+	private List<BoardHashTagVO> hashtagList;
 	
 }

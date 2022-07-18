@@ -7,12 +7,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.mars.entity.DmDto;
 import com.kh.mars.entity.DmRecordDto;
+import com.kh.mars.repository.DmDao;
 
 @Repository
 public class DmServiceImpl implements DmService {
 
 	@Autowired
 	private SqlSession sqlSession;
+	
+	@Autowired
+	private DmDao dmDao;
 	
 	@Override
 	public int dmSeq() {
@@ -48,5 +52,20 @@ public class DmServiceImpl implements DmService {
 		
 		this.recordInsert(dmRecordDto);
 	}
-
+	
+	@Transactional
+	@Override
+	public int room(int memberNo, int targetNo) {
+		int roomNo = dmDao.roomSearch(memberNo, targetNo);
+		if(roomNo>0) {
+			return roomNo;
+		}else {
+			roomNo = dmDao.roomCreate();
+			dmDao.roomEnter(roomNo, memberNo);
+			dmDao.roomEnter(roomNo, targetNo);
+			return roomNo;
+		}
+	}
+	
+	
 }

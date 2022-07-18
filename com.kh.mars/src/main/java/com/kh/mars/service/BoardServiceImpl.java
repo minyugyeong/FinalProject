@@ -1,8 +1,11 @@
 package com.kh.mars.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,9 @@ import com.kh.mars.repository.BoardMemberTagDao;
 
 @Service
 public class BoardServiceImpl implements BoardService {
+	
+	@Autowired
+	private SqlSession sqlSession;
 	
 	@Autowired
 	private BoardDao boardDao;
@@ -61,8 +67,5 @@ public class BoardServiceImpl implements BoardService {
 		boardMemberTagDao.delete(boardNo);
 		
 	}
-	
-	
-	
 
 }

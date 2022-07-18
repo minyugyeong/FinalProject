@@ -19,6 +19,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.mars.repository.BoardAdDao;
+import com.kh.mars.repository.BoardDao;
+import com.kh.mars.repository.BoardLikeDao;
+import com.kh.mars.service.BoardAdService;
 import com.kh.mars.service.BoardLikeService;
 import com.kh.mars.vo.BoardMainListVO;
 import com.kh.mars.vo.BoardReplyVO;
@@ -33,6 +36,9 @@ public class BoardAdRestController {
 	
 	@Autowired
 	private BoardLikeService boardLikeService;
+	
+	@Autowired
+	private BoardAdService boardAdService;
 	
 	@GetMapping("/rest/board_ad/detail_reply/{boardNo}")
 	public List<BoardReplyVO> adDetailReply(
@@ -62,6 +68,13 @@ public class BoardAdRestController {
 		return boardLikeService.boardAdLike(memberNo, board);
 	}
 	
+	@PostMapping("/ad_count")
+	public void boardAdCount(
+							@RequestParam int boardAdNo,
+							HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		boardAdService.boardAdCount(memberNo, boardAdNo);
+	}
 	
 	//비즈니스 회원 광고 진행현황 변경 - 관리자
 	@PutMapping("/admin/boardAdList/first")
