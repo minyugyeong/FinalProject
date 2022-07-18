@@ -158,7 +158,7 @@
                                         <i class="fa-regular fa-newspaper fa-lg"></i>
 
                                     </p>
-                                    <p class="card-text" v-if="board.boardListVO.likecount > 0">
+                                    <p class="card-text" v-if="board.boardListVO.likecount > 0" >
                                         좋아요 {{board.boardListVO.likecount}}개
                                     </p>
                                     <p class="card-text">
@@ -373,7 +373,7 @@
 				  </div>
 				</div>
                 
-                
+                <!-- 일반 게시글 좋아요 리스트 Modal -->
                 
             </div>
 

@@ -286,7 +286,7 @@ $(function(){
 					    		<div class="right">
 										<span class="length">
 											<span class="count">${boardDto.boardContent.length()}</span>
-											/
+											
 											<span class="total">1000</span>
 										</span>
 									</div>
