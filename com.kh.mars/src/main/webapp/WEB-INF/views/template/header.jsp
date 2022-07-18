@@ -147,7 +147,7 @@
 													    <div class="dropdown-menu" style="">
 													      <a class="dropdown-item" href="${pageContext.request.contextPath}/member/list/">회원 관리</a>
 													      <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/ad">광고 관리</a>
-													      <a class="dropdown-item" href="#">통계</a>
+													      <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/status">통계</a>
 													    </div>
 													  </li>
                             

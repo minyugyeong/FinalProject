@@ -6,9 +6,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.kh.mars.vo.AdStatusVO;
 import com.kh.mars.vo.JoinGenderVO;
-import com.kh.mars.vo.MemberInterestVO;
+import com.kh.mars.vo.StatusVO;
 @Repository
 public class StstusDaoImpl implements StatusDao{
 
@@ -21,28 +20,41 @@ public class StstusDaoImpl implements StatusDao{
 	}
 
 	@Override
-	public List<MemberInterestVO> memberInterest() {
+	public List<StatusVO> memberInterest() {
 		return sqlSession.selectList("status.memberInterest");
 	}
 
 	@Override
-	public List<MemberInterestVO> manInterest() {
+	public List<StatusVO> manInterest() {
 		return sqlSession.selectList("status.manInterest");
 	}
 
 	@Override
-	public List<MemberInterestVO> womenInterest() {
+	public List<StatusVO> womenInterest() {
 		return sqlSession.selectList("status.womanInterest");
 	}
 
 	@Override
-	public List<AdStatusVO> interestAd() {
+	public List<StatusVO> interestAd() {
 		return sqlSession.selectList("status.interestAd");
 	}
 
 	@Override
-	public List<AdStatusVO> adSum() {
+	public List<StatusVO> adSum() {
 		return sqlSession.selectList("status.adSum");
 	}
+
+	@Override
+	public List<StatusVO> yearSales() {
+		return sqlSession.selectList("status.yearSales");
+	}
+
+	@Override
+	public List<StatusVO> monthSales(int year) {
+		
+		return sqlSession.selectList("status.monthSales", year);
+	}
+
+
 
 }
