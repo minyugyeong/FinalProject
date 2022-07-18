@@ -116,7 +116,7 @@
 			display:none!important;
 		}
 		.showment{
-			display:block;
+			display:block!important;
 		}
 		.adLinkOpacity:hover{
 			opacity:1!important;
@@ -228,7 +228,7 @@
                             
                             
                             <!-- 광고게시물띄우기용 -->
-                            <div v-if="index%3==2" class="card mb-3" style="width: 470px; padding: 0px 0px;">
+                            <div v-if="adList[0]!=null&&index%3==2" class="card mb-3" style="width: 470px; padding: 0px 0px;">
                                 <div class="card-body">
                                     <p class="card-text">
                                     	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+adList[((index+1)/3)-1].boardListVO.memberNo" style="color:black;text-decoration:none;">
