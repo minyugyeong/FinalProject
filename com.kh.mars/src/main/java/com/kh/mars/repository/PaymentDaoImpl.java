@@ -16,8 +16,8 @@ public class PaymentDaoImpl implements PaymentDao{
 	private SqlSession sqlSession;
 	
 	@Override
-	public AdDto find(int ad_no) {
-		return sqlSession.selectOne("payment.adOne");
+	public BoardAdDto find(int ad_no) {
+		return sqlSession.selectOne("payment.adOne", ad_no);
 	}
 
 	@Override

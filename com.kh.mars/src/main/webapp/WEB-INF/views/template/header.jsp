@@ -166,6 +166,7 @@
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+
     <script>
         //div[id=app]을 제어할 수 있는 Vue instance를 생성
         const navi = Vue.createApp({
@@ -247,5 +248,6 @@
         });
         navi.mount("#navi");
     </script>
+
         <section>
         

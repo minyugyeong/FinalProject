@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.mars.entity.BlockDto;
 import com.kh.mars.entity.CertDto;
 import com.kh.mars.entity.FollowDto;
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.error.UnauthorizeException;
+import com.kh.mars.repository.AttachDao;
+import com.kh.mars.repository.BlockDao;
 import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
@@ -57,6 +60,12 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private AttachDao attachDao;
+	
+	@Autowired
+	private BlockDao blockDao;
 
 	//회원가입 페이지
 	@GetMapping("/join")
@@ -108,6 +117,8 @@ public class MemberController {
 			model.addAttribute("profileUrl", "/file/download/" + attachNo);
 		}
 		
+		model.addAttribute("attachNo", attachNo);
+		
 		return "member/edit";
 	}
 	
@@ -121,7 +132,7 @@ public class MemberController {
 			return "redirect:edit";
 		}
 		else {
-			return "redirect:edit?error";
+			return "redirect:edit?error2";
 		}
 	}
 	
@@ -150,8 +161,27 @@ public class MemberController {
 	@PostMapping("/profile")
 	public String profile(@RequestParam MultipartFile memberProfile,HttpSession session) throws IllegalStateException, IOException {
 		int memberNo = (Integer)session.getAttribute("login");
+		
+		Integer profileIsNull = memberProfileDao.info(memberNo);
+		
+		if(profileIsNull != 0) {//파일 있을 경우
+			attachDao.delete(profileIsNull);
+		}
+		
+		
 		memberDao.proFile(memberProfile, memberNo);
-		return "/member/edit";
+		
+		return "redirect:edit";
+	}
+	
+	//프로필 사진 삭제
+	@PostMapping("/deleteProfile")
+	public String delete(HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		int attachNo = memberProfileDao.info(memberNo);
+		attachDao.delete(attachNo);
+		
+		return "redirect:edit";
 	}
 	
 	@GetMapping("/page")
@@ -205,6 +235,11 @@ public class MemberController {
 		//팔로우 상태
 		boolean isFollower = followDao.isFollower(followWho,memberNo);
 		model.addAttribute("isFollower", isFollower);
+		
+		//차단 상태
+		BlockDto blockDto = blockDao.selectOne(followWho, memberNo);
+		boolean isBlock = blockDto != null;
+		model.addAttribute("isBlock", isBlock);
 
 		
 		return "member/page";
@@ -338,5 +373,27 @@ public class MemberController {
 		
 		return "redirect:edit";
 	}
+	
+	//차단 시 이동 할 페이지
+	@GetMapping("/block")
+	public String block() {
+		return "member/block";
+	}
+	
+	//탈퇴
+	@PostMapping("/exit")
+	public String exit(@RequestParam String memberPassword, HttpSession session) {
+		int memberNo = (Integer)session.getAttribute("login");
+		boolean success = memberDao.exit(memberNo, memberPassword);
+		if(success) {
+			session.removeAttribute("login");
+			session.removeAttribute("auth");
+			return "redirect:login";
+		}
+		else {
+			return "redirect:edit?passworderror";
+		}
+	}
+	
 	
 }

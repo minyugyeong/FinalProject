@@ -8,4 +8,6 @@ public interface MemberProfileDao {
 
 	int info(int memberNo);
 
+	void delete(int memberNo);
+
 }

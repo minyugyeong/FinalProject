@@ -42,4 +42,6 @@ public class BlockDaoImpl implements BlockDao{
 		sqlSession.delete("block.unblock", param);
 	}
 
+
+
 }

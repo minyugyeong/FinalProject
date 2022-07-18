@@ -43,6 +43,12 @@ public class AttachDaoImpl implements AttachDao {
 		return attachNo;
 	}
 
+	@Override
+	public void delete(int profileIsNull) {
+		sqlSession.delete("attach.delete", profileIsNull);
+		
+	}
+
 }
 
 

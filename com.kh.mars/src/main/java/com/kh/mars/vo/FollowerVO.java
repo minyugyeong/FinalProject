@@ -11,4 +11,5 @@ public class FollowerVO {
 	private int memberNo;
 	private String memberNick;
 	private int attachNo;
+	private Integer followConfirm;
 }

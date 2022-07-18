@@ -134,20 +134,6 @@
 		select count(*)follow_who from follow where follow_target = #{memberNo} AND follow_confirm = 1
 	</select>
 	
-	<select id="followList" resultType="followVO" parameterType="int">
-		select abc.*, mp.attach_no from (
-		    select aa.member_no, aa.member_nick from (
-		    select follow_target from follow where follow_who = #{memberNo} AND follow_confirm = 1)ab inner join member aa on ab.follow_target = aa.member_no
-		)abc left outer join member_profile mp on abc.member_no = mp.member_no
-	</select>
-	
-	<select id="followerList" resultType="followerVO" parameterType="int">
-		SELECT FM.*,mp.attach_no from(
-			SELECT M.member_no, M.member_nick from(
-			SELECT follow_who FROM FOLLOW WHERE follow_target = #{memberNo} AND follow_confirm = 1)F INNER JOIN MEMBER M ON F.follow_who = M.MEMBER_NO
-		)FM LEFT OUTER JOIN member_profile mp ON FM .member_no = mp.member_no
-	</select>
-	
 	<update id="follow" parameterType="Map">
 		insert into follow(follow_who, follow_target, follow_confirm) values(#{followWho}, #{memberNo}, #{followConfirm})
 	</update>
@@ -179,5 +165,36 @@
 	<update id="open" parameterType="int">
 		UPDATE follow SET follow_confirm = 1 WHERE FOLLOW_TARGET = #{memberNo}
 	</update>
+	
+	<select id="followerList" resultType="followVO" parameterType="Map">
+		SELECT m.member_no, m.member_nick , mp.ATTACH_NO , f.FOLLOW_CONFIRM  FROM (
+		SELECT m.* FROM follow f 
+					INNER JOIN MEMBER m ON m.MEMBER_NO = f.FOLLOW_who  
+					WHERE FOLLOW_TARGET = #{memberNo} AND FOLLOW_CONFIRM = 1
+		MINUS 
+		SELECT m.* FROM block b 
+				INNER JOIN MEMBER m ON b.MEMBER_NO = m.MEMBER_NO 
+				WHERE block_no = #{memberWho}
+		)m
+		LEFT OUTER JOIN (
+			SELECT * FROM follow WHERE FOLLOW_WHO = #{memberWho}
+		)f ON m.member_no = f.FOLLOW_TARGET 
+		LEFT OUTER JOIN MEMBER_PROFILE mp ON m.member_no = mp.MEMBER_NO
+	</select>
 
+	<select id="followList" resultType="followVO" parameterType="Map">
+		SELECT m.member_no, m.member_nick, mp.attach_no, f.follow_confirm from(
+		SELECT m.* FROM follow f
+					INNER JOIN MEMBER m ON m.member_no = f.FOLLOW_TARGET 
+					WHERE follow_who = #{memberNo} AND FOLLOW_CONFIRM = 1
+		MINUS
+		SELECT m.* FROM block b
+				INNER JOIN MEMBER m ON b.MEMBER_NO = m.MEMBER_NO 
+				WHERE block_no = #{memberWho}
+				)m 
+				LEFT OUTER JOIN(
+					SELECT * FROM follow WHERE follow_who  = #{memberWho}
+				)f ON m.member_no = f.FOLLOW_target
+		LEFT OUTER JOIN MEMBER_PROFILE mp ON m.member_no = mp.MEMBER_NO 
+	</select>
  </mapper> 

@@ -35,10 +35,6 @@ public interface MemberDao {
 	boolean resetPassword(MemberDto memberDto);
 
 	int selectNo(String memberNick);
-	
-//	List<MemberDto> adminSelect(String type, String keyword, int p, int s);
-//
-//	int count(String type, String keyword);
 
 	int count(MemberSearchVO vo);
 
@@ -51,5 +47,10 @@ public interface MemberDao {
 	void personal(int memberNo);
 
 	MemberVO dmMemberInfo(int targetNo);
+	boolean exit(int memberNo, String memberPassword);
+
+	String checkPhone(String memberPhone);
+
+
 
 }

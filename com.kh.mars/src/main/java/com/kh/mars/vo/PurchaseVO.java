@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @Data@AllArgsConstructor@NoArgsConstructor@Builder
 public class PurchaseVO {
 	private int memberNo;
-	private int ad_no;
+	private int boardAdNo;
+	private int quantity;
 }

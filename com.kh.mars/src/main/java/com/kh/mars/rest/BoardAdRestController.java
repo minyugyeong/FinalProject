@@ -7,33 +7,28 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kh.mars.entity.BoardDto;
 import com.kh.mars.repository.BoardAdDao;
 import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.BoardLikeDao;
 import com.kh.mars.service.BoardAdService;
 import com.kh.mars.service.BoardLikeService;
-import com.kh.mars.vo.BoardDetailVO;
-import com.kh.mars.vo.BoardListVO;
 import com.kh.mars.vo.BoardMainListVO;
 import com.kh.mars.vo.BoardReplyVO;
 
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
-@RequestMapping("/rest/board_ad")
 public class BoardAdRestController {
 	
 	@Autowired
@@ -45,7 +40,7 @@ public class BoardAdRestController {
 	@Autowired
 	private BoardAdService boardAdService;
 	
-	@GetMapping("/detail_reply/{boardNo}")
+	@GetMapping("/rest/board_ad/detail_reply/{boardNo}")
 	public List<BoardReplyVO> adDetailReply(
 								@PathVariable int boardNo,
 								HttpSession session) {
@@ -53,7 +48,7 @@ public class BoardAdRestController {
 		return boardAdDao.adDetailReply(memberNo, boardNo);
 	}
 	
-	@GetMapping("/main")
+	@GetMapping("/rest/board_ad/main")
 	public List<BoardMainListVO> main(
 										HttpSession session
 										){
@@ -61,7 +56,7 @@ public class BoardAdRestController {
 		return boardAdDao.mainList(memberNo);
 	}
 	
-	@PostMapping("/like")
+	@PostMapping("/rest/board_ad/like")
 	public int boardLike(
 						@RequestBody String boardNo,
 						@ApiIgnore HttpSession session
@@ -80,12 +75,26 @@ public class BoardAdRestController {
 		int memberNo = (Integer)session.getAttribute("login");
 		boardAdService.boardAdCount(memberNo, boardAdNo);
 	}
+	
+	//비즈니스 회원 광고 진행현황 변경 - 관리자
+	@PutMapping("/admin/boardAdList/first")
+	public void updateFirst(@RequestParam int boardAdNo) {
+		
+		boardAdDao.updateFirst(boardAdNo);
+	}
+	
+	@PutMapping("/admin/boardAdList/second")
+	public void updateSecond(@RequestParam int boardAdNo) {
+		
+		boardAdDao.updateSecond(boardAdNo);
+	}
+	
+	@PutMapping("/admin/boardAdList/third")
+	public void updateThird(@RequestParam int boardAdNo) {
+		
+		boardAdDao.updateThird(boardAdNo);
+	}
 }
-
-
-
-
-
 
 
 

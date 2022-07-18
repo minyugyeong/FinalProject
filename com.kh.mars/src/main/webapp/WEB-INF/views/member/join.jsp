@@ -40,9 +40,9 @@
         </div>
 
         <div class="row form-floating mb-3">
-            <input type="text" class="form-control" id="floatingInput" placeholder="memberNick" name="memberNick">
+            <input type="text" class="form-control" id="floatingInput2" placeholder="memberNick" name="memberNick">
             <span style="color:red"></span>
-            <label for="floatingInput">닉네임</label>
+            <label for="floatingInput2">닉네임</label>
             <div class="invalid-feedback">영문 대/소문자,특수문자(-_.) 4~16글자로 작성해주세요</div>
         </div>
         
@@ -54,6 +54,7 @@
 
         <div class="row form-floating mb-3">
             <input type="text" class="form-control" id="floatingNumber" placeholder="PhoneNumber" name="memberPhone">
+            <span style="color:red"></span>
             <label for="floatingNumber">전화번호</label>
             <div class="invalid-feedback">올바른 형식이 아닙니다</div>
         </div>
@@ -93,7 +94,7 @@
                     <label>관심사</label>
                     </div>
                         <select class="form-select" name="memberInterest">
-                            <option>선택</option>
+                            <option value="">선택</option>
                             <option>예술</option>
                             <option>패션</option>
                             <option>요리</option>
@@ -130,6 +131,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script>
         $(function(){
+        	let status = {
+        			memberEmailCheck : false,
+        			memberNickCheck : false,
+        			memberPasswordCheck : false,
+        			memberPhoneCheck : false,
+        	};
+        	
         	$(".btn-join").prop("disabled", true);
             var index=0;
             var object = {
@@ -186,9 +194,17 @@
             });
 
            $(".btn-next").click(function(){
+        	   
+        	    //중복검사 및 정규표현식 전체 통과 시
+        	   if(status.memberEmailCheck && status.memberNickCheck && status.memberPhoneCheck && status.memberPasswordCheck ){
                 index++;
                 $(".page").hide();
                 $(".page").eq(index).show();
+        	   }
+        	   else{
+        		   alert("필수 정보를 올바르게 입력해주세요");
+        		   return;
+        	   }
             });
 
             $(".btn-prev").click(function(){
@@ -214,11 +230,14 @@
                     		if(resp == true){//정규표현식 통과 + 중복검사 통과
                     			$(this).removeClass("is- valid is-invalid");
                                 $(this).next("span").text("");
-                                $(this).addClass("is-valid")
+                                $(this).addClass("is-valid");
+                                status.memberEmailCheck = true;
+                                console.log(status);
                     		}
                     		else {//정규표현식 통과 + 중복검사 실패
                     			$(this).removeClass("is- valid is-invalid");
                                 $(this).next("span").text("이미 가입된 이메일 입니다");
+                                status.memberEmailCheck = false;
                     		}
                     	}
                     })              		
@@ -227,6 +246,7 @@
               		$(this).removeClass("is- valid is-invalid");
                     $(this).addClass("is-invalid")
                     $(this).next("span").text("");
+                    status.memberEmailCheck = false;
               	}
                 
             });
@@ -237,14 +257,47 @@
                 
                 $(this).removeClass("is-valid is-invalid");
                 $(this).addClass(memberPasswordTest ? "is-valid" : "is-invalid")
+                if(memberPasswordTest == true){
+                	status.memberPasswordCheck = true;
+                }
+                else{
+                	status.memberPasswordCheck = false;
+                }
             });
 
             $("input[name=memberPhone]").blur(function(){
                 var regex = /^01([0|1|6|7|8|9]?)?([0-9]{3,4})?([0-9]{4})$/;
-                var memberPhone = regex.test($(this).val());
+                var memberPhone = $(this).val();
+                var memberPhoneTest = regex.test(memberPhone);
 
-                $(this).removeClass("is-valid is-invalid");
-                $(this).addClass(memberPhone ? "is-valid" : "is-invalid");
+                if(memberPhoneTest == true){//정규표현식 통과 시
+                	$.ajax({
+                		url : "${pageContext.request.contextPath}/checkPhone",
+                		method : "get",
+                		data : {
+                			memberPhone : memberPhone
+                		},
+                		success:(resp)=>{
+                			if(resp == true){//중복검사 통과
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).addClass("is-valid");
+                				$(this).next("span").text("");
+                				status.memberPhoneCheck = true;
+                			}
+                			else{//중복검사 실패
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).next("span").text("이미 가입된 전화번호 입니다");
+                				status.memberPhoneCheck = false;
+                			}
+                		}
+                	});
+                }
+                else{//정규표현식 실패 시
+                	$(this).removeClass("is-valid is-invalid");
+                    $(this).addClass("is-invalid");
+                    $(this).next("span").text("");
+                	status.memberPhoneCheck = false;	
+                }
             });
 
             $("input[name=memberNick").blur(function(){
@@ -264,10 +317,12 @@
                 				$(this).removeClass("is-valid is-invalid");
                 				$(this).addClass("is-valid");
                 				$(this).next("span").text("");
+                				status.memberNickCheck = true;
                 			}
                 			else{//중복검사 실패 시
                 				$(this).removeClass("is-valid is-invalid");
                 				$(this).next("span").text("사용중인 닉네임 입니다");
+                				status.memberNickCheck = false;
                 			}
                 		}
                 	});
@@ -276,6 +331,7 @@
                 	$(this).removeClass("is-valid is-invalid");
                     $(this).addClass("is-invalid");
                     $(this).next("span").text("");
+                    status.memberNickCheck = false;
                 }
 
             });
@@ -376,6 +432,9 @@
 				                }
 				            });
 				        });
+            
+            
+            
         });
 
 
