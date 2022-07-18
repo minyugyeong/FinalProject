@@ -43,6 +43,7 @@ public class KakaoPayServiceImpl implements KakaoPayService{
 		body.add("partner_order_id", requestVO.getPartner_order_id());
 		body.add("partner_user_id", requestVO.getPartner_user_id());
 		body.add("item_name", requestVO.getItem_name());
+		body.add("quantity", String.valueOf(requestVO.getQuantity()));
 		body.add("total_amount", String.valueOf(requestVO.getTotal_amount()));
 		body.add("tax_free_amount", "0");//무조건 0원
 

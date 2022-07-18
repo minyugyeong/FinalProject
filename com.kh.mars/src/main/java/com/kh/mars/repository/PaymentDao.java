@@ -7,7 +7,7 @@ import com.kh.mars.entity.PaymentDto;
 
 public interface PaymentDao {
 
-	AdDto find(int ad_no);
+	BoardAdDto find(int ad_no);
 
 	int sequence();
 

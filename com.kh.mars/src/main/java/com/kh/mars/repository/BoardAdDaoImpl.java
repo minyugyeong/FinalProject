@@ -10,8 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mars.entity.AdDto;
 import com.kh.mars.entity.BoardAdDto;
+import com.kh.mars.vo.BoardAdAttachNoMemberVO;
 import com.kh.mars.vo.BoardAdAttachNoVO;
 import com.kh.mars.vo.BoardAdAttachVO;
+import com.kh.mars.vo.BoardAdListSearchVO;
 import com.kh.mars.vo.BoardAdMemberVO;
 import com.kh.mars.vo.BoardMainListVO;
 import com.kh.mars.vo.BoardReplyVO;
@@ -86,11 +88,69 @@ public class BoardAdDaoImpl implements BoardAdDao{
 	}
 
 	@Override
-	public List<BoardAdAttachNoVO> selectList(int memberNo) {
+	public List<BoardAdAttachNoVO> selectList(int memberNo, int p, int s) {
 		
-		return sqlSession.selectList("board_ad.treeSearch", memberNo);
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberNo", memberNo);
+		
+		int end = p * s;
+		int begin = end - (s-1);
+		param.put("end", end);
+		param.put("begin", begin);
+		
+		return sqlSession.selectList("board_ad.treeSearch", param);
 	}
 
+	@Override
+	public List<BoardAdAttachNoMemberVO> selectList(BoardAdListSearchVO vo, int p, int s) {
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("vo", vo);
+		
+		int end = p * s;
+		int begin = end - (s-1);
+		param.put("end", end);
+		param.put("begin", begin);
+		
+		return sqlSession.selectList("board_ad.treeSearchAdmin", param);
+	}
+
+	@Override
+	public void updateFirst(int boardAdNo) {
+		
+		sqlSession.update("board_ad.updateFirst", boardAdNo);
+	}
+
+	@Override
+	public int count(BoardAdListSearchVO vo) {
+		
+		return sqlSession.selectOne("board_ad.count", vo);
+	}
+
+	@Override
+	public void updateCheck(int boardAdNo) {
+		sqlSession.update("board_ad.updateCheck", boardAdNo);
+		
+	}
+
+
+	public void updateSecond(int boardAdNo) {
+		
+		sqlSession.update("board_ad.updateSecond", boardAdNo);
+	}
+
+
+	@Override
+	public void updateThird(int boardAdNo) {
+		
+		sqlSession.update("board_ad.updateThird", boardAdNo);
+	}
+
+	@Override
+	public int count(int memberNo) {
+		
+		return sqlSession.selectOne("board_ad.countMemberAd", memberNo);
+	}
 
 	
 
