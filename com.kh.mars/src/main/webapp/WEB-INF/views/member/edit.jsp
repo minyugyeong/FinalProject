@@ -85,11 +85,6 @@
 				<div class="mb-3 row">
 					
 					
-					<form action="deleteProfile" method="post">
-					
-						<c:if test="${attachNo != 0 }"><button type="submit" class="btn btn-danger">삭제</button></c:if>
-					
-					</form>
 					
 					<div>
 						<img src="${pageContext.request.contextPath}${profileUrl}"
@@ -103,15 +98,21 @@
 						<button type="submit"  class="btn btn-primary mt-3">변경</button>
 						</div>
 					</form>
+					<form action="deleteProfile" method="post">
+					
+						<c:if test="${attachNo != 0 }"><button type="submit" class="btn btn-danger">삭제</button></c:if>
+					
+					</form>
 				</div>
 				
 	<!-- 프로필 정보 편집 -->
-					<form action="edit" method="post">
+					<form action="edit" method="post" id="editBtn">
 	
 				<div class="mb-3 row">
                     <label for="inputmemberName" class="col-sm-5 col-form-label">이름</label>
                     <div class="col-7">
                       <input type="text" name="memberName" class="form-control" id="inputmemberName" value="${memberDto.memberName }">
+                      <span style="color:red"></span>
                       <h6 class="card-subtitle mb-2 mt-3 text-muted text-center">사람들이 이름, 별명 또는 비즈니스 이름 등 회원님의 알려진 이름을 사용하여 회원님의 계정을 찾을 수 있도록 도와주세요.</h6>
                     </div>
                 </div>
@@ -120,6 +121,7 @@
                     <label for="inputmemberNick" class="col-sm-5 col-form-label">닉네임</label>
                     <div class="col-7">
                     	<input type="text" name="memberNick" class="form-control" id="inputmemberNick" value="${memberDto.memberNick }">
+                    	<span style="color:red"></span>
                     </div>
                 </div>
                 
@@ -135,6 +137,7 @@
                     <label for="inputmemberPhone" class="col-sm-5 col-form-label">전화번호</label>
                     <div class="col-7">
                     	<input type="tel" name="memberPhone" class="form-control" id="inputmemberPhone" value="${memberDto.memberPhone }">
+                    	<span style="color:red"></span>
                     </div>
                 </div>
 
@@ -241,6 +244,7 @@
     
     <script>
     	$(function(){
+    		
     		var error = ${param.error != null}
     		console.log(error);
     		
@@ -248,7 +252,6 @@
     		console.log(passworderror);
     		
     		//소개 글자수 제한
-		
 		   $(document).ready(function(){
 			  $('#introduce').on('keyup', function(){
 				  $('#cnt').html("("+$(this).val().length+" / 1000)");
@@ -284,11 +287,28 @@
     			}
     		});
     		
+    		
+    		let status2 = {
+    				memberNickCheck : true,
+    				memberPhoneCheck : true,
+    				memberNameCheck : true,
+    		};
+    		
+    		
+    		$("#editBtn").submit(function(){
+    			if(status2.memberNickCheck && status2.memberPhoneCheck && status2.memberNameCheck){
+    				return true;
+    			}
+    			else{
+    				return false;
+    			}
+    		});
+    		
     		let status = {
     				memberPasswordCheck : false,
     				memberPasswordSame : false,
     			};
-    			console.log(status);
+    			
     			
     			$(".change-password").submit(function(){
     				passwordSame.call($("input[name=checkPassword]"));
@@ -442,8 +462,96 @@
 			            });
 			        });
         
+			$("input[name=memberPhone]").blur(function(){
+                var regex = /^01([0|1|6|7|8|9]?)?([0-9]{3,4})?([0-9]{4})$/;
+                var memberPhone = $(this).val();
+                var memberPhoneTest = regex.test(memberPhone);
+
+                if(memberPhoneTest == true){//정규표현식 통과 시
+                	$.ajax({
+                		url : "${pageContext.request.contextPath}/checkEditPhone",
+                		method : "get",
+                		data : {
+                			memberPhone : memberPhone
+                		},
+                		success:(resp)=>{
+                			if(resp == true){//중복검사 통과
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).addClass("is-valid");
+                				$(this).next("span").text("");
+                				status2.memberPhoneCheck = true;
+                			}
+                			else{//중복검사 실패
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).next("span").text("이미 가입된 전화번호 입니다");
+                				status2.memberPhoneCheck = false;
+                			}
+                		}
+                	});
+                }
+                else{//정규표현식 실패 시
+                	$(this).removeClass("is-valid is-invalid");
+                    $(this).addClass("is-invalid");
+                    $(this).next("span").text("");
+                	status2.memberPhoneCheck = false;	
+                }
+                console.log(status2);
+            });
+			
+			$("input[name=memberNick").blur(function(){
+                var regex = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{4,16}$/;
+                var memberNick = $(this).val();
+                var memberNickTest = regex.test($(this).val());
+                
+                if(memberNickTest == true){//정규표현식 통과 시 - > 중복검사
+                	$.ajax({
+                		url : "${pageContext.request.contextPath}/checkEditNick",
+                		method : "get",
+                		data : {
+                			memberNick : memberNick
+                		},
+                		success:(resp)=>{
+                			if(resp == true){//중복검사 통과 시
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).addClass("is-valid");
+                				$(this).next("span").text("");
+                				status2.memberNickCheck = true;
+                			}
+                			else{//중복검사 실패 시
+                				$(this).removeClass("is-valid is-invalid");
+                				$(this).next("span").text("사용중인 닉네임 입니다");
+                				status2.memberNickCheck = false;
+                			}
+                		}
+                	});
+                }
+                else{//정규표현식 실패 시
+                	$(this).removeClass("is-valid is-invalid");
+                    $(this).addClass("is-invalid");
+                    $(this).next("span").text("");
+                    status2.memberNickCheck = false;
+                }
+                console.log(status2);
+            });
         
-    		
+        //이름 글자수 제한
+    		$("input[name=memberName]").blur(function(){
+    			memberName = $(this).val();
+    			console.log(memberName);
+    			if(memberName.length <= 10){
+    				$(this).removeClass("is-valid is-invalid");
+    				$(this).addClass("is-valid");
+    				$(this).next("span").text("");
+    				console.log(memberName.length);
+    				status2.memberNameCheck = true;
+    			}
+    			else{
+    				$(this).removeClass("is-valid is-invalid");
+    				$(this).addClass("is-invalid");
+    				$(this).next("span").text("10글자 이내로 작성하셔야합니다");
+    				status2.memberNameCheck = false;
+    			}
+    		});
     	})
     </script>
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
