@@ -7,6 +7,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kh.mars.repository.DmDao;
 import com.kh.mars.service.DmService;
 import com.kh.mars.vo.ReceiveVO;
 import com.kh.mars.ws.util.RoomManager;
@@ -19,6 +20,9 @@ public class DMWebsocketServer extends TextWebSocketHandler{
 	
 	@Autowired
 	private DmService dmService;
+	
+	@Autowired
+	private DmDao dmDao;
 	
 	public static final int join = 1, chat = 2;
 	
@@ -40,6 +44,7 @@ public class DMWebsocketServer extends TextWebSocketHandler{
 			manager.enterRoom(session, receiveVO.getRoomNo());
 		}
 		else if(receiveVO.getType() == chat) {
+			dmDao.roomEnterUpdate(receiveVO.getRoomNo());
 			dmService.dmService(receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget(), user.getMemberNo());
 			manager.broadcastRoom(session, receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget());
 		}

@@ -49,8 +49,8 @@
 	<!-- 내정보 조회 -->
 	<select id="myInfo" resultType="MemberDto" parameterType="int">
 		select member_no, member_email, member_gender, member_nick, member_phone, 
-				member_grade, member_private, member_interest, member_highschool, member_university
-		 from member where member_no = #{memberNo}
+			member_grade, member_private, member_interest, member_highschool, member_university
+		from member where member_no = #{memberNo}
 	</select>
 	
 	<select id="myProfile" resultType="int" parameterType="int">
@@ -216,6 +216,11 @@
 				member_no = #{memberNo}
 	</update>
 	
+	<select id="DmMemberInfo" resultType="MemberVO" parameterType="int">
+		select m.member_no, m.member_nick, mp.attach_no from member m
+				left outer join member_profile mp on m.member_no = mp.member_no
+				where m.member_no = #{memberNo}
+	</select>
 	<delete id="exit" parameterType="int">
 		delete member where member_no = #{memberNo}
 	</delete>

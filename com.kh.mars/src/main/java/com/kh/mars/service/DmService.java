@@ -9,5 +9,5 @@ public interface DmService {
 	int dmInsert(String content);
 	void recordInsert(DmRecordDto dmRecordDto);
 	void dmService(int roomNo, String content, int target, int who);
-	
+	int room(int memberNo, int targetNo);
 }

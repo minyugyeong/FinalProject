@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.vo.MemberSearchVO;
+import com.kh.mars.vo.MemberVO;
 
 public interface MemberDao {
 
@@ -45,6 +46,7 @@ public interface MemberDao {
 
 	void personal(int memberNo);
 
+	MemberVO dmMemberInfo(int targetNo);
 	boolean exit(int memberNo, String memberPassword);
 
 	String checkPhone(String memberPhone);

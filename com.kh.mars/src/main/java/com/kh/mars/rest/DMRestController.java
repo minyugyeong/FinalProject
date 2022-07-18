@@ -18,6 +18,9 @@ import com.kh.mars.entity.DmDto;
 import com.kh.mars.entity.DmRecordDto;
 import com.kh.mars.entity.RoomEnterDto;
 import com.kh.mars.repository.DmDao;
+import com.kh.mars.service.DmService;
+import com.kh.mars.vo.MemberVO;
+import com.kh.mars.vo.RecommendListVO;
 import com.kh.mars.vo.RoomRecordVO;
 import com.kh.mars.vo.RoomVO;
 
@@ -28,6 +31,9 @@ public class DMRestController {
 	@Autowired
 	private DmDao dmDao;
 	
+	@Autowired
+	private DmService dmService;
+	
 	@GetMapping("/room")
 	public List<RoomVO> roomlist(
 								HttpSession session){
@@ -35,13 +41,15 @@ public class DMRestController {
 		return dmDao.roomList(memberNo);
 	}
 	
-	@GetMapping("/room_record/{roomNo}")
+	@GetMapping("/room_record")
 	public List<RoomRecordVO> roomRecord(
-										@PathVariable int roomNo,
+										@RequestParam int roomNo,
+										@RequestParam int uptoNo,
+										@RequestParam int dmCount,
 										HttpSession session
 										){
 		int memberNo = (Integer) session.getAttribute("login");
-		List<RoomRecordVO> list = dmDao.roomRecord(memberNo, roomNo);
+		List<RoomRecordVO> list = dmDao.roomRecord(memberNo, roomNo, uptoNo, dmCount);
 		System.out.println("리스트사이즈 = " + list.size());
 		System.out.println("리스트 = " + list);
 		return list;
@@ -70,4 +78,49 @@ public class DMRestController {
 		model.addAttribute("roomNo", no);
 		return "chat";
 	}
+	
+	@GetMapping("/choose_dm")
+	public List<RecommendListVO> chooseDm(
+										HttpSession session
+										){
+		int memberNo = (Integer) session.getAttribute("login");
+		return dmDao.chooseDm(memberNo);
+	}
+	
+	@PostMapping("/room_search")
+	public int roomSearch(
+						@RequestParam int targetNo,
+						HttpSession session
+							) {
+		int memberNo = (Integer) session.getAttribute("login");
+		return dmService.room(memberNo, targetNo);
+	}
+	
+	@PostMapping("/dm_check")
+	public void dmCheck(
+						@RequestParam int roomNo,
+						HttpSession session
+						) {
+		int memberNo = (Integer) session.getAttribute("login");
+		dmDao.dmCheck(memberNo, roomNo);
+	}
+	
+	@GetMapping("/dm_member_search")
+	public List<RecommendListVO> dmMemberSearch(
+										 	HttpSession session,
+										 	@RequestParam String keyword
+											){
+		int memberNo = (Integer) session.getAttribute("login");
+		return dmDao.dmMemberSearch(memberNo, keyword);
+	}
+	
+	@PostMapping("/room_exit")
+	public void roomExit(
+						@RequestParam int roomNo,
+						HttpSession session
+						) {
+		int memberNo = (Integer) session.getAttribute("login");
+		dmDao.roomExit(memberNo, roomNo);
+	}
+	
 }

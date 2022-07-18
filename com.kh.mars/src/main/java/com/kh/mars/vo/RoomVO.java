@@ -14,14 +14,14 @@ import lombok.Setter;
 public class RoomVO {
 	private int memberNo;
 	private int roomNo;
+	private Date roomEnterTime;
 	private int roomEnterIs;
-	private int dmNo;
-	
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private Date dmRecordTime;
-	
-	private int target;
-	private String dmContent;
 	private String memberNick;
-	
+	private int attachNo;
+	private int dmNo;
+	private String dmContent;
+	private Date dmRecordTime;
+	private int dmRecordCheck;
+	private int target;
+	private int unreadcount;
 }
