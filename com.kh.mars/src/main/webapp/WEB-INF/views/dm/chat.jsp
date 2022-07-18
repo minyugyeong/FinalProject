@@ -86,25 +86,29 @@
 		<div class="row mt-3" style="width:1100px;margin-bottom:0;padding-left:100px; padding-right:100px;height:50px;">
 			
 			<div class="card col-3" style="width:250px;border-radius:0;padding-bottom:0;align-content: center;flex-wrap: wrap;flex-direction: row;">
-				<c:if test="${attachNo!=0}">
-					<img src="${pageContext.request.contextPath}/file/download/${attachNo}" width="30" height="30" style="border-radius: 70%;position:absolute;top:20%;">
-				</c:if>
-				<c:if test="${attachNo==0}">
-					<img src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:20%;">
-				</c:if>
-				<span style="padding-left:35px;word-wrap:normal;">
-					${memberDto.memberNick}
-				</span>
+				<a href="${pageContext.request.contextPath}/member/page?memberNo=${memberDto.memberNo}" style="color:black;text-decoration:none;">
+					<c:if test="${attachNo!=0}">
+						<img src="${pageContext.request.contextPath}/file/download/${attachNo}" width="30" height="30" style="border-radius: 70%;position:absolute;top:20%;">
+					</c:if>
+					<c:if test="${attachNo==0}">
+						<img src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:20%;">
+					</c:if>
+					<span style="padding-left:35px;word-wrap:normal;">
+						${memberDto.memberNick}
+					</span>
+				</a>
 				<span style="position:absolute;top:10px;right:0;">
 					<i class="fa-solid fa-walkie-talkie fa-lg write" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="chooseDmList"></i>
 				</span>
 			</div>
 			<div class="card col-7" style="border-radius:0;border-left:0;align-content: center;flex-wrap: wrap;flex-direction: row;">
-				<img v-if="dmTarget!=null&&dmTarget.attachNo!=0" :src="'${pageContext.request.contextPath}/file/download/'+dmTarget.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:20%;">
-				<img v-if="dmTarget!=null&&dmTarget.attachNo==0" src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:20%;">
-				<span v-if="dmTarget!=null" style="padding-left:30px;word-wrap:normal;">
- 					{{dmTarget.memberNick}}
-				</span>
+				<a v-if="dmTarget!=null" :href="'${pageContext.request.contextPath}/member/page?memberNo='+dmTarget.memberNo" style="color:black;text-decoration:none;">
+					<img v-if="dmTarget!=null&&dmTarget.attachNo!=0" :src="'${pageContext.request.contextPath}/file/download/'+dmTarget.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:20%;">
+					<img v-if="dmTarget!=null&&dmTarget.attachNo==0" src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:20%;">
+					<span v-if="dmTarget!=null" style="padding-left:30px;word-wrap:normal;">
+	 					{{dmTarget.memberNick}}
+					</span>
+				</a>
 				<button type="button" v-if="roomNo!=''" class="btn btn-outline-primary" style="position:absolute; right:20px; top:6px; padding: 5px 10px;" data-bs-toggle="modal" data-bs-target="#exampleModal2">
 					나가기
 				</button>
@@ -164,7 +168,6 @@
 										<br>
 										<span :class="{'hide':myNum==dm.who||timeCheck(index)}">{{dateFormat(dm.dmRecordTime)}}</span>
 								</span>
-								
 							</div>
 						</div>
 								<button v-if="!bottomFlag" class="btn btn-outline-primary" style="position:absolute;bottom:60px;left:38%;border-radius:3rem;font-size: 0.8rem;font-weight:100;" @click="scrollMove(bottomFlag=true)">
@@ -354,6 +357,7 @@ const app = Vue.createApp({
     		this.dmTarget = {
     				memberNick: this.roomList[index].memberNick,
     				attachNo: this.roomList[index].attachNo,
+    				memberNo : this.roomList[index].memberNo,
     		};
     		this.selectIndex = index;
     		this.scrollMove();
@@ -552,6 +556,11 @@ const app = Vue.createApp({
 						roomNo:resp.data,
 						memberNo:this.searchDmList[index2].memberNo,
 							});
+    			}
+    			this.dmTarget = {
+    					attachNo : this.roomList[0].attachNo,
+    					memberNick : this.roomList[0].memberNick,
+    					memberNo : this.roomList[0].memberNo,
     			}
     			this.messageList = [];
     			this.selectIndex = 0;

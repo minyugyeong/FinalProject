@@ -204,7 +204,7 @@
                 searchOff(){
                         /* this.searchValue = false; */
                         this.noticeValue = false;
-                }
+                },
             },
             // watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다
             watch:{
