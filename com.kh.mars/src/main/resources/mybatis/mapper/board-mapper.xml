@@ -80,6 +80,12 @@
 			<result column="attach_type" property="attachType"/>		 	
 			<result column="attach_size" property="attachSize"/>		 	
 		 </collection>
+		 <collection property="hashtagList" javaType="list" ofType="BoardHashTagVO" 
+		 	select="tagSearchSubquery" column="board_no">
+		 	
+			<result column="hashtag_no" property="hashtagNo"/>		 	
+			<result column="hashtag_name" property="hashtagName"/>		 	
+		 </collection>
 	</resultMap>
 	
 	<!-- 메인 게시글들 조회 -->
@@ -114,6 +120,11 @@
 		select ba.board_no, attach.* from (
 		      select * from board_attach where board_no = #{board_no}
 		)ba inner join attach on ba.attach_no = attach.attach_no
+	</select>
+	<select id="tagSearchSubquery" resultType="BoardHashTagVO" parameterType="int">
+		select h.* from board_hashtag bh
+		    inner join hashtag h on bh.hashtag_no = h.hashtag_no
+		where bh.board_no = #{board_no}
 	</select>
 	
 	<select id="detailReply" resultType="BoardReplyVO" parameterType="map">
@@ -188,6 +199,29 @@
 	<delete id="delete" parameterType="int">
 		delete board where board_no=#{boardNo}
 	</delete>
+	
+	<!-- 회원 페이지 사진 조회 -->
+	<select id="pageList" resultType="searchListVO" parameterType="Map">
+		select * from(
+		    select rownum "rn", TMP.* from (
+		        select * from (
+		            select b.board_no, ba2."attach_count" ,  ba2."attach_no",0"type", bl."like_count",br."reply_count"  from board b
+		                inner join (select b.board_no, count(ba.attach_no)"attach_count", min(ba.attach_no)"attach_no" from board b 
+		               						inner join board_attach ba on b.board_no = ba.board_no group by b.board_no) ba2 on b.board_no = ba2.board_no
+						LEFT OUTER JOIN (SELECT BOARD_NO,count(MEMBER_NO)"like_count"  FROM board_like group BY BOARD_NO) bl ON bl.board_no = b.BOARD_NO 
+						LEFT OUTER JOIN (SELECT BOARD_NO,count(REPLY_NO)"reply_count" FROM BOARD_REPLY group BY BOARD_NO) br ON br.board_no = b.BOARD_NO
+		                where b.member_no = #{memberNo} group by b.board_no,ba2."attach_no", ba2."attach_count", bl."like_count", br."reply_count"
+		            union
+		                select bad.board_ad_no, bada2."attach_count" , bada2."attach_no", 1"type", badl."like_count", badr."reply_count"  from board_ad bad
+		                inner join (select bad.board_ad_no, count(bada.attach_no)"attach_count", min(bada.ATTACH_NO)"attach_no" from board_ad bad 
+		                					inner join board_ad_attach bada on bad.board_ad_no = bada.board_ad_no group by bad.board_ad_no) bada2 on bad.board_ad_no = bada2.board_ad_no
+		                LEFT OUTER JOIN (SELECT board_ad_no, count(member_no)"like_count" FROM board_ad_like GROUP BY BOARD_AD_NO) badl ON badl.board_ad_no = bad.board_ad_no
+		                LEFT OUTER JOIN (SELECT board_ad_no, count(reply_no)"reply_count" FROM BOARD_AD_REPLY group BY board_ad_no)badr ON badr.board_ad_no = bad.board_ad_no
+		                where bad.member_no = #{memberNo} group by bad.board_ad_no, bada2."attach_no", bada2."attach_count", badl."like_count", badr."reply_count"
+		            ) order by board_no desc
+		        )TMP 
+		    ) where "rn" between ((#{pageCount}-1) * 9 + 1) and (#{pageCount} * 9)
+	</select>
 	
  </mapper>
  

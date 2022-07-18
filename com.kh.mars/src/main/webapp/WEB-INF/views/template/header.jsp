@@ -50,6 +50,11 @@
         .card-text{
             font-size: 0.8em;
         }
+        
+        .show {
+        	display:block!important;
+        }
+        
     </style>
 </head>
 <body>
@@ -64,7 +69,7 @@
                         
                         <div class="d-flex search0503" style="position: relative;" @click.stop>
                             <input class="form-control me-sm-2" v-model="keyword" type="text" placeholder="Search" @focus="searchOn" @blur="searchOff" @input="keyword = $event.target.value">
-                            <div v-if="searchValue" style="position: absolute; top: 50px; right: -70px; width: 350px; height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;background-color:white;" @click.stop="">
+                            <div v-if="searchValue" :class="{'show':searchValue}" style="position: absolute; top: 50px; right: -70px; width: 350px; height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;background-color:white;display:none;" @click.stop="">
                                 <div class="card border-light" style="border:none!important;">
                                     <div v-if="keyword == ''" class="card-body">
                                       <h5 class="card-title">검색어를 입력해주세요</h5>
@@ -74,8 +79,8 @@
 	                                    <p v-if="searchList.length == 0" class="card-text">검색 결과가 없습니다.</p>
 	                                    <div v-for="(search, index) in searchList" class="card-text">
 		                                    <a v-if="search.type == 0" :href="'${pageContext.request.contextPath}/member/page?memberNo='+search.no" style="text-decoration:none;color:black;position:relative;">
-		                                      <img v-if="search.attach != 0" :src="'${pageContext.request.contextPath}/file/download/'+search.attachNo" width="30" style="border-radius: 70%;position:absolute;top:10%;">
-		                                      <img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                      <img v-if="search.attach != 0" :src="'${pageContext.request.contextPath}/file/download/'+search.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                      <img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" height="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                      <p style="margin-bottom:0;padding-left:2.5em;">
 		                                       {{search.main}}
 		                                      </p>
@@ -84,7 +89,7 @@
 		                                      </p>
 		                                    </a>
 		                                    <a v-else :href="'${pageContext.request.contextPath}/search/'+search.no" style="text-decoration:none;color:black;position:relative;">
-		                                      <img src="${pageContext.request.contextPath}/image/hashtag.png" width="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                      <img src="${pageContext.request.contextPath}/image/hashtag.png" width="30" height="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                      <p style="margin-bottom:0;padding-left:2.5em;">
 		                                       {{search.main}}
 		                                      </p>
@@ -100,13 +105,13 @@
                         
                         <ul class="navbar-nav align-right me-auto">
                             <li class="nav-item">
-                                <a class="nav-link active" href="#">
+                                <a class="nav-link active" href="${pageContext.request.contextPath}">
                                     <i class="fa-solid fa-earth-asia fa-lg"></i>
                                     <span class="visually-hidden">(current)</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/dm">
                                     <i class="fa-solid fa-walkie-talkie fa-lg"></i>
                                 </a>
                             </li>
@@ -119,7 +124,7 @@
                                 <a class="nav-link" style="cursor: pointer;" @click.stop="noticeOn()">
                                     <i class="fa-solid fa-rocket fa-lg"></i>
                                 </a>
-                                <div v-if="noticeValue" style="position: absolute; right: -150px; width: 450px; max-height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;" @click.stop>
+                                <div v-if="noticeValue" :class="{'show':noticeValue}" style="position: absolute; right: -150px; width: 450px; max-height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;display:none;" @click.stop>
                                     <div class="card border-light">
                                         <div class="card-body">
                                           <h5 class="card-title">Light card title</h5>
@@ -200,7 +205,7 @@
                 searchOff(){
                         /* this.searchValue = false; */
                         this.noticeValue = false;
-                }
+                },
             },
             // watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다
             watch:{

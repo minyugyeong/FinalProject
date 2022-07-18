@@ -1,9 +1,13 @@
 package com.kh.mars.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +21,9 @@ import com.kh.mars.repository.BoardAdHashtagDao;
 
 @Service
 public class BoardAdServiceImpl implements BoardAdService {
+	
+	@Autowired
+	private SqlSession sqlSession;
 	
 	@Autowired
 	private BoardAdDao boardAdDao;
@@ -55,6 +62,32 @@ public class BoardAdServiceImpl implements BoardAdService {
 		boardAdHashtagDao.delete(boardAdNo);
 		
 	}
+	
+	
+	@Transactional
+	@Override
+	public void boardAdCount(int memberNo, int boardAdNo) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("memberNo", memberNo);
+		param.put("boardAdNo", boardAdNo);
+		Integer isChecked = sqlSession.selectOne("board_ad.checkedAd", param);
+		
+		if(isChecked != null) {
+			return;
+		}else {
+			sqlSession.update("board_ad.adCountMinus", boardAdNo);
+			sqlSession.insert("board_ad.checkAd", param);
+			sqlSession.update("board_ad.adIsEnd");
+		}
+	}
+
+	@Scheduled(cron = "0 0 0 * * *")
+	@Override
+	public void boardAdCheckReset() {
+		System.out.println("체크초기화");
+		sqlSession.delete("board_ad.deleteCheckedAd");
+	}
+	
 	
 	
 

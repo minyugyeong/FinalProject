@@ -16,10 +16,6 @@ public interface FollowDao {
 
 	int countFollower(int memberNo);
 
-	List<FollowVO> followList(int memberNo);
-
-	List<FollowerVO> followerList(int memberNo);
-
 	boolean follow(int followWho, int followTarget, int followConfirm);
 
 	boolean followDelete(int followWho, int followTarget);
@@ -35,5 +31,13 @@ public interface FollowDao {
 	int followingDelete(int followWho, int memberNo);
 
 	void open(int memberNo);
+	
+//	List<FollowVO> followList(int memberNo);
+//
+//	List<FollowerVO> followerList(int memberNo);
+
+	List<FollowerVO> followerList(int memberNo, int memberWho);
+
+	List<FollowVO> followList(int memberNo, int memberWho);
 
 }

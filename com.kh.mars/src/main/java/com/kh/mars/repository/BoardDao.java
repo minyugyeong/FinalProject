@@ -8,6 +8,7 @@ import com.kh.mars.vo.BoardAttachVO;
 import com.kh.mars.vo.BoardListVO;
 import com.kh.mars.vo.BoardMainListVO;
 import com.kh.mars.vo.BoardReplyVO;
+import com.kh.mars.vo.SearchListVO;
 import com.kh.mars.vo.BoardMemberVO;
 
 public interface BoardDao {
@@ -30,6 +31,9 @@ public interface BoardDao {
 
 	void delete(int boardNo);
 
+	List<SearchListVO> pageList(int memberNo, int pageCount);
+
+	
 	
 
 	

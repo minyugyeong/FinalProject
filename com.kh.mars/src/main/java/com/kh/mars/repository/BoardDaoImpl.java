@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.mars.entity.BoardDto;
-import com.kh.mars.vo.BoardDetailVO;
-import com.kh.mars.vo.BoardListVO;
 import com.kh.mars.vo.BoardAttachVO;
 import com.kh.mars.vo.BoardMainListVO;
-import com.kh.mars.vo.BoardReplyVO;
 import com.kh.mars.vo.BoardMemberVO;
+import com.kh.mars.vo.BoardReplyVO;
+import com.kh.mars.vo.SearchListVO;
 
 @Repository
 public class BoardDaoImpl implements BoardDao{
@@ -95,6 +94,17 @@ public class BoardDaoImpl implements BoardDao{
 		sqlSession.delete("board.delete", boardNo);
 		
 	}
-	
+
+
+	@Override
+	public List<SearchListVO> pageList(int memberNo, int pageCount) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("memberNo", memberNo);
+		param.put("pageCount", pageCount);
+		return sqlSession.selectList("board.pageList", param);
+	}
+
+
+
 	
 }

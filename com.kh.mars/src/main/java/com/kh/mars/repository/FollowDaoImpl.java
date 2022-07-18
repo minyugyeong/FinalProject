@@ -35,15 +35,6 @@ public class FollowDaoImpl implements FollowDao {
 		return sqlSession.selectOne("follow.followerCount", memberNo);
 	}
 
-	@Override
-	public List<FollowVO> followList(int memberNo) {
-		return sqlSession.selectList("follow.followList",memberNo);
-	}
-
-	@Override
-	public List<FollowerVO> followerList(int memberNo) {
-		return sqlSession.selectList("follow.followerList",memberNo);
-	}
 
 	@Override
 	public boolean follow(int followWho, int memberNo, int followConfirm) {
@@ -136,5 +127,32 @@ public class FollowDaoImpl implements FollowDao {
 		sqlSession.update("follow.open", memberNo);
 		
 	}
+
+	@Override
+	public List<FollowerVO> followerList(int memberNo, int memberWho) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("memberNo", memberNo);
+		param.put("memberWho", memberWho);
+		return sqlSession.selectList("follow.followerList", param);
+	}
+
+	@Override
+	public List<FollowVO> followList(int memberNo, int memberWho) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("memberNo", memberNo);
+		param.put("memberWho", memberWho);
+		return sqlSession.selectList("follow.followList", param);
+	}
+	
+//	@Override
+//	public List<FollowVO> followList(int memberNo) {
+//		return sqlSession.selectList("follow.followList",memberNo);
+//	}
+//
+//	@Override
+//	public List<FollowerVO> followerList(int memberNo) {
+//		return sqlSession.selectList("follow.followerList",memberNo);
+//	}
+
 
 }

@@ -1,5 +1,13 @@
 package com.kh.mars.vo;
 
-public class MemberVO {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data @AllArgsConstructor @NoArgsConstructor @Builder
+public class MemberVO {
+	private int memberNo;
+	private String memberNick;
+	private int attachNo;
 }
