@@ -216,6 +216,14 @@
 				member_no = #{memberNo}
 	</update>
 	
+	<delete id="exit" parameterType="int">
+		delete member where member_no = #{memberNo}
+	</delete>
+	
+	<select id="checkPhone" parameterType="String" resultType="String">
+		select member_phone from member where member_phone = #{memberPhone}
+	</select>
+	
  </mapper> 
 
  

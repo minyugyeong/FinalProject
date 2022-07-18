@@ -18,6 +18,7 @@ import com.kh.mars.entity.BlockDto;
 import com.kh.mars.entity.CertDto;
 import com.kh.mars.entity.MemberDto;
 import com.kh.mars.repository.BlockDao;
+import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
 import com.kh.mars.repository.MemberDao;
@@ -26,6 +27,7 @@ import com.kh.mars.service.EmailService;
 import com.kh.mars.service.FollowService;
 import com.kh.mars.vo.FollowVO;
 import com.kh.mars.vo.FollowerVO;
+import com.kh.mars.vo.SearchListVO;
 
 @Controller
 @CrossOrigin(origins = "http://127.0.0.1:5500")
@@ -52,6 +54,8 @@ public class MemberRestController {
 	@Autowired
 	private BlockService blockService;
 	
+	@Autowired
+	private BoardDao boardDao;
 	
 	@PostMapping("/sendMail")
 	@ResponseBody
@@ -63,18 +67,6 @@ public class MemberRestController {
 	@ResponseBody
 	public boolean check(@ModelAttribute CertDto certDto) {
 		return certDao.check(certDto);
-	}
-	
-	@GetMapping("/followList")
-	@ResponseBody
-	public List<FollowVO> followList(@RequestParam int memberNo) {
-		return followDao.followList(memberNo);
-	}
-	
-	@GetMapping("/followerList")
-	@ResponseBody
-	public List<FollowerVO> followerList(@RequestParam int memberNo){
-		return followDao.followerList(memberNo);
 	}
 	
 	@PostMapping("/follow")
@@ -141,13 +133,13 @@ public class MemberRestController {
 	
 	@PostMapping("/block")
 	@ResponseBody
-	public int block(
+	public boolean block(
 			@RequestParam int memberNo, 
-			HttpSession session) {
+			HttpSession session,
+			Model model) {
 		
 		int followWho = (Integer)session.getAttribute("login");
 
-		
 		
 		//차단 상태 검사
 		BlockDto blockDto = blockDao.selectOne(followWho, memberNo);
@@ -155,24 +147,109 @@ public class MemberRestController {
 		//차단
 		if(blockDto == null) {//차단
 			blockService.block(memberNo, followWho);
-			return 1;
+			return true;
 		}
 		else {//차단 취소
 			blockService.block(memberNo, followWho);
-			return 0;
+			return false;
 		}
 		
 	}
 		
-//	@GetMapping("/list")
-//	@ResponseBody
-//	public List<PageBoardListVO> list(
-//			@RequestParam int memberNo,
-//			@RequestParam int ){
-//		
-//	}
-		
+	@GetMapping("/list")
+	@ResponseBody
+	public List<SearchListVO> list(
+			@RequestParam int memberNo,
+			@RequestParam int pageCount){
+		return boardDao.pageList(memberNo,pageCount);
+	}
 	
+	@GetMapping("/checkPhone")
+	@ResponseBody
+	public boolean phoneCheck(@RequestParam String memberPhone) {
+		String phoneCheck = memberDao.checkPhone(memberPhone);
+		if(phoneCheck == null) {//중복되지 않으면
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	@GetMapping("/checkEditPhone")
+	@ResponseBody
+	public boolean checkEditPhone(
+			@RequestParam String memberPhone,
+			HttpSession session
+			) {
+		int memberNo =(Integer) session.getAttribute("login");
+		String phoneCheck = memberDao.checkPhone(memberPhone);// 존재여부
+		MemberDto isMind = memberDao.info(memberNo);//내 번호 
+		String myPhone = isMind.getMemberPhone();// 내 번호
+		boolean check = memberPhone.matches(myPhone);
+		
+		if(check) {//내 번호이면 true 반환
+			return true;
+		}
+		else if(phoneCheck == null) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		
+	@GetMapping("/checkEditNick")
+	@ResponseBody
+	public boolean checkEditNick(
+			@RequestParam String memberNick,
+			HttpSession session) {
+		int memberNo =(Integer) session.getAttribute("login");
+		String nickCheck = memberDao.checkNick(memberNick);//존재여부
+		MemberDto isMind = memberDao.info(memberNo);//내 번호
+		String myNick = isMind.getMemberNick();
+		boolean check = memberNick.matches(myNick);
+		
+		if(check) {
+			return true;
+		}
+		else if(nickCheck == null) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+//	@GetMapping("/followList")
+//	@ResponseBody
+//	public List<FollowVO> followList(@RequestParam int memberNo) {
+//		return followDao.followList(memberNo);
+//	}
+//	
+//	@GetMapping("/followerList")
+//	@ResponseBody
+//	public List<FollowerVO> followerList(@RequestParam int memberNo){
+//		return followDao.followerList(memberNo);
+//	}
+	
+	@GetMapping("/followerList")
+	@ResponseBody
+	public List<FollowerVO> followerList(@RequestParam int memberNo,
+			HttpSession session){
+		int memberWho = (Integer)session.getAttribute("login");
+		
+		return followDao.followerList(memberNo, memberWho);
+	}
+	
+	@GetMapping("/followList")
+	@ResponseBody
+	public List<FollowVO> followList(@RequestParam int memberNo,
+			HttpSession session){
+		int memberWho = (Integer)session.getAttribute("login");
+		
+		return followDao.followList(memberNo, memberWho);
+	}
 
 
 }

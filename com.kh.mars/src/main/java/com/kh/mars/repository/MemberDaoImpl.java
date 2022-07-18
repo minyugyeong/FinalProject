@@ -176,6 +176,34 @@ public class MemberDaoImpl implements MemberDao{
 		sqlSession.update("member.personal",memberNo);
 	}
 
+	@Override
+	public boolean exit(int memberNo, String memberPassword) {
+		
+		MemberDto memberDto = this.info(memberNo);
+		
+		if(memberDto != null) {//존재하는회원
+			
+				boolean isPasswordMatch = passwordEncoder.matches(memberPassword, memberDto.getMemberPassword());
+				
+				if(isPasswordMatch) {
+					int count = sqlSession.delete("member.exit", memberNo);
+					return count > 0 ;
+				}
+				else {
+					return false;
+				}
+				
+			}
+		else {
+			return false;
+		}
+		}
+
+	@Override
+	public String checkPhone(String memberPhone) {
+		return sqlSession.selectOne("member.checkPhone", memberPhone);
+	}
+
 
 }
 
