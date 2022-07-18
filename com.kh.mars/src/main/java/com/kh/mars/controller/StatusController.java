@@ -8,13 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class StatusController {
 
-	@GetMapping("/memberstatus")
+	@GetMapping("/status")
 	String status() {
-		return "admin/memberstatus";
+		return "admin/status";
 	}
 	
-	@GetMapping("/adstatus")
-	String adstatus() {
-		return "admin/adstatus";
-	}
 }
