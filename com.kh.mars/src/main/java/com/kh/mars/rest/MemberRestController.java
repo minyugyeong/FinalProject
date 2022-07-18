@@ -164,6 +164,7 @@ public class MemberRestController {
 		return boardDao.pageList(memberNo,pageCount);
 	}
 	
+	
 	@GetMapping("/checkPhone")
 	@ResponseBody
 	public boolean phoneCheck(@RequestParam String memberPhone) {

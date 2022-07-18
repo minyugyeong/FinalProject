@@ -80,6 +80,12 @@
 			<result column="attach_type" property="attachType"/>		 	
 			<result column="attach_size" property="attachSize"/>		 	
 		 </collection>
+		 <collection property="hashtagList" javaType="list" ofType="BoardHashTagVO" 
+		 	select="tagSearchSubquery" column="board_no">
+		 	
+			<result column="hashtag_no" property="hashtagNo"/>		 	
+			<result column="hashtag_name" property="hashtagName"/>		 	
+		 </collection>
 	</resultMap>
 	
 	<!-- 메인 게시글들 조회 -->
@@ -114,6 +120,11 @@
 		select ba.board_no, attach.* from (
 		      select * from board_attach where board_no = #{board_no}
 		)ba inner join attach on ba.attach_no = attach.attach_no
+	</select>
+	<select id="tagSearchSubquery" resultType="BoardHashTagVO" parameterType="int">
+		select h.* from board_hashtag bh
+		    inner join hashtag h on bh.hashtag_no = h.hashtag_no
+		where bh.board_no = #{board_no}
 	</select>
 	
 	<select id="detailReply" resultType="BoardReplyVO" parameterType="map">

@@ -146,7 +146,7 @@ $(function(){
 						<option value="결제 대기" <c:if test="${param.boardAdCheck == '결제 대기'}">selected</c:if>>결제 대기</option>
 						<option value="광고 진행" <c:if test="${param.boardAdCheck == '광고 진행'}">selected</c:if>>광고 진행</option>
 						<option value="광고 마감" <c:if test="${param.boardAdCheck == '광고 마감'}">selected</c:if>>광고 마감</option>
-						<option value="반려" <c:if test="${param.boardAdCheck == '신청 반려'}">selected</c:if>>신청 반려</option>
+						<option value="신청 반려" <c:if test="${param.boardAdCheck == '신청 반려'}">selected</c:if>>신청 반려</option>
 					</select>
 				</div>
 			</div>

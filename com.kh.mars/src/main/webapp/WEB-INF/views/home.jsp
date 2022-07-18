@@ -111,6 +111,27 @@
 			color: var(--bs-primary);
 			background-color: white;
 		}
+		
+		.hidelink{
+			display:none!important;
+		}
+		.showment{
+			display:block!important;
+		}
+		.adLinkOpacity:hover{
+			opacity:1!important;
+			transition: all ease 0.3s 0s;
+		}
+		.moreText{
+			display:inline-block!important;
+		}
+		.moreContent{
+			height: auto!important;
+		    overflow: auto!important;
+		    width: auto!important;
+		    white-space: normal!important;
+		    text-overflow: inherit!important;
+		}
 </style>
 
 <article>
@@ -118,15 +139,23 @@
                 <div class="container-fluid" style="position: relative;" :class="{'modalOn':detailView}">
                     <div class="row">
                         <div class="main-feed">
+                        <div v-if="boardList.length==0" :class="{'showment':boardList.length==0}" style="font-size: 3em;display:none;">
+                        	<br><br>
+                        	<i class="fa-solid fa-rocket fa-lg"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        	우주 여행 중<br>
+                        	팔로우를 만들어주세요
+                        </div>
                         
                         <div v-for="(board, index) in boardList" :key="index">
                        
                             <div class="card mb-3" style="width: 470px; padding: 0px 0px;">
                                 <div class="card-body">
                                     <p class="card-text">
-                                    	<img v-if="board.boardListVO.writerProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+board.boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
-                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
-                                        {{board.boardListVO.memberNick}}
+                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+board.boardListVO.memberNo" style="color:black;text-decoration:none;">
+	                                    	<img v-if="board.boardListVO.writerProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+board.boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
+	                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
+	                                        {{board.boardListVO.memberNick}}
+                                    	</a>
                                     </p>
                                 </div>
                                     <div v-bind:id="'carouselExampleControls'+index" class="carousel slide" data-bs-interval="false">
@@ -153,7 +182,7 @@
                                         <i v-if="board.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="like(board.boardListVO.boardNo,index)"></i>
                                         <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(board.boardListVO.boardNo,index)"></i>
                                         &nbsp;
-                                        <i class="fa-regular fa-comment fa-lg"></i>
+                                        <i class="fa-regular fa-comment fa-lg" @click="detailViewOn(0,index),boardDetailSearch(index)" style="cursor: pointer;"></i>
                                         &nbsp;
                                         <i class="fa-regular fa-newspaper fa-lg"></i>
 
@@ -161,14 +190,23 @@
                                     <p class="card-text" v-if="board.boardListVO.likecount > 0" data-bs-toggle="modal" data-bs-target="#boardLikeList">
                                         좋아요 {{board.boardListVO.likecount}}개
                                     </p>
-                                    <p class="card-text">
+                                    <p class="card-text" style="font-weight:900;">
+                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+board.boardListVO.memberNo" style="color:black;text-decoration:none;">
                                         {{board.boardListVO.memberNick}}
+                                        </a>
                                     </p>
-                                    <p class="card-text">
-                                        {{board.boardListVO.boardContent}}
+                                    <p class="card-text" style="height: 20px;overflow: hidden;width: 200px;white-space: nowrap;text-overflow: ellipsis;margin-bottom:5px;">
+                                        <span class="textHide">
+                                        	{{board.boardListVO.boardContent}}
+                                        	<br v-if="board.hashtagList.length>0"><br v-if="board.hashtagList.length>0">
+                                        	<a v-for="(tag,index3) in board.hashtagList" :href="'${pageContext.request.contextPath}/search/'+tag.hashtagNo" :key="index3">{{tag.hashtagName}}</a>
+                                        </span>
                                     </p>
+                                    
+                                    <a style="color:grey;cursor: pointer;display:none;margin-bottom:10px;text-decoration:none;font-size:0.8em;">더보기</a>
+                                    
                                     <p class="card-text">
-                                       <button class="btn" @click="detailViewOn(),boardDetailSearch(index)" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
+                                       <button v-if="board.boardListVO" class="btn" @click="detailViewOn(0,index),boardDetailSearch(index)" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
                                     </p>
                                     <p class="card-text text-muted" style="font-size: 0.4em;">
                                     	{{dateCount(board.boardListVO.boardDate)}}
@@ -176,9 +214,13 @@
                                 </div>
                                 <hr style="margin-top: 0; margin-bottom: 0;">
                                 <div class="card-body" style="padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
-                                    <span style="position: absolute; left:0; top: 6px; z-index: 30;">임티</span>
+                                    <span style="position: absolute; left:10px; top: 6px; z-index: 30;">
+                                    	<label :for="'focusReply'+index">
+											<i class="fa-solid fa-satellite-dish fa-lg focusInput"></i>
+                                    	</label>
+									</span>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="댓글" v-model="replyContent" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="promise(index)">
+                                        <input :id="'focusReply'+index" type="text" class="form-control" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @focus="replyContent = $event.target.value" @input="replyContent = $event.target.value" @keyup.enter="promise(index),$event.target.value = ''">
                                         <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="promise(index)">작성</button>
                                       </div>
                                 </div>
@@ -186,13 +228,14 @@
                             
                             
                             <!-- 광고게시물띄우기용 -->
-                            <div v-if="index%3==2" class="card mb-3" style="width: 470px; padding: 0px 0px;">
+                            <div v-if="adList[0]!=null&&index%3==2" class="card mb-3" style="width: 470px; padding: 0px 0px;">
                                 <div class="card-body">
                                     <p class="card-text">
-                                    	<img v-if="adList[((index+1)/3)-1].boardListVO.writerProfile>0" :src="'${pageContext.request.contextPath}/file/download/'+adList[((index+1)/3)-1].boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
-                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
-                                        {{adList[((index+1)/3)-1].boardListVO.memberNick}} 이것은 광고
-                                        {{adList[((index+1)/3)-1].boardListVO.writerProfile}}
+                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+adList[((index+1)/3)-1].boardListVO.memberNo" style="color:black;text-decoration:none;">
+	                                    	<img v-if="adList[((index+1)/3)-1].boardListVO.writerProfile>0" :src="'${pageContext.request.contextPath}/file/download/'+adList[((index+1)/3)-1].boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
+	                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
+	                                        {{adList[((index+1)/3)-1].boardListVO.memberNick}}
+                                        </a>
                                     </p>
                                 </div>
                                     <div v-bind:id="'adcarouselExampleControls'+index" class="carousel slide" data-bs-interval="false">
@@ -203,6 +246,9 @@
 	                                            <div v-for="(attach, index2) in adList[((index+1)/3)-1].attachList" :key="index2" class="carousel-item" :class="{'active':index2==0}" style="min-height: 468px; background-color: var(--bs-dark); position:relative;">
 	                                                <img :src="'${pageContext.request.contextPath}/file/download/'+attach.attachNo" class="d-block position-absolute top-50 start-50 translate-middle" style="object-position: left; width: 101%;">
 	                                            </div>
+	                                            <a v-if="adList[((index+1)/3)-1].boardListVO.boardAdLink!=null" :href="adList[((index+1)/3)-1].boardListVO.boardAdLink" class="adLinkOpacity" :class="{'hidelink':detailView}" style="color:white;position:absolute; bottom:0; width:100%; background-color:gray; opacity:0.7;z-index:500;text-decoration:none;height:30px;padding-top: 0.2em;padding-left: 10px;">
+	                                            	광고페이지로 이동
+	                                            </a>
                                         </div>
                                         <button v-if="adList[((index+1)/3)-1].attachList.length>1" class="carousel-control-prev" type="button" v-bind:data-bs-target="'#adcarouselExampleControls'+index" data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -219,7 +265,7 @@
                                         <i v-if="adList[((index+1)/3)-1].boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="likeAd(adList[((index+1)/3)-1].boardListVO.boardNo,((index+1)/3)-1)"></i>
                                         <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="likeAd(adList[((index+1)/3)-1].boardListVO.boardNo,((index+1)/3)-1)"></i>
                                         &nbsp;
-                                        <i class="fa-regular fa-comment fa-lg"></i>
+                                        <i class="fa-regular fa-comment fa-lg" @click="detailViewOn(1,((index+1)/3)-1),boardAdDetailSearch(adList[((index+1)/3)-1])" style="cursor: pointer;"></i>
                                         &nbsp;
                                         <i class="fa-regular fa-newspaper fa-lg"></i>
 
@@ -227,14 +273,23 @@
                                     <p class="card-text" v-if="adList[((index+1)/3)-1].boardListVO.likecount > 0">
                                         좋아요 {{adList[((index+1)/3)-1].boardListVO.likecount}}개
                                     </p>
-                                    <p class="card-text">
+                                    <p class="card-text" style="font-weight:900;">
+                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+adList[((index+1)/3)-1].boardListVO.memberNo" style="color:black;text-decoration:none;">
                                         {{adList[((index+1)/3)-1].boardListVO.memberNick}}
+                                        </a>
                                     </p>
-                                    <p class="card-text">
-                                        {{adList[((index+1)/3)-1].boardListVO.boardContent}}
+                                    <p class="card-text" style="height: 20px;overflow: hidden;width: 200px;white-space: nowrap;text-overflow: ellipsis;margin-bottom:5px;">
+                                    	<span class="textHide">
+                                        	{{adList[((index+1)/3)-1].boardListVO.boardContent}}
+                                        	<br v-if="adList[((index+1)/3)-1].hashtagList!=null&&adList[((index+1)/3)-1].hashtagList.length>0"><br v-if="adList[((index+1)/3)-1].hashtagList!=null&&adList[((index+1)/3)-1].hashtagList.length>0">
+                                        	<a v-for="(tag,index3) in adList[((index+1)/3)-1].hashtagList" :href="'${pageContext.request.contextPath}/search/'+tag.hashtagNo" :key="index3">{{tag.hashtagName}}</a>
+                                        </span>
                                     </p>
+                                    
+                                       <a style="color:grey;cursor: pointer;display:none;margin-bottom:10px;text-decoration:none;font-size:0.8em;">더보기</a>
+                                       
                                     <p class="card-text">
-                                       <button class="btn" @click="detailViewOn(),boardAdDetailSearch(adList[((index+1)/3)-1])" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
+                                       <button class="btn" @click="detailViewOn(1,((index+1)/3)-1),boardAdDetailSearch(adList[((index+1)/3)-1])" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
                                     </p>
                                     <p class="card-text text-muted" style="font-size: 0.4em;">
                                     	{{dateCount(adList[((index+1)/3)-1].boardListVO.boardDate)}}
@@ -242,9 +297,13 @@
                                 </div>
                                 <hr style="margin-top: 0; margin-bottom: 0;">
                                 <div class="card-body" style="padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
-                                    <span style="position: absolute; left:0; top: 6px; z-index: 30;">임티</span>
+                                    <span style="position: absolute; left:10px; top: 6px; z-index: 30;">
+                                    	<label :for="'foucsReplyAd'+((index+1)/3)-1">
+	                                    	<i class="fa-solid fa-satellite-dish fa-lg"></i>
+                                    	</label>
+                                    </span>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="댓글" v-model="replyContent" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="promiseAd(((index+1)/3)-1)">
+                                        <input :id="'foucsReplyAd'+((index+1)/3)-1" type="text" class="form-control" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @focus="replyContent = $event.target.value"  @input="replyContent = $event.target.value" @keyup.enter="promiseAd(((index+1)/3)-1),$event.target.value = ''">
                                         <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="promiseAd(((index+1)/3)-1)">작성</button>
                                       </div>
                                 </div>
@@ -262,10 +321,15 @@
 
                     <div class="card border-light" style="width: 20rem;padding: 0 0;">
                         <div class="card-header">
+                        	<a href="${pageContext.request.contextPath}/member/page?memberNo=${memberDto.memberNo}" style="color:black;text-decoration:none;">
                         	<c:if test="${memberProfile == 0}">
 	                        	<img src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
 	                        </c:if>
+	                        <c:if test="${memberProfile != 0}">
+	                        	<img src="${pageContext.request.contextPath}/file/download/${memberProfile}" width="30" height="30" style="border-radius: 70%;">
+	                        </c:if>
                         	${memberDto.memberNick}
+                        	</a>
                         </div>
                         <div class="card-body">
                           <h4 class="card-title">회원 추천</h4>
@@ -280,9 +344,15 @@
 	                          		<p v-if="recommend.followcount > 0" style="font-size:0.9;padding-left:3em;color:grey;">
 		                          		{{recommend.whoNick}}님 외 {{recommend.followcount}}명 팔로우
 	                          		</p>
-                          		<p v-if="recommend.followcount == 0" style="font-size:0.9;padding-left:3em;color:grey;">
-                          			{{recommend.whoNick}}님이 팔로우 합니다
-                          		</p>
+	                          		<p v-if="recommend.followcount == 0" style="font-size:0.9;padding-left:3em;color:grey;">
+	                          			{{recommend.whoNick}}님이 팔로우 합니다
+	                          		</p>
+	                          		<p v-if="recommend.followcount == -1" style="font-size:0.9;padding-left:3em;color:grey;">
+	                          			{{recommend.whoNick}} 출신
+	                          		</p>
+	                          		<p v-if="recommend.followcount == -2" style="font-size:0.9;padding-left:3em;color:grey;">
+	                          			외계인과 팔로우를 맺어보세요!!
+	                          		</p>
                           </div>
                         </div>
                       </div>
@@ -320,10 +390,39 @@
 	                    <div class="col-4 board-detail-card" style="padding-left: 0; max-height: 30rem;" @click.stop>
 	                                        
 	                        <div class="card bg-light" style="height: 40vw; border-radius: 0;">
-	                            <div class="card-header">{{boardDetail.boardListVO.memberNick}}</div>
+	                            <div class="card-header">
+	                            	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+boardDetail.boardListVO.memberNo" style="color:black;text-decoration:none;">
+		                            	<img v-if="boardDetail.boardListVO.memberProfile>0" :src="'${pageContext.request.contextPath}/file/download/'+boardDetail.boardListVO.memberProfile" width="30" height="30" style="border-radius: 70%;">
+		                            	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
+		                            	<span>
+			                            	{{boardDetail.boardListVO.memberNick}}
+		                            	</span>
+	                            	</a>
+	                            	<span v-if="detailViewType==1" style="position:absolute;right:10px;">
+	                            		<i v-if="boardDetail.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+                                        <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+	                            	</span>
+	                            	<span v-else style="position:absolute;right:10px;">
+	                            		<i v-if="boardDetail.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+                                        <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+	                            	</span>
+	                            </div>
 	                            <div class="card-body card-scroll" style="height: 60%;">
 	                                <h4 class="card-title"></h4>
-	                                <p class="card-text">{{boardDetail.boardListVO.boardContent}}</p><br><br>
+	                                <p class="card-text">
+	                                	{{boardDetail.boardListVO.boardContent}}
+	                                	<br v-if="boardDetail.hashtagList.length>0">
+	                                	<br v-if="boardDetail.hashtagList.length>0">
+	                                	<a v-for="(tag,index3) in boardDetail.hashtagList" :href="'${pageContext.request.contextPath}/search/'+tag.hashtagNo" :key="index3">{{tag.hashtagName}}</a>
+	                                </p>
+	                                
+	                                <br><br>
+	                                <div v-if="boardDetailReply.length==0" style="color:gray;text-align:center;">
+	                                	<label for="detailReply">
+	                                	<i class="fa-solid fa-satellite-dish fa-lg"></i>
+	                                	첫 번째 댓글을 남겨주세요.
+	                                	</label>
+	                                </div>
 	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" style="position:relative;">
 	                                	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+reply.replyMemberNo" style="text-decoration:none;color:black;position:relative;">
 			                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -342,9 +441,13 @@
 	                                </div>
 	                            </div>
 	                            <div class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
-	                                <span style="position: absolute; left:0; top: 6px; z-index: 999;">임티</span>
+	                                <span style="position: absolute; left:10px; top: 6px; z-index: 999;">
+	                                	<label for="detailReply">
+		                                	<i class="fa-solid fa-satellite-dish fa-lg"></i>
+	                                	</label>
+	                                </span>
 	                                <div class="input-group">
-	                                    <input type="text" class="form-control" v-model="replyContent" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter(0)">
+	                                    <input id="detailReply" type="text" class="form-control" v-model="replyContent" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter(0)">
 	                                    <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="replyEnter(0)">작성</button>
 	                                  </div>
 	                            </div>
@@ -413,6 +516,8 @@
                             boardDetail:null,
                             boardDetailReply:[],
                             boardDetailIndex:"",
+                            detailViewType:"",
+                            detailViewIndex:"",
                             
                             //댓글용 변수
                             replyContent:"",
@@ -508,7 +613,9 @@
                         		});
                         	},
                         	// 상세보기 모달창 작동 함수
-                        	detailViewOn(){
+                        	detailViewOn(type,index){
+                        		this.detailViewType = type;
+                        		this.detailViewIndex = index;
                                 if(!this.detailView){
                                 	this.replyContent="";
                                     this.detailView=true
@@ -521,6 +628,8 @@
                                 else{
                                     this.detailView = false;
                                     this.animation = false;
+                                    this.detailViewType = "";
+                            		this.detailViewIndex = "";
                                     this.superNo = 0;
                                     this.replyTarget = "";
                                     $('html, body').css({'overflow': 'auto', 'height': '100%'});
@@ -642,6 +751,7 @@
                             		
                             	});
                             },
+                            //댓글입력 프로미스패턴
                             async promise(index){
                             	const boardNo = this.boardList[index].boardListVO.boardNo;
                             	await this.replyEnter(boardNo);
@@ -656,21 +766,38 @@
                             	await this.detailViewOn();
                             },
                             
+                            //광고 카운트용 비동기요청
+                           adCountFunc:_.debounce(function(){
+                            	axios({
+                            		url:"${pageContext.request.contextPath}/rest/board_ad/ad_count",
+                            		method:"Post",
+                            		params:{
+                            			boardAdNo:this.adList[this.pageCount-2].boardListVO.boardNo,
+                            		}
+                            	})
+                            	.then(resp=>{
+                            		console.log("광고 카운트 끝");
+                            	});
+                            }, 250)
+                            
                     },
                     watch:{
                     	
                     },
                     beforeCreate(){},
                     created(){
+                    	
                     	//첫 화면 로딩시 게시물 3개 로드
-                    	axios({
+                		axios({
                     		url: "${pageContext.request.contextPath}/rest/board/main?pageCount=" + this.pageCount +"&uptoNo="+this.uptoNo,
                     		method: "get"
                     	})
                     	.then(resp=>{
+                    		if(resp.data.length != 0){
                     		this.boardList.push(...resp.data);
                     		this.pageCount++;
                     		this.uptoNo = this.boardList[0].boardListVO.boardNo;
+                    		}
                     	});
                     	
                     	//첫 화면 추천친구 목록 조회
@@ -701,11 +828,33 @@
                     		  //console.log("값 = " + bottom);
                     		  if(scrT > bottom){
                     			  this.loading();
+                    			  this.adCountFunc();  
                     		  }
-                    	});
+                    	})
+                    	
+                		
                     },
                     beforeUpdate(){},
-                    updated(){},
+                    updated(){
+                    	console.log("몇번 실행될까");
+                    	console.log($(".textHide").width());
+                    	$(".textHide").each(function(){
+                    		if($(this).width()>200||$(this).height()>20){
+	                    		$(this).parent("p").next("a").addClass("moreText");
+                    		}
+                    	});
+                    	$(".moreText").unbind("click");
+                    	$(".moreText").click(function(){
+                    		console.log("실행횟수");
+                    		if($(this).prev("p").hasClass("moreContent")){
+                    			$(this).prev("p").removeClass("moreContent");
+                    		}else{
+	                    		$(this).prev("p").addClass("moreContent");
+                    		}
+                    		
+                    	});
+                    	
+                    },
                 });
                 app.mount("#app");
             </script>

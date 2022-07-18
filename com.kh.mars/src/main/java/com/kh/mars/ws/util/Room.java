@@ -27,4 +27,13 @@ public class Room {
 				user.send(message);
 			}
 		}
+		
+		public boolean isExist(int targetNo) {
+			for(User user : users) {
+				if(user.isExist(targetNo)) {
+					return true;
+				}
+			}
+			return false;
+		}
 }

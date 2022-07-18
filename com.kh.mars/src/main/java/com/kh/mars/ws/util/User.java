@@ -42,4 +42,8 @@ public class User {
 	public void send(TextMessage message) throws IOException {
 		webSocketSession.sendMessage(message);
 	}
+	//상대방이 방에 존재하는지 검사
+	public boolean isExist(int targetNo) {
+		return this.memberNo == targetNo;
+	}
 }

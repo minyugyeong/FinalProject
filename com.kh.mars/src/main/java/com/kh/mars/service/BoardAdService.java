@@ -13,4 +13,7 @@ public interface BoardAdService {
 	
 	void delete(int boardAdNo);
 
+	void boardAdCount(int memberNo, int boardAdNo);
+	
+	void boardAdCheckReset();
 }
