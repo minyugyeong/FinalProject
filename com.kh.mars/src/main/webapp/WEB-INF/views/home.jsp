@@ -122,6 +122,8 @@
 		}
 		.childReply{
 		padding-left: 25px;
+		}
+		.childShow{
 		display: none;
 		}
 </style>
@@ -416,7 +418,7 @@
 	                                	</label>
 	                                </div>
 	                                
-	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" :class="{'childReply':reply.superNo>0}" style="position:relative;">
+	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" :class="{'childReply':reply.superNo!=0,'childShow':reply.superNo>0}" style="position:relative;">
 	                                	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+reply.replyMemberNo" style="text-decoration:none;color:black;position:relative;">
 			                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -431,7 +433,7 @@
 	                                		<a v-if="reply.superNo < 1" @click="re_reply(reply.replyNo)">답글달기</a>&nbsp;
 											<i v-if="reply.replyMemberNo == ${memberDto.memberNo}" class="fa-solid fa-xmark" style="display:none;z-index:100;" data-bs-toggle="modal" data-bs-target="#exampleModal" @click.stop="targetInput(reply.replyNo)"></i>
 										<p>
-										<span v-if="reply.superNo < 1" @click="showReply(reply.replyNo)" style="padding-left:3.1em;font-size:0.85em;color:grey;">{{replyStatus}}</span>
+										<span v-if="reply.superNo < 1" @click="showReply(reply.replyNo,index)" style="padding-left:3.1em;font-size:0.85em;color:grey;">{{replyStatus}}</span>
 	                                </div>
 	                                
 	                            </div>
@@ -765,11 +767,46 @@
                            	document.getElementById('detailReply').focus();
                            },
                            
-                           showReply(replyNo){
-                        	  if(this.replyNo==this.superNo){
-                        		  display : block;
-                        	  }
+                           showReply(replyNo,index){
                         	   
+                        	  console.log(replyNo +":::"+ index);
+                        	  
+                        	  let arrayIndex = [];
+                        	  let tmp = index+1;
+                        	  if(index!=this.boardDetailReply.length){
+                        		  console.log(index +":::"+this.boardDetailReply.length);
+	                        	  while(true){
+	                        		  if(this.boardDetailReply[tmp].superNo==replyNo){
+	                        			  console.log(tmp);
+	                        			  arrayIndex.push(tmp);
+	                        			  tmp++;
+	                        		  }else if(this.boardDetailReply[tmp].superNo==-1||this.boardDetailReply[tmp].superNo==0) break;
+	                        	  }
+	                        	  if(arrayIndex.length > 1){
+		                        	  for(var i = 0; i<arrayIndex.length; i++){
+		                        		  this.boardDetailReply[arrayIndex[i]].superNo = -1;
+		                        	  }
+		                        	 return;
+	                        	  }
+	                        	  
+	                        	  while(true){
+	                        		  if(this.boardDetailReply[tmp].superNo==-1){
+	                        			  console.log(tmp);
+	                        			  arrayIndex.push(tmp);
+	                        			  tmp++;
+	                        		  }else if(this.boardDetailReply[tmp]==null||this.boardDetailReply[tmp].superNo==0) break;
+	                        	  }
+	                        	  
+	                        	  for(var i = 0; i<arrayIndex.length; i++){
+	                        		  this.boardDetailReply[arrayIndex[i]].superNo = replyNo;
+	                        	  }
+	                        	  
+	                        	  
+                        	  }
+	
+                        	  
+                        	  
+                        	  console.log(arrayIndex);
                            },
                            
                            
