@@ -114,7 +114,11 @@
                 		</c:if>
                 		
                 		<c:if test="${!isOwner }">
-                		<a href="#" class="btn">메세지 보내기</a>
+                		<a href="${pageContext.request.contextPath }/dm?targetNo=${memberDto.memberNo }" class="btn">메세지 보내기</a>
+                		</c:if>
+                		
+                		<c:if test="${isOwner }">
+                		<a href="${pageContext.request.contextPath }/dm?targetNo=${memberDto.memberNo }" class="btn">나에게 쓰기</a>
                 		</c:if>
                 		
                     </div>
@@ -202,9 +206,9 @@
         
                
 		
-				 <button v-if="f.followConfirm == null" class="btn float-right" @click="followingInList(f.memberNo)">팔로우 {{f.followConfirm}}</button>
-	             <button v-if="f.followConfirm == 1" class="btn float-right" @click="followingInList(f.memberNo)">언팔로우 {{f.followConfirm}}</button>
-	             <button v-if="f.followConfirm == 0" class="btn float-right" @click="followingInList(f.memberNo)">팔로우 요청됨 {{f.followConfirm}}</button>
+				 <button v-if="f.followConfirm == null && f.memberNo != ${login }" class="btn" @click="followingInList(f.memberNo)"  style="float: right;">팔로우</button>
+	             <button v-if="f.followConfirm == 1 && f.memberNo != ${login }" class="btn" @click="followingInList(f.memberNo)"  style="float: right;">언팔로우</button>
+	             <button v-if="f.followConfirm == 0 && f.memberNo != ${login }" class="btn" @click="followingInList(f.memberNo)"  style="float: right;">팔로우 요청됨</button>
                     
             </p>
         </div>
@@ -226,10 +230,9 @@
               <img :src="'${pageContext.request.contextPath }/file/download/'+ fm.attachNo" width="25" style="border-radius: 70%;">
              <a :href="'${pageContext.request.contextPath }/member/page?memberNo='+fm.memberNo">{{fm.memberNick}}</a>
              
-	             
-	             <button v-if="fm.followConfirm== null" class="btn" @click="followingInList(fm.memberNo)">팔로우 {{fm.followConfirm}}</button>
-	             <button v-if="fm.followConfirm== 1" class="btn" @click="followingInList(fm.memberNo)">언팔로우 {{fm.followConfirm}}</button>
-	             <button v-if="fm.followConfirm== 0" class="btn" @click="followingInList(fm.memberNo)">팔로우 요청됨 {{fm.followConfirm}}</button>
+	             <button v-if="fm.followConfirm== null && fm.memberNo != ${login }" class="btn" @click="followingInList(fm.memberNo)"  style="float: right;">팔로우</button>
+	             <button v-if="fm.followConfirm== 1 && fm.memberNo != ${login }" class="btn" @click="followingInList(fm.memberNo)"  style="float: right;">언팔로우</button>
+	             <button v-if="fm.followConfirm== 0 && fm.memberNo != ${login }" class="btn" @click="followingInList(fm.memberNo)"  style="float: right;">팔로우 요청됨</button>
 	             
 	             
           </p>
@@ -561,7 +564,7 @@
                 		this.pageBoardList.push(...resp.data);
                 		this.pageCount++;
                 	});
-                }),
+                }, 250),
                 
              // 상세보기 모달창 작동 함수
             	detailViewOn(){

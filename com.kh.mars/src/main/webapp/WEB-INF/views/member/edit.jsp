@@ -3,8 +3,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-<div class="container-fluid">
+<style>
+form{display:inline}
+</style>
 
+<div class="container-fluid">
 	<!-- 개인 계정으로 전환하는 모달 -->
 		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
@@ -86,19 +89,19 @@
 					
 					
 					
-					<div>
+					<div class="text-center">
 						<img src="${pageContext.request.contextPath}${profileUrl}"
 		 				width = "150" style="border-radius: 70%;">
 	 				</div>
-					${memberDto.memberNick }
-					<form action="profile" method="post" id="profileEditBtn" enctype="multipart/form-data">
+					
+					<form action="profile" method="post" id="profileEditBtn" enctype="multipart/form-data" style="display: grid;" class="mb-2">
 						<label class="btn" for="memberProfile">프로필 사진 바꾸기</label>
 						<input type="file" id="memberProfile" name="memberProfile" class="form-input fill input-round" accept=".jpg, .png" style="display:none;">
-						<div class="col-6">
+						
 						<button type="submit"  class="btn btn-primary mt-3">변경</button>
-						</div>
+						
 					</form>
-					<form action="deleteProfile" method="post">
+					<form action="deleteProfile" method="post" style="display: grid;">
 					
 						<c:if test="${attachNo != 0 }"><button type="submit" class="btn btn-danger">삭제</button></c:if>
 					
@@ -129,7 +132,7 @@
                     <label for="inputmemberIntroduce" id="intro" class="col-sm-5 col-form-label">소개</label>
                     <div class="col-7">
                     	<textarea name="memberIntroduce" id="introduce" class="form-control">${memberDto.memberIntroduce }</textarea>
-                    <div id="cnt">(0/1000)</div>
+                    <div id="cnt">(${memberDto.memberIntroduce.length() }/1000)</div>
                     </div>
                 </div>
 

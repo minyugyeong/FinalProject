@@ -359,6 +359,9 @@ public class MemberController {
 		int memberNo = (Integer)session.getAttribute("login");
 		
 		memberService.professional(memberNo, memberInterest);
+		MemberDto memberDto = memberDao.info(memberNo);
+		session.removeAttribute("auth");
+		session.setAttribute("auth", memberDto.getMemberGrade());
 		
 		return "redirect:edit";
 		
@@ -369,6 +372,9 @@ public class MemberController {
 		int memberNo = (Integer)session.getAttribute("login");
 		
 		memberDao.personal(memberNo);
+		MemberDto memberDto = memberDao.info(memberNo);
+		session.removeAttribute("auth");
+		session.setAttribute("auth", memberDto.getMemberGrade());
 		
 		return "redirect:edit";
 	}
