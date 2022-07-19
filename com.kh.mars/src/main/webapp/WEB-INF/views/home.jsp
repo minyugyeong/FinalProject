@@ -121,7 +121,7 @@
 		    text-overflow: inherit!important;
 		}
 		.childReply{
-		padding-left: 25px;
+		padding-left: 35px;
 		}
 		.childShow{
 		display: none;
@@ -761,20 +761,23 @@
                             		console.log("광고 카운트 끝");
                             	});
                             }, 250),
+                            //답글
                             re_reply(replyNo){
                            	this.superNo=replyNo;
                            	this.replyPlaceholder = "답글 입력"
                            	document.getElementById('detailReply').focus();
+                           	
                            },
                            
-                           showReply(replyNo,index){
+                           //답글 펼치기
+                          showReply(replyNo,index){
                         	   
-                        	  console.log(replyNo +":::"+ index);
                         	  
+                        	   this.replyStatus = "답글 숨기기"
                         	  let arrayIndex = [];
                         	  let tmp = index+1;
                         	  if(index!=this.boardDetailReply.length){
-                        		  console.log(index +":::"+this.boardDetailReply.length);
+                        		  
 	                        	  while(true){
 	                        		  if(this.boardDetailReply[tmp].superNo==replyNo){
 	                        			  console.log(tmp);
@@ -794,6 +797,7 @@
 	                        			  console.log(tmp);
 	                        			  arrayIndex.push(tmp);
 	                        			  tmp++;
+	                        			  this.replyStatus = "답글 보기"
 	                        		  }else if(this.boardDetailReply[tmp]==null||this.boardDetailReply[tmp].superNo==0) break;
 	                        	  }
 	                        	  
