@@ -556,7 +556,7 @@
                 		this.pageBoardList.push(...resp.data);
                 		this.pageCount++;
                 	});
-                }),
+                }, 250),
                 
              // 상세보기 모달창 작동 함수
             	detailViewOn(){

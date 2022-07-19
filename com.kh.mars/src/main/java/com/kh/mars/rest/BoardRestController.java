@@ -69,7 +69,7 @@ public class BoardRestController {
 		return boardDao.detailReply(memberNo, boardNo);
 	}
 	
-	@GetMapping("board_like")
+	@GetMapping("/board_like")
 	public List<BoardLikeListVO> boardLikeList(
 			@RequestParam int boardNo,
 			HttpSession session){
