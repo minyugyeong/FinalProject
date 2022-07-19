@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kh.mars.repository.BoardAdLikeDao;
 import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.BoardLikeDao;
 import com.kh.mars.service.BoardLikeService;
@@ -37,6 +38,8 @@ public class BoardRestController {
 	private BoardLikeService boardLikeService;
 	@Autowired
 	private BoardLikeDao boardLikeDao;
+	@Autowired
+	private BoardAdLikeDao boardAdLikeDao;
 	
 	@GetMapping("/main")
 	public List<BoardMainListVO> mainList(
@@ -76,6 +79,15 @@ public class BoardRestController {
 		int memberNo = (Integer)session.getAttribute("login");
 		return boardLikeDao.boardLikeList(memberNo, boardNo);
 	}
+	
+	@GetMapping("/board_ad_like")
+	public List<BoardLikeListVO> adBoardLikeList(
+			@RequestParam int boardNo,
+			HttpSession session){
+		int memberNo = (Integer)session.getAttribute("login");
+		return boardAdLikeDao.boardAdLikeList(memberNo,boardNo);
+	}
+	
 	
 }
 

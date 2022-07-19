@@ -37,5 +37,17 @@
 	<delete id="cancel" parameterType="map">
 		delete board_ad_like where member_no = #{memberNo} and board_ad_no = #{boardNo}	
 	</delete>
+	
+	<select id="boardAdLikeList" resultType="BoardLikeListVO" parameterType="Map">
+		SELECT m.member_no,m.member_nick,mp.attach_no from(
+		SELECT m.* FROM board_ad_like bal
+					INNER JOIN MEMBER m ON m.member_no = bal.MEMBER_NO
+					WHERE board_ad_no = #{boardNo}
+		MINUS
+		SELECT m.* FROM block b
+					INNER JOIN MEMBER m on b.member_no = m.member_no
+					WHERE block_no = #{memberNo})m
+					LEFT OUTER JOIN member_profile mp ON m.member_no = mp.member_no
+	</select>
 
  </mapper> 

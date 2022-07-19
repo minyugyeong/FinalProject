@@ -270,7 +270,7 @@
                                         <i class="fa-regular fa-newspaper fa-lg"></i>
 
                                     </p>
-                                    <p class="card-text" v-if="adList[((index+1)/3)-1].boardListVO.likecount > 0">
+                                    <p class="card-text" v-if="adList[((index+1)/3)-1].boardListVO.likecount > 0" data-bs-toggle="modal" data-bs-target="#adBoardLikeList" @click="boardAdLikeList(adList[((index+1)/3)-1].boardListVO.boardNo)">
                                         좋아요 {{adList[((index+1)/3)-1].boardListVO.likecount}}개
                                     </p>
                                     <p class="card-text" style="font-weight:900;">
@@ -493,6 +493,24 @@
 				    </div>
 				  </div>
 				</div>
+				
+				<!-- 광고 게시글 좋아요 리스트 Modal -->
+				<div class="modal fade" id="adBoardLikeList" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="exampleModalLabel">좋아요</h5>
+				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				      </div>
+				      <div class="modal-body">
+				       <p v-for="(ball,index) in boardAdLike" v:bind:key="index">
+				       		<img :src="'${pageContext.request.contextPath }/file/download/'+ ball.attachNo" width="25" style="border-radius: 70%;">
+				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+ball.memberNo">{{ball.memberNick}}</a>
+				       </p>
+				      </div>
+				    </div>
+				  </div>
+				</div>
 				                
                 
             </div>
@@ -532,6 +550,9 @@
 							
 							//일반 게시글 좋아요 목록 변수
                             boardLike: [],
+                            
+                            //광고 게시글 좋아요 목록 변수
+                            boardAdLike: [],
                             
                         };
                     },
@@ -793,6 +814,20 @@
                         		   this.boardLike=resp.data;
                         	   });
                            },
+                           
+                           //광고 게시글 좋아요 목록
+                           boardAdLikeList(boardNo){
+                        	   axios({
+                        		   url : "${pageContext.request.contextPath}/rest/board/board_ad_like",
+                        		   method: "get",
+                        		   params :{
+                        			   boardNo : boardNo
+                        		   }
+                        	   })
+                        	   .then(resp=>{
+                        		  this.boardAdLike=resp.data; 
+                        	   });
+                           }
                             
                             
                     },
