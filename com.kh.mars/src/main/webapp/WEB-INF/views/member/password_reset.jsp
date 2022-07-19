@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <form action="password_reset" method="post">
 <div class="container-fluid " style="width:60%!important;">
@@ -15,6 +15,11 @@
                 <input type="email" class="form-control member-email" id="floatingInput" placeholder="name@example.com" name="memberEmail">
                 <label for="floatingInput">이메일 주소</label>
             </div>
+            <c:if test="${param.error != null}">
+            <div class="row text-center">
+            	<h5 style="color:red;">이메일 정보가 잘못되었습니다.</h5>
+            </div>
+            </c:if>
             <div class="text-center">
             <button type="submit" class="btn btn-primary">로그인 링크 보내기</button>
             </div>

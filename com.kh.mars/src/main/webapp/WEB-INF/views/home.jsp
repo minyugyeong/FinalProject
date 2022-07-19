@@ -483,7 +483,7 @@
 				      </div>
 				      <div class="modal-body">
 				        <p v-for="(bll, index) in boardLike" v:bind:key="index">
-				        	<img :src="'${pageContext.request.contextPath }/file/download/'+ bll.attachNo" width="25" style="border-radius: 70%;">
+				        	<img :src="'${pageContext.request.contextPath }/file/download/'+ bll.attachNo" width="30" height="30" style="border-radius: 70%;">
 				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+bll.memberNo">{{bll.memberNick}}</a>
 				        </p>
 				      </div>
@@ -501,7 +501,7 @@
 				      </div>
 				      <div class="modal-body">
 				       <p v-for="(ball,index) in boardAdLike" v:bind:key="index">
-				       		<img :src="'${pageContext.request.contextPath }/file/download/'+ ball.attachNo" width="25" style="border-radius: 70%;">
+				       		<img :src="'${pageContext.request.contextPath }/file/download/'+ ball.attachNo" width="30" height="30" style="border-radius: 70%;">
 				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+ball.memberNo">{{ball.memberNick}}</a>
 				       </p>
 				      </div>

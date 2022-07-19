@@ -77,9 +77,9 @@
     <!-- 화면 영역 -->
     <!-- Button trigger modal -->
     <div class="row">
-            <div class="col-4">
+            <div class="col-4 text-center">
                 <img style="border-radius: 70%;" src="${pageContext.request.contextPath}${profileUrl}"
- 				width = "150">
+ 				width = "150" height="150">
             </div>
             <div class="col-8">
                 <div class="row">
@@ -122,17 +122,22 @@
                 		</c:if>
                 		
                     </div>
-                    <c:if test="${!isOwner }">
+                    
+                    
                     <div class="col-4">
                     	
+                    	<c:if test="${!isOwner }">
                     	<button class="btn" v-if="block == false" @click="blockMember(${memberDto.memberNo })">차단하기</button>
                     	
-                    	
-                    	
                     	<button class="btn" v-if="block == true" @click="blockMember(${memberDto.memberNo })">차단해제</button>
+                    	</c:if>
+                    	
+                    	<c:if test="${isOwner }">
+                    	<a class="btn" href="${pageContext.request.contextPath }/member/logout">로그아웃</a>
+                    	</c:if>
                     	
                     </div>
-                    </c:if>
+                    
                 </div>
                 <div class="row">
                     <div class="col-4 mt-3">
@@ -201,14 +206,14 @@
         <div class="modal-body">
             <p v-for="(f,index) in follow" v-bind:key="index">
             	
-                <img :src="'${pageContext.request.contextPath }/file/download/'+ f.attachNo" width="25" style="border-radius: 70%;">
+                <img :src="'${pageContext.request.contextPath }/file/download/'+ f.attachNo" width="30" height="30" style="border-radius: 70%;">
                 <a :href="'${pageContext.request.contextPath }/member/page?memberNo='+f.memberNo">{{f.memberNick}}</a>
         
                
 		
-				 <button v-if="f.followConfirm == null && f.memberNo != ${login }" class="btn" @click="followingInList(f.memberNo)"  style="float: right;">팔로우</button>
-	             <button v-if="f.followConfirm == 1 && f.memberNo != ${login }" class="btn" @click="followingInList(f.memberNo)"  style="float: right;">언팔로우</button>
-	             <button v-if="f.followConfirm == 0 && f.memberNo != ${login }" class="btn" @click="followingInList(f.memberNo)"  style="float: right;">팔로우 요청됨</button>
+				 <button v-if="f.followConfirm == null && f.memberNo != ${login }" class="btn btn-primary" @click="followingInList(f.memberNo)"  style="float: right; width:125px;">팔로우</button>
+	             <button v-if="f.followConfirm == 1 && f.memberNo != ${login }" class="btn btn-danger" @click="followingInList(f.memberNo)"  style="float: right; width:125px;">언팔로우</button>
+	             <button v-if="f.followConfirm == 0 && f.memberNo != ${login }" class="btn btn-secondary" @click="followingInList(f.memberNo)"  style="float: right; width:125px;">팔로우 요청됨</button>
                     
             </p>
         </div>
@@ -227,13 +232,12 @@
         </div>
         <div class="modal-body">
           <p v-for="(fm,index) in follower" v-bind:key="index">
-              <img :src="'${pageContext.request.contextPath }/file/download/'+ fm.attachNo" width="25" style="border-radius: 70%;">
+              <img :src="'${pageContext.request.contextPath }/file/download/'+ fm.attachNo" width="30" height="30" style="border-radius: 70%;">
              <a :href="'${pageContext.request.contextPath }/member/page?memberNo='+fm.memberNo">{{fm.memberNick}}</a>
              
-	             <button v-if="fm.followConfirm== null && fm.memberNo != ${login }" class="btn" @click="followingInList(fm.memberNo)"  style="float: right;">팔로우</button>
-	             <button v-if="fm.followConfirm== 1 && fm.memberNo != ${login }" class="btn" @click="followingInList(fm.memberNo)"  style="float: right;">언팔로우</button>
-	             <button v-if="fm.followConfirm== 0 && fm.memberNo != ${login }" class="btn" @click="followingInList(fm.memberNo)"  style="float: right;">팔로우 요청됨</button>
-	             
+	             <button v-if="fm.followConfirm== null && fm.memberNo != ${login }" class="btn btn-primary" @click="followingInList(fm.memberNo)"  style="float: right; width:125px;">팔로우</button>
+	             <button v-if="fm.followConfirm== 1 && fm.memberNo != ${login }" class="btn btn-danger" @click="followingInList(fm.memberNo)"  style="float: right; width:125px;">언팔로우</button>
+	             <button v-if="fm.followConfirm== 0 && fm.memberNo != ${login }" class="btn btn-secondary" @click="followingInList(fm.memberNo)"  style="float: right; width:125px;">팔로우 요청됨</button>
 	             
           </p>
         </div>
@@ -372,9 +376,6 @@
 
 </div> 
     <!-- vue js도 lazy loading을 사용한다 -->
-    <script src="https://unpkg.com/vue@next"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script>
     
     $(document).ready(function(){

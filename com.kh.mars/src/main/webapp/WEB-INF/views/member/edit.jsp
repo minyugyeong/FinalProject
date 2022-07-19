@@ -91,7 +91,7 @@ form{display:inline}
 					
 					<div class="text-center">
 						<img src="${pageContext.request.contextPath}${profileUrl}"
-		 				width = "150" style="border-radius: 70%;">
+		 				width = "150" height="150" style="border-radius: 70%;">
 	 				</div>
 					
 					<form action="profile" method="post" id="profileEditBtn" enctype="multipart/form-data" style="display: grid;" class="mb-2">
