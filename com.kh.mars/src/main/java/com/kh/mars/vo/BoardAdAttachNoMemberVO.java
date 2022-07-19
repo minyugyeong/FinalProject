@@ -33,5 +33,7 @@ public class BoardAdAttachNoMemberVO {
 	private String memberGrade;
 	private String memberInterest;
 	private String memberName;
+	
+	
 
 }

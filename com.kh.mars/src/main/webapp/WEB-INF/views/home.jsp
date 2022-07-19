@@ -4,46 +4,38 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <style>
 		
-
         .follow-recomand{
             position: fixed;
             top: 100px;
             left: calc(100% - 800px);
         }
-
         .main-feed{
             position:absolute; 
             left: calc(100% - 1400px);
         }
-
         @media screen and (max-width: 1500px) {
             .follow-recomand{
            
             left: calc(100% - 600px);
             }
-
             .main-feed{
                 left: calc(100% - 1200px);
             }
         }
-
         @media screen and (max-width: 1300px) {
             .follow-recomand{
            
             left: calc(100% - 400px);
             }
-
             .main-feed{
                 left: calc(100% - 1000px);
             }
         }
-
         @media screen and (max-width: 1000px) {
             .follow-recomand{
                 display: none;
             
             }
-
             .main-feed{
                 left: 0;
             }
@@ -62,14 +54,11 @@
             right: 0;
             bottom: 0;
             background-color: rgba(0, 0, 0, 0.1);
-
             display: none;
         }
-
         .fullscreen.active{
             display: block;
         }
-
         .fullscreen > .center-position{
             position: absolute;
             left: 50%;
@@ -78,7 +67,6 @@
             transform: translate(-50%, -50%);
         }
         
-
         .beforeanimation{
             transform: scale(1.1);
         }
@@ -131,6 +119,12 @@
 		    width: auto!important;
 		    white-space: normal!important;
 		    text-overflow: inherit!important;
+		}
+		.childReply{
+		padding-left: 35px;
+		}
+		.childShow{
+		display: none;
 		}
 </style>
 
@@ -423,7 +417,8 @@
 	                                	첫 번째 댓글을 남겨주세요.
 	                                	</label>
 	                                </div>
-	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" style="position:relative;">
+	                                
+	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" :class="{'childReply':reply.superNo!=0,'childShow':reply.superNo>0}" style="position:relative;">
 	                                	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+reply.replyMemberNo" style="text-decoration:none;color:black;position:relative;">
 			                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -435,10 +430,12 @@
 			                                {{reply.replyContent}}
 	                                	</p>
 	                                	<p style="padding-left:3.1em;font-size:0.85em;color:grey;">
-	                                		<a>답글</a>&nbsp;
+	                                		<a v-if="reply.superNo < 1" @click="re_reply(reply.replyNo)">답글달기</a>&nbsp;
 											<i v-if="reply.replyMemberNo == ${memberDto.memberNo}" class="fa-solid fa-xmark" style="display:none;z-index:100;" data-bs-toggle="modal" data-bs-target="#exampleModal" @click.stop="targetInput(reply.replyNo)"></i>
 										<p>
+										<span v-if="reply.superNo < 1" @click="showReply(reply.replyNo,index)" style="padding-left:3.1em;font-size:0.85em;color:grey;">{{replyStatus}}</span>
 	                                </div>
+	                                
 	                            </div>
 	                            <div class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
 	                                <span style="position: absolute; left:10px; top: 6px; z-index: 999;">
@@ -447,7 +444,7 @@
 	                                	</label>
 	                                </span>
 	                                <div class="input-group">
-	                                    <input id="detailReply" type="text" class="form-control" v-model="replyContent" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter(0)">
+	                                    <input id="detailReply" type="text" class="form-control" v-model="replyContent" v-bind:placeholder="replyPlaceholder" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter(0)">
 	                                    <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="replyEnter(0)">작성</button>
 	                                  </div>
 	                            </div>
@@ -540,6 +537,9 @@
                             replyContent:"",
                             superNo:0,
                             replyTarget:"",
+                            replyPlaceholder:"댓글 입력",
+                            replyStatus:"답글 보기",
+                           
                             
 							//광고 게시글용 변수 5개씩 랜덤을 불러올 예정
 							adList:[{
@@ -800,6 +800,57 @@
                             		console.log("광고 카운트 끝");
                             	});
                             }, 250),
+                            //답글
+                            re_reply(replyNo){
+                           	this.superNo=replyNo;
+                           	this.replyPlaceholder = "답글 입력"
+                           	document.getElementById('detailReply').focus();
+                           	
+                           },
+                           
+                           //답글 펼치기
+                          showReply(replyNo,index){
+                        	   
+                        	  
+                        	   this.replyStatus = "답글 숨기기"
+                        	  let arrayIndex = [];
+                        	  let tmp = index+1;
+                        	  if(index!=this.boardDetailReply.length){
+                        		  
+	                        	  while(true){
+	                        		  if(this.boardDetailReply[tmp].superNo==replyNo){
+	                        			  console.log(tmp);
+	                        			  arrayIndex.push(tmp);
+	                        			  tmp++;
+	                        		  }else if(this.boardDetailReply[tmp].superNo==-1||this.boardDetailReply[tmp].superNo==0) break;
+	                        	  }
+	                        	  if(arrayIndex.length > 1){
+		                        	  for(var i = 0; i<arrayIndex.length; i++){
+		                        		  this.boardDetailReply[arrayIndex[i]].superNo = -1;
+		                        	  }
+		                        	 return;
+	                        	  }
+	                        	  
+	                        	  while(true){
+	                        		  if(this.boardDetailReply[tmp].superNo==-1){
+	                        			  console.log(tmp);
+	                        			  arrayIndex.push(tmp);
+	                        			  tmp++;
+	                        			  this.replyStatus = "답글 보기"
+	                        		  }else if(this.boardDetailReply[tmp]==null||this.boardDetailReply[tmp].superNo==0) break;
+	                        	  }
+	                        	  
+	                        	  for(var i = 0; i<arrayIndex.length; i++){
+	                        		  this.boardDetailReply[arrayIndex[i]].superNo = replyNo;
+	                        	  }
+	                        	  
+	                        	  
+                        	  }
+	
+                        	  
+                        	  
+                        	  console.log(arrayIndex);
+                           },
                             
                             //일반 게시글 좋아요 목록
                             boardLikeList(boardNo){

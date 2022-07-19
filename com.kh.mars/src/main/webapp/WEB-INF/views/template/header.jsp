@@ -115,11 +115,26 @@
                                     <i class="fa-solid fa-walkie-talkie fa-lg"></i>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/board/insert">
-                                    <i class="fa-solid fa-square-plus fa-lg"></i>
-                                </a>
-                            </li>
+                            <c:choose>
+                            	<c:when test="${sessionScope.auth == '일반회원'}">
+		                            <li class="nav-item">
+	                                <a class="nav-link" href="${pageContext.request.contextPath}/board/insert">
+	                                  <i class="fa-solid fa-square-plus fa-lg"></i>
+	                                </a>
+		                            </li>
+	                            </c:when>
+	                            <c:when test="${sessionScope.auth != '일반회원'}">
+		                            <li class="nav-item dropdown">
+															    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+															    	 <i class="fa-solid fa-square-plus fa-lg"></i>
+															    </a>
+															    <div class="dropdown-menu" style="">
+															      <a class="dropdown-item" href="${pageContext.request.contextPath}/board/insert">일반 게시물</a>
+															      <a class="dropdown-item" href="${pageContext.request.contextPath}/boardAd/insert">광고 게시물</a>
+															    </div>
+															  </li>
+	                            </c:when>
+                            </c:choose>
                             <li class="nav-item" style="position: relative;">
                                 <a class="nav-link" style="cursor: pointer;" @click.stop="noticeOn(),loadAlram()">
                                     <i class="fa-solid fa-rocket fa-lg"></i>
@@ -145,16 +160,19 @@
                                     <i class="fa-solid fa-user-astronaut fa-lg"></i>
                                 </a>
                             </li>
-                            <li class="nav-item dropdown">
-													    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-													    	 <i class="fa-solid fa-screwdriver-wrench"></i>
-													    </a>
-													    <div class="dropdown-menu" style="">
-													      <a class="dropdown-item" href="${pageContext.request.contextPath}/member/list/">회원 관리</a>
-													      <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/ad">광고 관리</a>
-													      <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/status">통계</a>
-													    </div>
-													  </li>
+                            <c:if test="${auth == '관리자'}">
+	                            <li class="nav-item dropdown">
+														    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+														    	 <i class="fa-solid fa-screwdriver-wrench"></i>
+														    </a>
+														    <div class="dropdown-menu" style="">
+														      <a class="dropdown-item" href="${pageContext.request.contextPath}/member/list/">회원 관리</a>
+														      <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/ad">광고 관리</a>
+														      <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/boardAdList">광고 신청 관리</a>
+														      <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/status">통계</a>
+														    </div>
+														  </li>
+													  </c:if>
                             
                         </ul>
             </div>
