@@ -90,6 +90,19 @@
 	 		
 	 		<ref bean="memberLoginInterceptor"/>
 	 	</mvc:interceptor>
+	 	
+	 	<!-- 관리자 -->
+	 	<mvc:interceptor>
+	 		
+	 		<mvc:mapping path="/member/list/**"/>
+	 		<mvc:mapping path="/admin/ad/**"/>
+	 		<mvc:mapping path="/admin/boardAdList/**"/>
+	 		<mvc:mapping path="/admin/status/**"/>
+	 		
+	 		<ref bean="adminPageInterceptor"/>
+	 		
+	 	</mvc:interceptor>
+	 	
 	 </mvc:interceptors>
 	
 	<!-- 

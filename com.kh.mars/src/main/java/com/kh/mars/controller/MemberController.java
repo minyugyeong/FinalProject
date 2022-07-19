@@ -91,7 +91,6 @@ public class MemberController {
 			@RequestParam String memberPassword,
 			HttpSession session) {
 		MemberDto memberDto = memberDao.login(memberEmail, memberPassword);
-		
 		if(memberDto != null) {//로그인 성공
 			session.setAttribute("login", memberDto.getMemberNo());
 			session.setAttribute("auth", memberDto.getMemberGrade());

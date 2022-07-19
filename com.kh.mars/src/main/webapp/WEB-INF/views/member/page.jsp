@@ -73,6 +73,7 @@
 
 <!-- 특정 영역을 생성하여 이 부분만 vue로 제어한다 -->
     <div id="app" class="container-fluid" style="width:70%!important;">
+    
     <!-- 화면 영역 -->
     <!-- Button trigger modal -->
     <div class="row">
@@ -83,7 +84,14 @@
             <div class="col-8">
                 <div class="row">
                     <div class="col-4">
-                        <h2>${memberDto.memberNick }</h2>
+                    	<c:choose>
+                    		<c:when test="${memberDto.memberGrade == '비즈니스회원' && isOwner }">
+                        	<h2><a style="text-decoration-line: none;" href="${pageContext.request.contextPath}/member/ad?memberNo=${memberDto.memberNo}">${memberDto.memberNick}</a></h2>
+                        </c:when>
+                        <c:otherwise>
+                        	<h2>${memberDto.memberNick}</h2>
+                        </c:otherwise>
+                       </c:choose>
                     </div>
                     <div class="col-4">
                     	<c:if test="${isOwner }">
