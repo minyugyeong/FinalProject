@@ -24,18 +24,30 @@
  <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- <mapper namespace="boardAdLike">
+ <mapper namespace="boardLike">
 
-	<select id="one" resultType="BoardAdLikeDto" parameterType="map">
-		select * from board_ad_like where member_no = #{memberNo} and board_ad_no = #{boardNo}
+	<select id="one" resultType="BoardLikeDto" parameterType="map">
+		select * from board_like where member_no = #{memberNo} and board_no = #{boardNo}
 	</select>
 	
 	<update id="like" parameterType="map">
-		insert into board_ad_like(member_no, board_ad_no) values(#{memberNo}, #{boardNo})	
+		insert into board_like(member_no, board_no) values(#{memberNo}, #{boardNo})	
 	</update>
 	
 	<delete id="cancel" parameterType="map">
-		delete board_ad_like where member_no = #{memberNo} and board_ad_no = #{boardNo}	
+		delete board_like where member_no = #{memberNo} and board_no = #{boardNo}	
 	</delete>
+	
+	<select id="boardLikeList" resultType="BoardLikeListVO" parameterType="Map">
+		SELECT m.member_no,m.member_nick,mp.ATTACH_NO  FROM (
+		SELECT m.* FROM board_like bl
+					INNER JOIN MEMBER m ON m.member_no = bl.MEMBER_NO 
+					WHERE board_no = #{boardNo}
+		MINUS
+		SELECT m.* FROM block b
+				INNER JOIN MEMBER m ON b.MEMBER_NO = m.MEMBER_NO 
+				WHERE block_no = #{memberNo})m
+				LEFT OUTER JOIN MEMBER_PROFILE mp ON m.member_no = mp.MEMBER_NO
+	</select>
 
  </mapper> 

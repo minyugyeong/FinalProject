@@ -91,7 +91,6 @@ public class MemberController {
 			@RequestParam String memberPassword,
 			HttpSession session) {
 		MemberDto memberDto = memberDao.login(memberEmail, memberPassword);
-		
 		if(memberDto != null) {//로그인 성공
 			session.setAttribute("login", memberDto.getMemberNo());
 			session.setAttribute("auth", memberDto.getMemberGrade());
@@ -360,6 +359,9 @@ public class MemberController {
 		int memberNo = (Integer)session.getAttribute("login");
 		
 		memberService.professional(memberNo, memberInterest);
+		MemberDto memberDto = memberDao.info(memberNo);
+		session.removeAttribute("auth");
+		session.setAttribute("auth", memberDto.getMemberGrade());
 		
 		return "redirect:edit";
 		
@@ -370,6 +372,9 @@ public class MemberController {
 		int memberNo = (Integer)session.getAttribute("login");
 		
 		memberDao.personal(memberNo);
+		MemberDto memberDto = memberDao.info(memberNo);
+		session.removeAttribute("auth");
+		session.setAttribute("auth", memberDto.getMemberGrade());
 		
 		return "redirect:edit";
 	}

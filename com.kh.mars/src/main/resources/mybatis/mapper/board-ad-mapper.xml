@@ -215,9 +215,9 @@ select * from(
 	<select id="treeSearch" resultMap="boardAdAttachNo" parameterType="Map">
 		select * from (
 			select rownum rn, TMP.* from(
-				select * from board_ad where member_no=#{memberNo} 
+				select rownum rn2, B.* from board_ad B where member_no=#{memberNo} order by board_ad_date desc
 				)TMP
-		)where rn between #{begin} and #{end} order by board_ad_no desc
+		)where rn between #{begin} and #{end} 
 	</select>
 	
 	<select id="treeSearchSubquery" resultType="BoardAdAttachDto" parameterType="int">
@@ -483,8 +483,6 @@ select * from(
 	<update id="updateCheck">
 		update board_ad set board_ad_check = '광고 진행' where board_ad_no = #{boardAdNo} 
 	</update>
-	
-
 
 	
  </mapper> 

@@ -24,5 +24,6 @@ public class BoardAdAttachNoVO {
 	private int boardAdIsReply;
 	private int boardAdPrice;
 	private List<BoardAdAttachDto> attachNoList;
+	private int rn2;
 
 }

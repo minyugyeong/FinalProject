@@ -78,7 +78,7 @@
 						<c:set var="lengthList" value="${fn:length(list)}"></c:set>
 						<c:forEach var="list" items="${list}" varStatus="status">
 							<tr class="text-center align-middle">
-								<td>${lengthList - status.index}</td>
+								<td>${list.rn2}</td>
 								<td>${list.boardAdCount}</td>
 								<td>${list.boardAdPrice}</td>
 								<td>${list.boardAdDate}</td>

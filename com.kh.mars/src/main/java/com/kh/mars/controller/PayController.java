@@ -106,5 +106,13 @@ public class PayController {
 		attr.addAttribute("memberNo", memberNo);
 		return "redirect:/member/ad";
 	}
+	
+	@GetMapping("/pay/cancel")
+	public String payCancel(HttpSession session) {
+		session.removeAttribute("pay");
+		session.removeAttribute("purchase");
+		session.removeAttribute("paymentNo");
+		return "pay/cancel";
+	}
 
 }
