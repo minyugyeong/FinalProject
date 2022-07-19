@@ -116,7 +116,7 @@
 			display:none!important;
 		}
 		.showment{
-			display:block;
+			display:block!important;
 		}
 		.adLinkOpacity:hover{
 			opacity:1!important;
