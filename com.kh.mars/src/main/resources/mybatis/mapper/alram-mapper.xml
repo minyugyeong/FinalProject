@@ -90,5 +90,73 @@ select br2.board_ad_no, m.member_no, m.member_nick, mp.attach_no, r.reply_check"
 	</select>
 	
 	
+	<update id="checkBL" parameterType="int">
+		update board_like set board_like_check = 1 where board_no in (
+		    select b.board_no from board  b
+		        inner join board_like bl on b.board_no = bl.board_no
+		    where b.member_no = #{memberNo}
+	    ) and board_like_check = 0
+	</update>
+	<update id="checkAL" parameterType="int">
+		update board_ad_like set ad_like_check = 1 where board_ad_no in (
+		    select b.board_ad_no from board_ad  b
+		        inner join board_ad_like bl on b.board_ad_no = bl.board_ad_no
+		    where b.member_no = #{memberNo}
+	    ) and ad_like_check = 0
+	</update>
+	<update id="checkFollow" parameterType="int">
+		update follow set follow_check = 1 where follow_target = #{memberNo} and follow_check = 0
+	</update>
+	<update id="checkBR" parameterType="int">
+		update reply set reply_check = 1 where reply_no in (
+			select r.reply_no from board b 
+			    inner join board_reply br on b.board_no = br.board_no
+			    inner join reply r on r.reply_no = br.reply_no
+			where b.member_no = #{memberNo}
+		) and reply_check = 0
+	</update>
+	<update id="checkAR" parameterType="int">
+		update reply set reply_check = 1 where reply_no in (
+			select r.reply_no from board_ad b 
+			    inner join board_ad_reply br on b.board_ad_no = br.board_ad_no
+			    inner join reply r on r.reply_no = br.reply_no
+			where b.member_no = #{memberNo}
+		) and reply_check = 0
+	</update>
+	
+	
+	<select id="isAlram" resultType="int" parameterType="int">
+		select * from (
+			select board_no "no" from board_like where board_no in (
+			        select b.board_no from board  b
+			        inner join board_like bl on b.board_no = bl.board_no
+			    where b.member_no = #{memberNo}) and board_like_check = 0
+			union
+			select board_ad_no"no" from board_ad_like where board_ad_no in (
+			        select b.board_ad_no from board_ad  b
+			        inner join board_ad_like bl on b.board_ad_no = bl.board_ad_no
+			    where b.member_no = #{memberNo}) and ad_like_check = 0
+			union
+			select follow_who "no" from follow where follow_target = #{memberNo} and follow_check = 0
+			union
+			select reply_no"no" from reply where reply_no in (
+			        select r.reply_no from board_ad b 
+			            inner join board_ad_reply br on b.board_ad_no = br.board_ad_no
+			            inner join reply r on r.reply_no = br.reply_no
+			        where b.member_no = #{memberNo}
+			        ) and reply_check = 0
+			union
+			select reply_no"no" from reply where reply_no in (
+			        select r.reply_no from board b 
+			            inner join board_reply br on b.board_no = br.board_no
+			            inner join reply r on r.reply_no = br.reply_no
+			        where b.member_no = #{memberNo}
+	        ) and reply_check = 0
+        ) where rownum = 1
+	</select>
+	
+	<select id="isChatAlram" resultType="int" parameterType="int">
+		select who from dm_record where target = #{member_no} and dm_record_check = 0
+	</select>
 	
  </mapper> 

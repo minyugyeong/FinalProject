@@ -55,6 +55,10 @@
         	display:block!important;
         }
         
+        .showAlram{
+        	display:block!important;
+        }
+        
     </style>
 </head>
 <body>
@@ -110,9 +114,10 @@
                                     <span class="visually-hidden">(current)</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" style="position: relative;">
                                 <a class="nav-link" href="${pageContext.request.contextPath}/dm">
                                     <i class="fa-solid fa-walkie-talkie fa-lg"></i>
+                                    <i class="fa-solid fa-circle" :class="{'showAlram':chatAlram}" style="display:none;position: absolute;font-size: 0.5em;color: #eb6864;left: 25%;top: 85%;"></i>
                                 </a>
                             </li>
                             <c:choose>
@@ -136,8 +141,9 @@
 	                            </c:when>
                             </c:choose>
                             <li class="nav-item" style="position: relative;">
-                                <a class="nav-link" style="cursor: pointer;" @click.stop="noticeOn(),loadAlram()">
+                                <a class="nav-link" style="cursor: pointer;" @click.stop="noticeOn(),loadAlram(),checkAlram()">
                                     <i class="fa-solid fa-rocket fa-lg"></i>
+                                    <i class="fa-solid fa-circle" :class="{'showAlram':rocketAlram}" style="display:none;position: absolute;font-size: 0.5em;color: #eb6864;left: 10%;top: 60%;"></i>
                                 </a>
                                 <div v-if="noticeValue" :class="{'show':noticeValue}" style="position: absolute; right: -150px; width: 450px; max-height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;display:none;" @click.stop>
                                     <div class="card border-light">
@@ -222,6 +228,7 @@
                     alramList:[],
                     
                     chatAlram:false,
+                    rocketAlram:false,
               
                 };
             },
@@ -250,6 +257,20 @@
                         this.noticeValue = false;
                 },
                 
+                //알람 읽은 체크
+                checkAlram(){
+                	axios({
+                		url:"${pageContext.request.contextPath}/rest/alram/check",
+                		method: "Put",
+                	})
+                	.then(resp=>{
+                		this.rocketAlram = false;
+                	})
+                },
+                
+                
+                
+                //알람 불러오기
                 loadAlram(){
                 	axios({
                 		url:"${pageContext.request.contextPath}/rest/alram",
@@ -261,6 +282,8 @@
                 	});
                 	
                 },
+                
+                //알람 날짜계산
                 alramTime(index){
                 		const today = moment().format("YYYY-MM-DD");
                 		const target = moment(this.alramList[index].alramTime).format("YYYY-MM-DD");
@@ -347,8 +370,27 @@
             created(){
             	if(${hashTagName != null}){
             		this.keyword = "${hashTagName}"
-            		
             	}
+            	
+            	axios({
+            		url:"${pageContext.request.contextPath}/rest/alram/is_rocket",
+            		method:"get"
+            	})
+            	.then(resp=>{
+            		if(resp.data>0){
+            			this.rocketAlram = true;
+            		}
+            	});
+            	
+            	axios({
+            		url:"${pageContext.request.contextPath}/rest/alram/is_chat",
+            		method:"get"
+            	})
+            	.then(resp=>{
+            		if(resp.data>0){
+            			this.chatAlram = true;
+            		}
+            	});
             },
             boeforeMount(){},
             mounted(){
@@ -371,9 +413,13 @@
         			console.log("메세지가 올텐데요");
         			console.log(data.who);
         			console.log(${login});
-        			if(data.who==${login}){
-        				console.log("알람 수신")
+        			if(data.who==${login}&&data.messageType==3){
+        				console.log("알람 수신 (채팅)");
         				this.chatAlram = true;
+        			}
+        			if(data.who==${login}&&data.messageType==4){
+        				console.log("알람 수신 (로켓)");
+        				this.rocketAlram = true;
         			}
         		};
             	

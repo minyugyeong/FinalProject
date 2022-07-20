@@ -392,10 +392,10 @@
 			                            	{{boardDetail.boardListVO.memberNick}}
 		                            	</span>
 	                            	</a>
-	                            	<a :href="'${pageContext.request.contextPath}/board/edit?boardNo='+boardDetail.boardListVO.boardNo" v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-outline-primary" style="position:absolute; right:50px;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
+	                            	<a :href="'${pageContext.request.contextPath}/board/edit?boardNo='+boardDetail.boardListVO.boardNo" v-if="boardDetail.boardListVO.memberNo==${login}&&boardViewType!=1" class="btn btn-outline-primary" style="position:absolute; right:50px;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
 										수정
                             		</a>
-                            		<a data-bs-toggle="modal" data-bs-target="#boardDeleteModal" v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-primary" style="position:absolute; right:0;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
+                            		<a data-bs-toggle="modal" data-bs-target="#boardDeleteModal" v-if="boardDetail.boardListVO.memberNo==${login}&&boardViewType!=1" class="btn btn-primary" style="position:absolute; right:0;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
 										삭제
                             		</a>
 	                            </div>
