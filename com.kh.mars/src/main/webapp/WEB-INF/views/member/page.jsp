@@ -431,7 +431,7 @@
 				</div>
 				
 
-				<!-- 일반 게시글 좋아요 리스트 Modal -->
+				<!-- 게시글 좋아요 리스트 Modal -->
                 <div class="modal fade" id="boardLikeList" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				  <div class="modal-dialog">
 				    <div class="modal-content">
@@ -909,7 +909,7 @@
          	  
             },
             
-          	//일반 게시글 좋아요 목록
+          	//게시글 상세 좋아요 목록
             boardLikeList(boardNo){
             	if(this.boardDetailType == 0){
              	   axios({
