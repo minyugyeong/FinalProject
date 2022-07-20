@@ -273,7 +273,7 @@ select * from(
 		
 		select * from (
 			select rownum rn, TMP.* from(
-				select * from board_ad B left outer join member M on B.member_no = M.member_no order by board_ad_no desc
+				select * from board_ad B left outer join member M on B.member_no = M.member_no 
 				
 				<where>
 					
