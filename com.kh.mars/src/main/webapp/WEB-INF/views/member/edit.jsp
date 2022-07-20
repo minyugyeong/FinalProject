@@ -218,7 +218,7 @@ form{display:inline}
                     <div class="col-10">
                       <input type="password" class="form-control" id="inputPassword2" name="changePassword">
                     </div>
-                </div>
+                </div> 
 
                 <div class="mb-3 row">
                     <label for="inputPassword3" class="col-sm-2 col-form-label">새 비밀번호 확인</label>
