@@ -26,6 +26,7 @@ import com.kh.mars.entity.MemberDto;
 import com.kh.mars.error.UnauthorizeException;
 import com.kh.mars.repository.AttachDao;
 import com.kh.mars.repository.BlockDao;
+import com.kh.mars.repository.BoardAdDao;
 import com.kh.mars.repository.BoardDao;
 import com.kh.mars.repository.CertDao;
 import com.kh.mars.repository.FollowDao;
@@ -66,6 +67,9 @@ public class MemberController {
 	
 	@Autowired
 	private BlockDao blockDao;
+	
+	@Autowired
+	private BoardAdDao boardAdDao;
 
 	//회원가입 페이지
 	@GetMapping("/join")
@@ -196,6 +200,9 @@ public class MemberController {
 		
 		int boardCount = boardDao.countBoard(memberNo);
 		model.addAttribute("boardNum", boardCount);
+		
+		int boardAdCount = boardAdDao.countAd(memberNo);
+		model.addAttribute("boardAdNum", boardAdCount);
 		
 		//팔로우 버튼
 		int followWho = (Integer)session.getAttribute("login");

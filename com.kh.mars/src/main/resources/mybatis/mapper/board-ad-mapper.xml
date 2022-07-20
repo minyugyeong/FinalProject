@@ -483,7 +483,11 @@ select * from(
 	<update id="updateCheck">
 		update board_ad set board_ad_check = '광고 진행' where board_ad_no = #{boardAdNo} 
 	</update>
-
+	
+	<!-- 광고 게시글 수 -->
+	<select id="boardAdCount" parameterType="int" resultType="int">
+		SELECT count(*)board_ad_no FROM BOARD_AD WHERE member_no = #{memberNo}
+	</select>
 	
  </mapper> 
  

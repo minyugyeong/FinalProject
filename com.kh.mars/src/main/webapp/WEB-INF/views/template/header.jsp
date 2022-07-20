@@ -156,8 +156,8 @@
 											<span v-if="alram.type==2&&alram.etc==0">
 												<span>님이 팔로우 요청을 하셨습니다!</span>
 												<span style="position:absolute; right:0;">
-													<button class="btn btn-outline-primary" style="margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">승인</button>
-													<button class="btn btn-primary" style="margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">취소</button>
+													<button class="btn btn-outline-primary" style="margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;" @click="followAccept(alram.memberNo)">승인</button>
+													<button class="btn btn-primary" style="margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;" @click="followRefuse(alram.memberNo)">취소</button>
 												</span>
 											</span>
 											<span v-if="alram.type==2&&alram.etc==1">님이 팔로우 하셨습니다!</span>
@@ -291,6 +291,34 @@
                 		}
                 		return "";
                 },	
+                
+                followAccept(memberNo){
+                	axios({
+                		url : "${pageContext.request.contextPath}/rest/follow/follow_accept",
+                		method:"post",
+                		params:{
+                			followWho : memberNo
+                		}
+                	})
+                	.then(resp=>{
+                		this.loadAlram();
+                		console.log("승인");
+                	});
+                },
+                
+                followRefuse(memberNo){
+                	axios({
+                		url : "${pageContext.request.contextPath}/rest/follow/follow_refuse",
+                		method : "Post",
+                		params : {
+                			followWho : memberNo
+                		}
+                	})
+                	.then(resp=>{
+                		this.loadAlram();
+                		console.log("거절");
+                	});
+                }
                 
             },
             // watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다

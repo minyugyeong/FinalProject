@@ -20,9 +20,8 @@
     <form action="login" method="post">
             <div class="img p-4 text-center">
                 <a class="navbar-brand" href="${pageContext.request.contextPath}">
-                        <img src="${pageContext.request.contextPath}/image/logo.png" width="150">
+                        <img class="mb-5" src="${pageContext.request.contextPath}/image/logo.png" width="150">
                 </a>
-                <a href="${pageContext.request.contextPath}/member/logout">로그아웃</a>
             </div>
             <div class="form-floating mb-3 row">
                 <input type="text" class="form-control" id="floatingInput" placeholder="이메일" name="memberEmail">
@@ -41,8 +40,8 @@
             </div>
             </c:if>
     </form>
-            <div class="row text-center m-3">
-                <a href="password_reset">비밀번호를 잊으셨나요?</a>
+            <div class="row text-center">
+                <a class="mt-5" href="password_reset">비밀번호를 잊으셨나요?</a>
             </div>
         </div>
     
