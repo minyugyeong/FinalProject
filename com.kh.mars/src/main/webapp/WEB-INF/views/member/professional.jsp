@@ -56,13 +56,10 @@
         비즈니스 계정으로 전환하면 계정이 전체공개로 설정됩니다. 누구나 회원님의 콘텐츠를 볼 수 있으며 대기 중인 팔로우 요청이 모두 승인됩니다.
       </div>
       
-	  <div class="modal-footer text-center">
-	        <button type="submit" class="btn">전환하기</button>
-	  </div>
-	  
-      <div class="modal-footer">
-	        <button type="button" class="btn" data-bs-dismiss="modal">취소</button>
-	   </div>   
+	  <div class="modal-footer">
+	        <button type="submit" class="btn btn-primary" style="width:100%">전환하기</button>
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:100%">취소</button>
+	  </div>  
 	      
     </div>
   </div>
