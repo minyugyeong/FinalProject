@@ -260,11 +260,10 @@ const app = Vue.createApp({
 			roomList:[],
 			messageList:[],
 			
-			dmTarget:null,
+			dmTarget:"",
 			roomMember:[],
 			
 			roomNo:0,
-			socket:null,
 			
 			inputMessage:"",
 			
@@ -279,7 +278,6 @@ const app = Vue.createApp({
 			dmCount:1,
 			
 			pointTarget:"",
-			
 			//메세지 상대 탐색용
 			chooseDm:[],
 			selectIndex:-1,
@@ -315,7 +313,7 @@ const app = Vue.createApp({
 				roomNo:this.roomNo
 			};
 			var json = JSON.stringify(message);
-			this.socket.send(json);
+			socket.send(json);
 			//메세지 업데이트 1 나한테 온 것들만
     		await axios({
     			url: "${pageContext.request.contextPath}/rest/dm/dm_check",
@@ -367,7 +365,7 @@ const app = Vue.createApp({
     	//바닥으로 스크롤 이동
     	scrollMove(){
 	    		$('.message-wrapper').scrollTop(($('.message-wrapper').prop('scrollHeight')-500));
-	    		console.log("바닥이동2");
+	    		//console.log("바닥이동2");
     	},
     	
     	//메세지 전송
@@ -379,10 +377,19 @@ const app = Vue.createApp({
     					type:2,
     					target: this.roomMember[i],
     					roomNo:this.roomNo,
-    					message:this.inputMessage
+    					message:this.inputMessage,
+    					messageType:1,
     			}
     			const json = JSON.stringify(message);
-    			this.socket.send(json);//전송 명령
+    			socket.send(json);//전송 명령
+    			
+    			const alram = {
+    					type:3,
+    					target: this.roomMember[i],
+    					messageType:3,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+    			}
+    			const jsonAlram = JSON.stringify(alram);
+    			socket.send(jsonAlram);
     		}
     		
     		this.inputMessage = "";
@@ -411,8 +418,8 @@ const app = Vue.createApp({
     	scrollCheck(){
     		let pointer = $('.message-wrapper').scrollTop();
     		let totalHeight = $('.message-wrapper').prop('scrollHeight')-500;
-    		console.log($('.message-wrapper').scrollTop());
-    		console.log("높이" + $('.message-wrapper').prop('scrollHeight'));
+    		//console.log($('.message-wrapper').scrollTop());
+    		//console.log("높이" + $('.message-wrapper').prop('scrollHeight'));
     		const movePoint = $('.message-wrapper').prop('scrollHeight');
     		if(pointer >= totalHeight){
     			this.bottomFlag=true;
@@ -534,7 +541,7 @@ const app = Vue.createApp({
     			}
     		})
     		.then(resp=>{
-    			console.log(resp.data);
+    			//console.log(resp.data);
     			const index = this.roomList.findIndex(v => v.roomNo == resp.data);
     			if(index!=-1){
     				this.enterRoom(resp.data, index);
@@ -629,34 +636,13 @@ const app = Vue.createApp({
     	});
     },
     mounted(){
-		var uri = "${pageContext.request.contextPath}/ws/dm";
-		
-		//접속
-		socket = new SockJS(uri);
-		
-		socket.onopen = event => {
-			connectOperation();
-			console.log(this.roomNo);
-			//접속하자마자 나의 채널명을 서버로 전송해야한다(입장메세지)
-			var message = {
-				type:1,
-				roomNo:this.roomNo
-			};
-			var json = JSON.stringify(message);
-			this.socket.send(json);
-		};
-		socket.onclose = function(e){
-			/* disconnectOperation(); */
-		};
-		socket.onerror = function(){
-			alert("서버와의 연결 오류가 발생하였습니다");
-			/* disconnectOperation(); */
-		};
 		socket.onmessage = (event) => {
 			var data = JSON.parse(event.data);//json을 객체로 복구
 			
 			console.log("메세지가 올텐데요");
-			if(data.roomNo==this.roomNo){
+			console.log(data.messageType);
+			if(data.roomNo==this.roomNo&&data.messageType==1){
+				console.log("여기까지 못오는거같은데");
 				this.messageList.push(data);
 				
 					axios({
@@ -680,6 +666,11 @@ const app = Vue.createApp({
 		    		});
 				return;
 			}
+			console.log(data.who);
+			console.log(${login});
+			if(data.who==${login}&&data.messageType==4){
+				console.log("알람 수신")
+			}
 			axios({
 	    		url: "${pageContext.request.contextPath}/rest/dm/room",
 	    		method: "get"
@@ -699,7 +690,6 @@ const app = Vue.createApp({
 			$(".send-input").prop("disabled", true);//입력창 비활성화
 			$(".btn-send").prop("disabled", true);//전송버튼 비활성화
 		}
-		this.socket = socket;
 		
 		
 		//param이 있으면 방에 바로입장시키기

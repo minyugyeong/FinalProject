@@ -44,7 +44,7 @@
  	</insert>
  	
  	<delete id="delete" parameterType="int">
- 		delete reply where reply_no = #{replyNo}
+ 		delete reply where reply_no = #{replyNo} or super_no = #{replyNo}
  	</delete>
 
  </mapper> 

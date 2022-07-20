@@ -41,15 +41,22 @@ public class DMWebsocketServer extends TextWebSocketHandler{
 		System.out.println("타입" + receiveVO.getType());
 		System.out.println("방번호"+receiveVO.getRoomNo());
 		if(receiveVO.getType() == join) {
-			manager.enterRoom(session, receiveVO.getRoomNo());
+			if(receiveVO.getRoomNo()!=0) {
+				manager.enterRoom(session, receiveVO.getRoomNo());
+			}else {
+				manager.enterWaitingRoom(session);
+			}
 		}
 		else if(receiveVO.getType() == chat) {
 			dmDao.roomEnterUpdate(receiveVO.getRoomNo());
-			dmService.dmService(receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget(), user.getMemberNo());
-			manager.broadcastRoom(session, receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget());
+			if(receiveVO.getMessageType()==1) {
+				dmService.dmService(receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget(), user.getMemberNo());
+			}
+			manager.broadcastRoom(session, receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget(),receiveVO.getMessageType());
 		}
 		else if(receiveVO.getType() == alram) {
-		
+			manager.alramRoom(session, receiveVO.getTarget(), receiveVO.getMessageType());
+			System.out.println("알람작동");
 		}
 		
 	}

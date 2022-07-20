@@ -36,4 +36,13 @@ public class Room {
 			}
 			return false;
 		}
+		
+		public User findUser(int memberNo) {
+			for(User users : users) {
+				if(users.getMemberNo()==memberNo) {
+					return users;
+				}
+			}
+			return null;
+		}
 }
