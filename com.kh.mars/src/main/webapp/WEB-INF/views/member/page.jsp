@@ -141,7 +141,7 @@
                 </div>
                 <div class="row">
                     <div class="col-4 mt-3">
-                        <h6>게시물 ${boardNum }</h6>
+                        <h6>게시물 ${boardNum+boardAdNum }</h6>
                     </div>
                     
                     <!-- 비공개인데 팔로우가 아닌 경우 -->

@@ -45,6 +45,8 @@ public interface BoardAdDao {
 
 	int count(int memberNo);
 
+	int countAd(int memberNo);
+
 
 
 
