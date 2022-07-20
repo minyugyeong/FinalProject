@@ -365,7 +365,7 @@ const app = Vue.createApp({
     	//바닥으로 스크롤 이동
     	scrollMove(){
 	    		$('.message-wrapper').scrollTop(($('.message-wrapper').prop('scrollHeight')-500));
-	    		//console.log("바닥이동2");
+	    		console.log("바닥이동2");
     	},
     	
     	//메세지 전송
@@ -609,6 +609,7 @@ const app = Vue.createApp({
     },
     //watch : 특정 data를 감시하여 연계 코드를 실행하기 위해 작성한다
     watch:{
+    	
 		scrollHeight(){
 			if(this.bottomFlag){
 				this.scrollMove();
