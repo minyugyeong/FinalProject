@@ -97,10 +97,12 @@ public class BoardDaoImpl implements BoardDao{
 
 
 	@Override
-	public List<SearchListVO> pageList(int memberNo, int pageCount) {
+	public List<SearchListVO> pageList(int memberNo, int pageCount, int uptoNo, int uptoNoAd) {
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("memberNo", memberNo);
 		param.put("pageCount", pageCount);
+		param.put("uptoNo", uptoNo);
+		param.put("uptoNoAd", uptoNoAd);
 		return sqlSession.selectList("board.pageList", param);
 	}
 

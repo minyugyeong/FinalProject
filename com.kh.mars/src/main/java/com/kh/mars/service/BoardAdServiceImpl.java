@@ -71,7 +71,7 @@ public class BoardAdServiceImpl implements BoardAdService {
 		param.put("memberNo", memberNo);
 		param.put("boardAdNo", boardAdNo);
 		Integer isChecked = sqlSession.selectOne("board_ad.checkedAd", param);
-		
+		System.out.println("실행 안되냐");
 		if(isChecked != null) {
 			return;
 		}else {

@@ -83,7 +83,7 @@
 	                                    <p v-if="searchList.length == 0" class="card-text">검색 결과가 없습니다.</p>
 	                                    <div v-for="(search, index) in searchList" class="card-text">
 		                                    <a v-if="search.type == 0" :href="'${pageContext.request.contextPath}/member/page?memberNo='+search.no" style="text-decoration:none;color:black;position:relative;">
-		                                      <img v-if="search.attach != 0" :src="'${pageContext.request.contextPath}/file/download/'+search.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:10%;">
+		                                      <img v-if="search.attachNo != 0" :src="'${pageContext.request.contextPath}/file/download/'+search.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                      <img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" height="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                      <p style="margin-bottom:0;padding-left:2.5em;">
 		                                       {{search.main}}
