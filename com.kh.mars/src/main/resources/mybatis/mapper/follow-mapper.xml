@@ -197,4 +197,13 @@
 				)f ON m.member_no = f.FOLLOW_target
 		LEFT OUTER JOIN MEMBER_PROFILE mp ON m.member_no = mp.MEMBER_NO 
 	</select>
+	
+	<update id="followAccept" parameterType="Map">
+		UPDATE follow SET FOLLOW_CONFIRM =1 WHERE FOLLOW_WHO =#{followWho} AND FOLLOW_TARGET = #{followTarget}
+	</update>
+	
+	<delete id="followRefuse" parameterType="Map">
+		DELETE follow WHERE follow_who = #{followWho} AND follow_target  = #{followTarget}
+	</delete>
+	
  </mapper> 

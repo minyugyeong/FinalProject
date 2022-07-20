@@ -40,4 +40,8 @@ public interface FollowDao {
 
 	List<FollowVO> followList(int memberNo, int memberWho);
 
+	void followAccept(int followWho, int followTarget);
+
+	void followRefuse(int followWho, int followTarget);
+
 }
