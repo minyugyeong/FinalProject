@@ -385,7 +385,7 @@
                                         <i class="fa-regular fa-newspaper fa-lg"></i>
 
                                     </p>
-                                    <p class="card-text" v-if="boardDetail.boardListVO.likecount > 0">
+                                    <p class="card-text" v-if="boardDetail.boardListVO.likecount > 0" @click="boardLikeList(boardDetail.boardListVO.boardNo)" data-bs-toggle="modal" data-bs-target="#boardLikeList">
                                         좋아요 {{boardDetail.boardListVO.likecount}}개
                                     </p>
                                 </div>
@@ -420,6 +420,42 @@
 				      <div class="modal-footer">
 				        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click.stop="targetInput('')">취소</button>
 				        <button type="button" class="btn btn-primary" @click="deleteReply(boardDetail.boardListVO.boardNo)">삭제</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+				
+				<!-- 일반 게시글 좋아요 리스트 Modal -->
+                <div class="modal fade" id="boardLikeList" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="exampleModalLabel">좋아요</h5>
+				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				      </div>
+				      <div class="modal-body">
+				        <p v-for="(bll, index) in boardLike" v:bind:key="index">
+				        	<img :src="'${pageContext.request.contextPath }/file/download/'+ bll.attachNo" width="30" height="30" style="border-radius: 70%;">
+				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+bll.memberNo">{{bll.memberNick}}</a>
+				        </p>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+				
+				<!-- 광고 게시글 좋아요 리스트 Modal -->
+				<div class="modal fade" id="adBoardLikeList" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="exampleModalLabel">좋아요</h5>
+				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				      </div>
+				      <div class="modal-body">
+				       <p v-for="(ball,index) in boardAdLike" v:bind:key="index">
+				       		<img :src="'${pageContext.request.contextPath }/file/download/'+ ball.attachNo" width="30" height="30" style="border-radius: 70%;">
+				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+ball.memberNo">{{ball.memberNick}}</a>
+				       </p>
 				      </div>
 				    </div>
 				  </div>
@@ -501,6 +537,12 @@
                     replyTarget:"",
                     
                     replyPlaceholder:"댓글 입력",
+                    
+                  	//일반 게시글 좋아요 목록 변수
+                    boardLike: [],
+                    
+                    //광고 게시글 좋아요 목록 변수
+                    boardAdLike: [],
                     
                 };
             },
@@ -857,6 +899,34 @@
          	   }
          	  
             },
+            
+          	//일반 게시글 좋아요 목록
+            boardLikeList(boardNo){
+        	   axios({
+        		   url : "${pageContext.request.contextPath}/rest/board/board_like",
+        		   method:"get",
+        		   params:{
+        			   boardNo : boardNo
+        		   }
+        	   })
+        	   .then(resp=>{
+        		   this.boardLike=resp.data;
+        	   });
+           },
+           
+           //광고 게시글 좋아요 목록
+           boardAdLikeList(boardNo){
+        	   axios({
+        		   url : "${pageContext.request.contextPath}/rest/board/board_ad_like",
+        		   method: "get",
+        		   params :{
+        			   boardNo : boardNo
+        		   }
+        	   })
+        	   .then(resp=>{
+        		  this.boardAdLike=resp.data; 
+        	   });
+           }
                 
                 
             },
@@ -885,6 +955,7 @@
             		}
             	})
             },
+  
         });
         app.mount("#app");
     </script>
