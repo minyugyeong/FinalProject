@@ -354,9 +354,6 @@ $(function(){
 		      		
 		      		<div class="col-md-5">
 					    	<div class="row">
-					    		<div class="col-md-2 right">
-						    		<img src="${pageContext.request.contextPath}/file/download/${attachNo}" class="img img-circle">		    		
-					    		</div>
 					    		<div class="col-md-10 left bottom">
 					    			<span class="nickname">${memberNick}</span>
 					    		</div>
