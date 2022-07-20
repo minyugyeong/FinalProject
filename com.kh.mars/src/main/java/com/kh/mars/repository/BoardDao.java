@@ -31,7 +31,7 @@ public interface BoardDao {
 
 	void delete(int boardNo);
 
-	List<SearchListVO> pageList(int memberNo, int pageCount);
+	List<SearchListVO> pageList(int memberNo, int pageCount, int uptoNo, int uptoNoAd);
 
 	
 	

@@ -359,7 +359,7 @@
 	                                	</label>
 	                                </div>
 	                                
-	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" style="position:relative;" :class="{'childReply':reply.superNo!=0,'childShow':reply.superNo>0}">
+	                                <div v-if="boardDetail.boardListVO.boardIsReply==0" v-for="(reply, index) in boardDetailReply" class="card-text show-icon" style="position:relative;" :class="{'childReply':reply.superNo!=0,'childShow':reply.superNo>0}">
 	                                	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+reply.replyMemberNo" style="text-decoration:none;color:black;position:relative;">
 			                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -394,7 +394,7 @@
                                         좋아요 {{boardDetail.boardListVO.likecount}}개
                                     </p>
                                 </div>
-	                            <div class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
+	                            <div v-if="boardDetail.boardListVO.boardIsReply==0" class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
 	                               	<span style="position: absolute; left:0; top: 6px; z-index: 999;">
 	                                	<label for="detailReply">
 											<i class="fa-solid fa-satellite-dish fa-lg focusInput"></i>
@@ -525,7 +525,8 @@
                     pageBoardList:[],
                     pageCount : 1,
                     memberNo : ${memberDto.memberNo},
-                    uptoNo:"",
+                    uptoNo:0,
+                    uptoNoAd:0,
                     
                 	//게시글 상세보기 변수
     				detailView:false,
@@ -667,6 +668,8 @@
                 		params : {
                 			memberNo : this.memberNo,
                 			pageCount : this.pageCount,
+                			uptoNo:this.uptoNo,
+                			uptoNoAd:this.uptoNoAd,
                 		}
                 	})
                 	.then(resp=>{
@@ -762,6 +765,13 @@
     	            		this.boardDetailReplySearch(boardNo, this.boardDetailType);
     	            		this.replyContent = "";
     	            		this.superNo = 0;
+    	            		const alram = {
+    	        					type:3,
+    	        					target: this.boardDetail.boardListVO.memberNo,
+    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+    	        			}
+    	        			const jsonAlram = JSON.stringify(alram);
+    	        			socket.send(jsonAlram);
     	            	});
                 	}else{
                 		axios({
@@ -777,6 +787,13 @@
                 			this.boardDetailReplySearch(boardNo, this.boardDetailType);
     	            		this.replyContent = "";
     	            		this.superNo = 0;
+    	            		const alram = {
+    	        					type:3,
+    	        					target: this.boardDetail.boardListVO.memberNo,
+    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+    	        			}
+    	        			const jsonAlram = JSON.stringify(alram);
+    	        			socket.send(jsonAlram);
                 		})
                 	}
                 },
@@ -822,6 +839,13 @@
     	        			}else{
     	        				this.boardDetail.boardListVO.likecount -= 1
     	        			}
+    	        			const alram = {
+    	        					type:3,
+    	        					target: this.boardDetail.boardListVO.memberNo,
+    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+    	        			}
+    	        			const jsonAlram = JSON.stringify(alram);
+    	        			socket.send(jsonAlram);
     	        		});
                 	}else{
                 		const boardNo = likeNo;
@@ -838,7 +862,14 @@
                 				this.boardDetail.boardListVO.likecount += 1
                 			}else{
                 				this.boardDetail.boardListVO.likecount -= 1
-                			}
+                			}	
+                			const alram = {
+    	        					type:3,
+    	        					target: this.boardDetail.boardListVO.memberNo,
+    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+    	        			}
+    	        			const jsonAlram = JSON.stringify(alram);
+    	        			socket.send(jsonAlram);
                 		});
                 	}
             	},
@@ -948,6 +979,8 @@
             	   params : {
             		   memberNo : this.memberNo,
             		   pageCount : this.pageCount,
+            		   uptoNo:this.uptoNo,
+            		   uptoNoAd:this.uptoNoAd,
             	   }
                })
                .then(resp=>{
@@ -955,6 +988,19 @@
             	   this.pageBoardList = resp.data;
             	   console.log(this.pageBoardList);
             	   this.pageCount++;
+            	   
+            	   for(var i=0; i<this.pageBoardList.length; i++){
+   	    			if(this.pageBoardList[i].type==0){
+   		    			this.uptoNo = this.pageBoardList[i].boardNo;
+   		    			break;
+   	    			}
+	   	    		}
+	   	    		for(var i = 0; i<this.pageBoardList.length; i++){
+	   	    			if(this.pageBoardList[i].type==1){
+   	    				this.uptoNoAd = this.pageBoardList[i].boardNo;
+   	    				break;
+	   	    			}
+	   	    		}
                });
             },
             mounted(){

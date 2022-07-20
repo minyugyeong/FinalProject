@@ -160,8 +160,11 @@ public class MemberRestController {
 	@ResponseBody
 	public List<SearchListVO> list(
 			@RequestParam int memberNo,
-			@RequestParam int pageCount){
-		return boardDao.pageList(memberNo,pageCount);
+			@RequestParam int pageCount,
+			@RequestParam int uptoNo,
+			@RequestParam int uptoNoAd
+			){
+		return boardDao.pageList(memberNo,pageCount, uptoNo, uptoNoAd);
 	}
 	
 	

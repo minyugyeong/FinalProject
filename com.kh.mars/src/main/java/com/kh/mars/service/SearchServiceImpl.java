@@ -27,12 +27,13 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public List<SearchListVO> list(int memberNo, int hashTagNo, int pageCount, int uptoNo) {
+	public List<SearchListVO> list(int memberNo, int hashTagNo, int pageCount, int uptoNo, int uptoNoAd) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("memberNo", memberNo);
 		param.put("hashTagNo", hashTagNo);
 		param.put("pageCount", pageCount);
 		param.put("uptoNo", uptoNo);
+		param.put("uptoNoAd", uptoNoAd);
 		
 		return sqlSession.selectList("search.tagSearch", param);
 	}

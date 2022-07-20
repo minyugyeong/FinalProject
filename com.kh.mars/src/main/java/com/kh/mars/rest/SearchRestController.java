@@ -37,10 +37,11 @@ public class SearchRestController {
 									HttpSession session,
 									@RequestParam int hashTagNo,
 									@RequestParam int pageCount,
-									@RequestParam int uptoNo
+									@RequestParam int uptoNo,
+									@RequestParam int uptoNoAd
 									){
 		int memberNo = (Integer) session.getAttribute("login");
-		return searchService.list(memberNo, hashTagNo, pageCount, uptoNo);
+		return searchService.list(memberNo, hashTagNo, pageCount, uptoNo, uptoNoAd);
 	}
 	
 	@GetMapping("/listlike")
