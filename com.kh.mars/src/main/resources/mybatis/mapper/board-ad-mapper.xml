@@ -136,7 +136,7 @@ select * from(
 	<select id="adTreeSearchSubquery" resultType="BoardAttachVO" parameterType="int">
 		select ba.board_ad_no, attach.* from (
 		      select * from board_ad_attach where board_ad_no = #{board_ad_no}
-		)ba inner join attach on ba.attach_no = attach.attach_no
+		)ba inner join attach on ba.attach_no = attach.attach_no 
 	</select>
 	<select id="adTagSearchSubquery" resultType="BoardHashTagVO" parameterType="int">
 		select h.* from board_ad_hashtag bh
@@ -273,7 +273,7 @@ select * from(
 		
 		select * from (
 			select rownum rn, TMP.* from(
-				select * from board_ad B left outer join member M on B.member_no = M.member_no 
+				select * from board_ad B left outer join member M on B.member_no = M.member_no order by board_ad_no desc
 				
 				<where>
 					

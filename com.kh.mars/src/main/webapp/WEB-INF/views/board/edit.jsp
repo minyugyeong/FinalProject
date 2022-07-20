@@ -162,7 +162,7 @@ $(function(){
 		const text = confirm("지금 나가면 수정 내용이 저장되지 않습니다.");
 		
 		if(text){
-			location.replace("/mars/member/detail?memberNo=")
+			location.replace("/mars/member/page?memberNo=${login}")
 		}
 	});
 		
@@ -285,7 +285,7 @@ $(function(){
 					    		<textarea id="contentCheck" class="form-control content" rows="6" name="boardContent" placeholder="문구를 입력하세요">${boardDto.boardContent}</textarea>
 					    		<div class="right">
 										<span class="length">
-											<span class="count">${boardDto.boardContent.length()}</span>
+											<span class="count">${boardDto.boardContent.length()}/</span>
 											
 											<span class="total">1000</span>
 										</span>
