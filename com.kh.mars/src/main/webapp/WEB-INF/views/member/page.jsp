@@ -213,7 +213,8 @@
         <div class="modal-body">
             <p v-for="(f,index) in follow" v-bind:key="index">
             	
-                <img :src="'${pageContext.request.contextPath }/file/download/'+ f.attachNo" width="30" height="30" style="border-radius: 70%;">
+                <img v-if="f.attachNo > 0" :src="'${pageContext.request.contextPath }/file/download/'+ f.attachNo" width="30" height="30" style="border-radius: 70%;">
+            	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" height="30" style="border-radius: 70%;">
                 <a :href="'${pageContext.request.contextPath }/member/page?memberNo='+f.memberNo">{{f.memberNick}}</a>
         
                
@@ -239,7 +240,8 @@
         </div>
         <div class="modal-body">
           <p v-for="(fm,index) in follower" v-bind:key="index">
-              <img :src="'${pageContext.request.contextPath }/file/download/'+ fm.attachNo" width="30" height="30" style="border-radius: 70%;">
+              <img v-if="fm.attachNo>0" :src="'${pageContext.request.contextPath }/file/download/'+ fm.attachNo" width="30" height="30" style="border-radius: 70%;">
+              <img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
              <a :href="'${pageContext.request.contextPath }/member/page?memberNo='+fm.memberNo">{{fm.memberNick}}</a>
              
 	             <button v-if="fm.followConfirm== null && fm.memberNo != ${login }" class="btn btn-primary" @click="followingInList(fm.memberNo)"  style="float: right; width:125px;">팔로우</button>
@@ -441,7 +443,8 @@
 				      </div>
 				      <div class="modal-body">
 				        <p v-for="(bll, index) in boardLike" v:bind:key="index">
-				        	<img :src="'${pageContext.request.contextPath }/file/download/'+ bll.attachNo" width="30" height="30" style="border-radius: 70%;">
+				        	<img v-if="bll.attachNo > 0" :src="'${pageContext.request.contextPath }/file/download/'+ bll.attachNo" width="30" height="30" style="border-radius: 70%;">
+				        	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" height="30" style="border-radius: 70%;">
 				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+bll.memberNo">{{bll.memberNick}}</a>
 				        </p>
 				      </div>
