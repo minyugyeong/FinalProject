@@ -83,6 +83,12 @@
 			color: var(--bs-primary);
 			background-color: white;
 		}
+		.childReply{
+		padding-left: 35px;
+		}
+		.childShow{
+		display: none;
+		}
             
         
 </style>
@@ -169,31 +175,55 @@
 	                                        
 	                        <div id="detailCarousel" class="carousel slide" data-bs-ride="carousel" style="height: 40vw;" data-bs-interval="false">
 	                            <div class="carousel-indicators">
-                                     <button v-for="(attach, index) in boardDetail.attachList" :key="index" type="button" data-bs-target="#detailCarousel" :data-bs-slide-to="index" :class="{'active':index==0}" :aria-current="index==0" :aria-label="'Slide'+(index+1)"></button>
+                                     <button v-if="boardDetail!=null" v-for="(attach, index) in boardDetail.attachList" :key="index" type="button" data-bs-target="#detailCarousel" :data-bs-slide-to="index" :class="{'active':index==0}" :aria-current="index==0" :aria-label="'Slide'+(index+1)"></button>
                                 </div>
                                 <div class="carousel-inner" style="height:100%!important;background-color: var(--bs-dark);">
-                                     <div v-for="(attach, index) in boardDetail.attachList" :key="index" class="carousel-item" :class="{'active':index==0}" style="height:100%;background-color: var(--bs-dark); position:relative;">
+                                     <div v-if="boardDetail!=null" v-for="(attach, index) in boardDetail.attachList" :key="index" class="carousel-item" :class="{'active':index==0}" style="height:100%;background-color: var(--bs-dark); position:relative;">
                                          <img :src="'${pageContext.request.contextPath}/file/download/'+attach.attachNo" class="d-block position-absolute top-50 start-50 translate-middle" style="object-position: left; width: 101%;transform:translate(-50%,0);">
                                      </div>
                                 </div>
-                                <button v-if="boardDetail.attachList.length>1" class="carousel-control-prev" type="button" data-bs-target="#detailCarousel" data-bs-slide="prev">
+                                <button v-if="boardDetail!=null&&boardDetail.attachList.length>1" class="carousel-control-prev" type="button" data-bs-target="#detailCarousel" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                                 </button>
-                                <button v-if="boardDetail.attachList.length>1" class="carousel-control-next" type="button" data-bs-target="#detailCarousel" data-bs-slide="next">
+                                <button v-if="boardDetail!=null&&boardDetail.attachList.length>1" class="carousel-control-next" type="button" data-bs-target="#detailCarousel" data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
                                 </button>
 	                        </div>
 	                    </div>
 	                    <div class="col-4 board-detail-card" style="padding-left: 0; max-height: 30rem;" @click.stop>
-	                                        
+	                        
 	                        <div class="card bg-light" style="height: 40vw; border-radius: 0;">
-	                            <div class="card-header">{{boardDetail.boardListVO.memberNick}}</div>
+	                            <div class="card-header">
+		                            <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+boardDetail.boardListVO.memberNo" style="color:black;text-decoration:none;">
+		                            	<img v-if="boardDetail.boardListVO.memberProfile>0" :src="'${pageContext.request.contextPath}/file/download/'+boardDetail.boardListVO.memberProfile" width="30" height="30" style="border-radius: 70%;">
+		                            	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
+		                            	<span style="padding-left: 5px;">
+			                            	{{boardDetail.boardListVO.memberNick}}
+		                            	</span>
+	                            	</a>
+                            		<a v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-outline-primary" style="position:absolute; right:50px;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
+										수정
+                            		</a>
+                            		<a v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-primary" style="position:absolute; right:0;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
+										취소
+                            		</a>
+	                            </div>
 	                            <div class="card-body card-scroll" style="height: 60%;">
 	                                <h4 class="card-title"></h4>
-	                                <p class="card-text">{{boardDetail.boardListVO.boardContent}}</p><br><br>
-	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" style="position:relative;">
+	                                <p class="card-text">{{boardDetail.boardListVO.boardContent}}</p>
+	                                
+	                                <br><br>
+	                                <div v-if="boardDetailReply.length==0" style="color:gray;text-align:center;">
+	                                	<label for="detailReply">
+	                                	<i class="fa-solid fa-satellite-dish fa-lg"></i>
+	                                	첫 번째 댓글을 남겨주세요.
+	                                	</label>
+	                                </div>
+	                                
+	                                
+	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" style="position:relative;" :class="{'childReply':reply.superNo!=0,'childShow':reply.superNo>0}">
 	                                	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+reply.replyMemberNo" style="text-decoration:none;color:black;position:relative;">
 			                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -205,15 +235,37 @@
 			                                {{reply.replyContent}}
 	                                	</p>
 	                                	<p style="padding-left:3.1em;font-size:0.85em;color:grey;">
-	                                		<a>답글</a>&nbsp;
+	                                		<a v-if="reply.superNo==0" @click="re_reply(reply.replyNo)">답글</a>&nbsp;
 											<i v-if="reply.replyMemberNo == ${memberDto.memberNo}" class="fa-solid fa-xmark" style="display:none;z-index:100;" data-bs-toggle="modal" data-bs-target="#exampleModal" @click.stop="targetInput(reply.replyNo)"></i>
 										<p>
+										<p v-if="reply.superNo==0">
+											<span @click="showReply(reply.replyNo,index)" style="padding-left:3.1em;font-size:0.85em;color:grey;">{{replyStatus(index)}}</span>
+										</p>
 	                                </div>
 	                            </div>
+	                            <hr style="margin-top: 0; margin-bottom: 0;">
+	                            <div class="card-body">
+                                    <p class="card-text">
+                                        <i v-if="boardDetail.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo)"></i>
+                                        <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo)"></i>
+                                        &nbsp;
+                                        <i class="fa-regular fa-comment fa-lg" style="cursor: pointer;"></i>
+                                        &nbsp;
+                                        <i class="fa-regular fa-newspaper fa-lg"></i>
+
+                                    </p>
+                                    <p class="card-text" v-if="boardDetail.boardListVO.likecount > 0">
+                                        좋아요 {{boardDetail.boardListVO.likecount}}개
+                                    </p>
+                                </div>
 	                            <div class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
-	                                <span style="position: absolute; left:0; top: 6px; z-index: 999;">임티</span>
+	                                <span style="position: absolute; left:0; top: 6px; z-index: 999;">
+	                                	<label for="detailReply">
+											<i class="fa-solid fa-satellite-dish fa-lg focusInput"></i>
+                                    	</label>
+	                                </span>
 	                                <div class="input-group">
-	                                    <input type="text" class="form-control" v-model="replyContent" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter(boardDetail.boardListVO.boardNo)">
+	                                    <input id="detailReply" type="text" class="form-control" v-model="replyContent" :placeholder="replyPlaceholder" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @input="replyContent = $event.target.value" @keyup.enter="replyEnter(boardDetail.boardListVO.boardNo)">
 	                                    <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="replyEnter(boardDetail.boardListVO.boardNo)">작성</button>
 	                                  </div>
 	                            </div>
@@ -268,7 +320,11 @@
 				// 게시글 상세보기 변수
 				detailView:false,
                 animation:false,
-                boardDetail:null,
+                boardDetail:{
+                		attachList:[],
+                		boardListVO:{},
+                		hashtagList:[],
+                },
                 boardDetailReply:[],
                 boardDetailType:"",
                 
@@ -278,6 +334,8 @@
                 superNo:0,
                 
                 replyTarget:"",
+                
+                replyPlaceholder:"댓글 입력",
                 
 				
 	        };
@@ -319,6 +377,11 @@
                     this.animation = false;
                     this.superNo = 0;
                     this.replyTarget = "";
+                    this.boardDetail = {
+                		attachList:[],
+                		boardListVO:{},
+                		hashtagList:[],
+             		   },
                     $('html, body').css({'overflow': 'auto', 'height': '100%'});
                 }   
             },
@@ -424,6 +487,110 @@
             	await this.boardDetailReplySearch(boardNo);
             	await this.detailViewOn();
             },
+            
+            //좋아요 통합
+            like(likeNo){
+            	if(this.boardDetailType == 0){
+	        		const boardNo = likeNo;
+	        		axios({
+	        			url: "${pageContext.request.contextPath}/rest/board/like",
+	        			method: "post",
+	        			data:{ 
+	        				boardNo : boardNo,
+	        			}
+	        		})
+	        		.then(resp=>{
+	        			this.boardDetail.boardListVO.isLike = resp.data;
+	        			if(resp.data > 0){
+	        				this.boardDetail.boardListVO.likecount += 1
+	        			}else{
+	        				this.boardDetail.boardListVO.likecount -= 1
+	        			}
+	        		});
+            	}else{
+            		const boardNo = likeNo;
+            		axios({
+            			url: "${pageContext.request.contextPath}/rest/board_ad/like",
+            			method: "post",
+            			data:{ 
+            				boardNo : boardNo,
+            			}
+            		})
+            		.then(resp=>{
+            			this.boardDetail.boardListVO.isLike = resp.data;
+            			if(resp.data > 0){
+            				this.boardDetail.boardListVO.likecount += 1
+            			}else{
+            				this.boardDetail.boardListVO.likecount -= 1
+            			}
+            		});
+            	}
+        	},
+        	
+        	re_reply(replyNo){
+            	if(replyNo==this.superNo){
+            		this.superNo=0;
+                   	this.replyPlaceholder = "댓글 입력"
+            	}else{
+                   	this.superNo=replyNo;
+                   	this.replyPlaceholder = "답글 입력"
+                   	document.getElementById('detailReply').focus();
+            	}
+               	
+               },
+               
+               //답글 펼치기
+               showReply(replyNo,index){
+             	  
+             	  let arrayIndex = [];
+             	  let tmp = index+1;
+             	  if(index!=this.boardDetailReply.length){
+             		  
+                 	  while(true){
+                 		  if(this.boardDetailReply[tmp]==null) break;
+                 		  if(this.boardDetailReply[tmp].superNo==replyNo){
+                 			  console.log(tmp);
+                 			  arrayIndex.push(tmp);
+                 			  tmp++;
+                 		  }else if(this.boardDetailReply[tmp].superNo==-1||this.boardDetailReply[tmp].superNo==0) break;
+                 	  }
+                 	  if(arrayIndex.length >= 1){
+                     	  for(var i = 0; i<arrayIndex.length; i++){
+                     		  this.boardDetailReply[arrayIndex[i]].superNo = -1;
+                     	  }
+                     	 console.log("-1만들기");
+                     	 return;
+                 	  }
+                 	  
+                 	  while(true){
+                 		  if(this.boardDetailReply[tmp]==null) break;
+                 		  if(this.boardDetailReply[tmp].superNo==-1){
+                 			  console.log(tmp);
+                 			  arrayIndex.push(tmp);
+                 			  tmp++;
+                 		  }else if(this.boardDetailReply[tmp]==null||this.boardDetailReply[tmp].superNo==0) break;
+                 	  }
+                 	  
+                 	  for(var i = 0; i<arrayIndex.length; i++){
+                 		  this.boardDetailReply[arrayIndex[i]].superNo = replyNo;
+                 	  }
+                 	  console.log("+만들기");
+             	  }
+             	  console.log(arrayIndex);
+                },
+                
+              //답글 숨기기 보기 상태변경
+                replyStatus(index){
+						if(index==this.boardDetailReply.length) return;
+             	   if(this.boardDetailReply[index+1]!=null&&this.boardDetailReply[index+1].superNo>0){
+             		   return "답글 보기";
+             	   }else if(this.boardDetailReply[index+1]!=null&&this.boardDetailReply[index+1].superNo==0){
+             		   return "";
+             	   }else if(this.boardDetailReply[index+1]!=null&&this.boardDetailReply[index+1].superNo<0){
+             		   return "답글 숨기기";
+             	   }
+             	  
+                },
 	        
 	    },
 	    watch:{

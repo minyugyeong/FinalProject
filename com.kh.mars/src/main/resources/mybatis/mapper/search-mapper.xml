@@ -219,6 +219,12 @@
 			<result column="attach_type" property="attachType"/>		 	
 			<result column="attach_size" property="attachSize"/>		 	
 		 </collection>
+		 <collection property="hashtagList" javaType="list" ofType="BoardHashTagVO" 
+		 	select="tagSearchSubquery" column="board_no">
+		 	
+			<result column="hashtag_no" property="hashtagNo"/>		 	
+			<result column="hashtag_name" property="hashtagName"/>		 	
+		 </collection>
 	</resultMap>
 	
 	
@@ -229,10 +235,10 @@
 	        board b
 	        
 	        inner join member m on m.member_no = b.member_no
-	        inner join member_profile mp on m.member_no = mp.member_no
+	        left outer join member_profile mp on m.member_no = mp.member_no
 	        left outer join (select board_no, count(reply_no)"replycount" from board_reply where board_no = #{boardNo} group by board_no) r on r.board_no = b.board_no
 	        left outer join (select board_no, count(member_no)"likecount" from board_like where board_no = #{boardNo} group by board_no) bl on bl.board_no = b.board_no
-	        left outer join (select member_no "is_like" from board_like where board_no = #{boardNo} and member_no = #{memberNo}) blm on blm."is_like" = m.member_no
+	        left outer join (select member_no "is_like" from board_like where board_no = #{boardNo} and member_no = #{memberNo}) blm on blm."is_like" = #{memberNo}
 	        
 	    where b.board_no = #{boardNo}
 	</select>
@@ -240,6 +246,11 @@
 		select ba.board_no, attach.* from (
 		      select * from board_attach where board_no = #{board_no}
 		)ba inner join attach on ba.attach_no = attach.attach_no
+	</select>
+	<select id="tagSearchSubquery" resultType="BoardHashTagVO" parameterType="int">
+		select h.* from board_hashtag bh
+		    inner join hashtag h on bh.hashtag_no = h.hashtag_no
+		where bh.board_no = #{board_no}
 	</select>
 	
 	
@@ -269,6 +280,12 @@
 			<result column="attach_type" property="attachType"/>		 	
 			<result column="attach_size" property="attachSize"/>		 	
 		 </collection>
+		 <collection property="hashtagList" javaType="list" ofType="BoardHashTagVO" 
+		 	select="adTagSearchSubquery" column="board_ad_no">
+		 	
+			<result column="hashtag_no" property="hashtagNo"/>		 	
+			<result column="hashtag_name" property="hashtagName"/>		 	
+		 </collection>
 	</resultMap>
 	
 	
@@ -279,10 +296,10 @@
 	        board_ad b
 	        
 	        inner join member m on m.member_no = b.member_no
-	        inner join member_profile mp on m.member_no = mp.member_no
+	        left outer member_profile mp on m.member_no = mp.member_no
 	        left outer join (select board_ad_no, count(reply_no)"replycount" from board_ad_reply where board_ad_no = #{boardNo} group by board_ad_no) r on r.board_ad_no = b.board_ad_no
 	        left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like where board_ad_no = #{boardNo} group by board_ad_no) bl on bl.board_ad_no = b.board_ad_no
-	        left outer join (select member_no "is_like" from board_ad_like where board_ad_no = #{boardNo} and member_no = #{memberNo}) blm on blm."is_like" = m.member_no
+	        left outer join (select member_no "is_like" from board_ad_like where board_ad_no = #{boardNo} and member_no = #{memberNo}) blm on blm."is_like" = #{memberNo}
 	        
 	    where b.board_ad_no = #{boardNo}
 	</select>
@@ -290,6 +307,11 @@
 		select ba.board_ad_no "board_no", attach.* from (
 		      select * from board_ad_attach where board_ad_no = #{board_ad_no}
 		)ba inner join attach on ba.attach_no = attach.attach_no
+	</select>
+	<select id="adTagSearchSubquery" resultType="BoardHashTagVO" parameterType="int">
+		select h.* from board_ad_hashtag bh
+		    inner join hashtag h on bh.hashtag_no = h.hashtag_no
+		where bh.board_ad_no = #{board_ad_no}
 	</select>
 	
  </mapper> 
