@@ -152,6 +152,11 @@ public class BoardAdDaoImpl implements BoardAdDao{
 		return sqlSession.selectOne("board_ad.countMemberAd", memberNo);
 	}
 
+	@Override
+	public int countAd(int memberNo) {
+		return sqlSession.selectOne("board_ad.boardAdCount", memberNo);
+	}
+
 	
 
 }
