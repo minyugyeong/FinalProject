@@ -84,7 +84,7 @@ public class RoomManager {
 	public boolean notExist(int no) {
 		return rooms.containsKey(no) == false;
 	}
-	public void broadcastRoom(WebSocketSession session, int roomNo, String message, int target) throws IOException {
+	public void broadcastRoom(WebSocketSession session, int roomNo, String message, int target, int messageType) throws IOException {
 		User user = new User(session);
 		if(!user.isMember()) return;//비회원 차단
 		MessageVO messageVO = MessageVO.builder()
@@ -92,20 +92,36 @@ public class RoomManager {
 																.roomNo(roomNo)
 																.dmContent(message)
 																.dmRecordTime(new Date())
+																.messageType(messageType)
 															.build();
 		//dmDao.insertDmRecordDto(messageVO);
 		String json = mapper.writeValueAsString(messageVO);
 		TextMessage textMessage = new TextMessage(json);
-		if(getRoom(roomNo).isExist(target)) {
-			getRoom(roomNo).broadcast(textMessage);
-		} else {
-			waitingRoom.broadcast(textMessage);
+		
+		User target2 = waitingRoom.findUser(target);
+		if(target2!=null) {
+			target2.send(textMessage);
 		}
+		user.send(textMessage);
+		
+//		if(getRoom(roomNo).isExist(target)) {
+//			getRoom(roomNo).broadcast(textMessage);
+//		} else {
+//			waitingRoom.broadcast(textMessage);
+//		}
 	}
 	
-	public void alramRoom(WebSocketSession session, int memberNo) {
-		User user = new User(session);
-		
-		
+	public void alramRoom(WebSocketSession session, int memberNo,int messageType) throws IOException {
+		MessageVO messageVO = MessageVO.builder()
+				.who(memberNo)
+				.messageType(messageType)
+			.build();
+		String json = mapper.writeValueAsString(messageVO);
+		TextMessage textMessage = new TextMessage(json);
+		User target = waitingRoom.findUser(memberNo);
+		if(target!=null) {
+			target.send(textMessage);
+			System.out.println("알람메세지 전송");
+		}
 	}
 }

@@ -15,4 +15,5 @@ public class MessageVO {
 	private String dmContent;
 	private int roomNo;
 	private Date dmRecordTime;
+	private int messageType;
 }

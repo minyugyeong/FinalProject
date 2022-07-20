@@ -12,4 +12,5 @@ public class ReceiveVO {
 	private int type;
 	private int roomNo;
 	private String message;
+	private int messageType;
 }
