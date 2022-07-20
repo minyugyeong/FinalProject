@@ -810,9 +810,7 @@
                            
                            //답글 펼치기
                           showReply(replyNo,index){
-                        	   
-                        	  
-                        	   this.replyStatus = "답글 숨기기"
+                        	  this.replyStatus = "답글 숨기기"
                         	  let arrayIndex = [];
                         	  let tmp = index+1;
                         	  if(index!=this.boardDetailReply.length){
@@ -836,7 +834,6 @@
 	                        			  console.log(tmp);
 	                        			  arrayIndex.push(tmp);
 	                        			  tmp++;
-	                        			  this.replyStatus = "답글 보기"
 	                        		  }else if(this.boardDetailReply[tmp]==null||this.boardDetailReply[tmp].superNo==0) break;
 	                        	  }
 	                        	  

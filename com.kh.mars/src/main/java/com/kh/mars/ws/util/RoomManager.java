@@ -87,7 +87,6 @@ public class RoomManager {
 	public void broadcastRoom(WebSocketSession session, int roomNo, String message, int target) throws IOException {
 		User user = new User(session);
 		if(!user.isMember()) return;//비회원 차단
-		System.out.println(waitingRoom);
 		MessageVO messageVO = MessageVO.builder()
 																.who(user.getMemberNo())
 																.roomNo(roomNo)
@@ -102,5 +101,11 @@ public class RoomManager {
 		} else {
 			waitingRoom.broadcast(textMessage);
 		}
+	}
+	
+	public void alramRoom(WebSocketSession session, int memberNo) {
+		User user = new User(session);
+		
+		
 	}
 }

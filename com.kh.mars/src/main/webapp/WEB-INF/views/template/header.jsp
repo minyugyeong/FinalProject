@@ -143,12 +143,28 @@
                                     <div class="card border-light">
                                         <div v-for="(alram, index) in alramList" :key="index" class="card-body" style="padding:0;">
                                           <p class="card-title"><hr v-if="alramTime(index)!=''&&alramTime(index)!='오늘'">{{alramTime(index)}}</p>
-                                          <div style="position:relative;font-size:0.8em;">
-                                          	<img v-if="alram.attachNo > 0" :src="'${pageContext.request.contextPath}/file/download/'+alram.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:0;">
-		                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:0;">
-											<span style="padding-left:35px;">{{alram.memberNick}}</span>
-											<span></span>
-											
+                                          <div style="position:relative;font-size:0.7em;font-weight:100;height: 30px;">
+                                          	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+alram.memberNo" style="color:black;text-decoration:none;">
+	                                          	<img v-if="alram.attachNo > 0" :src="'${pageContext.request.contextPath}/file/download/'+alram.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:0;">
+			                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:0;">
+												<span style="padding-left:35px;font-weight:600;">{{alram.memberNick}}</span>
+                                          	</a>
+											<span v-if="alram.type==0&&alram.etc==1">님이 게시글에 좋아요를 누르셨습니다!</span>
+											<span v-if="alram.type==0&&alram.etc>1">님 외 {{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</span>
+											<span v-if="alram.type==1&&alram.etc==1">님이 게시글에 좋아요를 누르셨습니다!</span>
+											<span v-if="alram.type==1&&alram.etc>1">님 외 {{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</span>
+											<span v-if="alram.type==2&&alram.etc==0">
+												<span>님이 팔로우 요청을 하셨습니다!</span>
+												<span style="position:absolute; right:0;">
+													<button class="btn btn-outline-primary" style="margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">승인</button>
+													<button class="btn btn-primary" style="margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">취소</button>
+												</span>
+											</span>
+											<span v-if="alram.type==2&&alram.etc==1">님이 팔로우 하셨습니다!</span>
+											<span v-if="alram.type==3&&alram.etc==1">님이 게시글에 댓글을 작성하셨습니다!</span>
+											<span v-if="alram.type==3&&alram.etc>1">님 외 {{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</span>
+											<span v-if="alram.type==4&&alram.etc==1">님이 게시글에 댓글을 작성하셨습니다!</span>
+											<span v-if="alram.type==4&&alram.etc>1">님 외 {{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</span>
 											
                                           </div>
                                         </div>
