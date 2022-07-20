@@ -31,13 +31,9 @@
 			select 
 			        m.member_no "no", m.member_nick "main", m.member_name "sub", 0 "type", f.follow_target "is_follow", mp.attach_no "attachNo" 
 			    from (
-			        (select * from member where member_private = 0
+			        (select * from member 
 			                        minus
 			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
-			                        union
-			                    select m.* from member m
-			                            left outer join follow f on m.member_no = f.follow_target
-			                            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
 			        ) m 
 			        left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
 			        left outer join member_profile mp on mp.member_no = m.member_no 
@@ -46,13 +42,9 @@
 			    select 
 			        m.member_no "no", m.member_nick "main", m.member_name "sub", 0 "type", f.follow_target "is_follow", mp.attach_no "attachNo" 
 			    from (
-			        (select * from member where member_private = 0
+			        (select * from member 
 			                        minus
 			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
-			                        union
-			                    select m.* from member m
-			                            left outer join follow f on m.member_no = f.follow_target
-			                            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
 			        ) m 
 			        left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
 			        left outer join member_profile mp on mp.member_no = m.member_no 
