@@ -220,6 +220,8 @@
                     searchLength:null,
                     
                     alramList:[],
+                    
+                    chatAlram:false,
               
                 };
             },
@@ -350,6 +352,31 @@
             },
             boeforeMount(){},
             mounted(){
+            	var uri = "${pageContext.request.contextPath}/ws/dm";
+        		
+        		//접속
+        		socket = new SockJS(uri);
+        		
+        		socket.onopen = event => {
+        			//접속하자마자 나의 채널명을 서버로 전송해야한다(입장메세지)
+        			var message = {
+        				type:1,
+        			};
+        			var json = JSON.stringify(message);
+        			socket.send(json);
+        		};
+        		
+        		socket.onmessage = (event) => {
+        			var data = JSON.parse(event.data);//json을 객체로 복구
+        			console.log("메세지가 올텐데요");
+        			console.log(data.who);
+        			console.log(${login});
+        			if(data.who==${login}){
+        				console.log("알람 수신")
+        				this.chatAlram = true;
+        			}
+        		};
+            	
             	$("body,html").click(resp=>{
                     this.noticeValue = false;
                     this.searchValue = false;

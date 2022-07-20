@@ -392,11 +392,11 @@
 			                            	{{boardDetail.boardListVO.memberNick}}
 		                            	</span>
 	                            	</a>
-	                            	<a v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-outline-primary" style="position:absolute; right:50px;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
+	                            	<a :href="'${pageContext.request.contextPath}/board/edit?boardNo='+boardDetail.boardListVO.boardNo" v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-outline-primary" style="position:absolute; right:50px;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
 										수정
                             		</a>
-                            		<a v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-primary" style="position:absolute; right:0;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
-										취소
+                            		<a data-bs-toggle="modal" data-bs-target="#boardDeleteModal" v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-primary" style="position:absolute; right:0;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
+										삭제
                             		</a>
 	                            </div>
 	                            <div class="card-body card-scroll" style="height: 60%;">
@@ -520,6 +520,26 @@
 				       		<img :src="'${pageContext.request.contextPath }/file/download/'+ ball.attachNo" width="30" height="30" style="border-radius: 70%;">
 				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+ball.memberNo">{{ball.memberNick}}</a>
 				       </p>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+				
+				
+				<!-- 게시글 삭제 Modal -->
+				<div class="modal fade" id="boardDeleteModal" tabindex="200" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+				    <div class="modal-content" style="width:400px;">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="exampleModalLabel">댓글 삭제</h5>
+				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				      </div>
+				      <div class="modal-body">
+				        삭제하시겠습니까?
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+				        <a class="btn btn-primary" :href="'${pageContext.request.contextPath}/board/delete?boardNo='+boardDetail.boardListVO.boardNo">삭제</a>
 				      </div>
 				    </div>
 				  </div>

@@ -296,7 +296,7 @@
 	        board_ad b
 	        
 	        inner join member m on m.member_no = b.member_no
-	        left outer member_profile mp on m.member_no = mp.member_no
+	        left outer join member_profile mp on m.member_no = mp.member_no
 	        left outer join (select board_ad_no, count(reply_no)"replycount" from board_ad_reply where board_ad_no = #{boardNo} group by board_ad_no) r on r.board_ad_no = b.board_ad_no
 	        left outer join (select board_ad_no, count(member_no)"likecount" from board_ad_like where board_ad_no = #{boardNo} group by board_ad_no) bl on bl.board_ad_no = b.board_ad_no
 	        left outer join (select member_no "is_like" from board_ad_like where board_ad_no = #{boardNo} and member_no = #{memberNo}) blm on blm."is_like" = #{memberNo}
