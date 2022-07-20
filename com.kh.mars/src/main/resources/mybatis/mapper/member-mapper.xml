@@ -146,7 +146,7 @@
 						
 					</where>
 					
-			)TMP
+			order by member_no)TMP
 		)where rn between #{begin} and #{end} order by member_no asc
 		
 	</select>
