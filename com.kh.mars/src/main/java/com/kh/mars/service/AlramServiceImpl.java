@@ -32,11 +32,17 @@ public class AlramServiceImpl implements AlramService {
 
 	@Override
 	public int isRocket(int memberNo) {
+		if(sqlSession.selectOne("alram.isAlram",memberNo)==null) {
+			return 0;
+		}
 		return sqlSession.selectOne("alram.isAlram",memberNo);
 	}
 
 	@Override
 	public int iscCat(int memberNo) {
+		if(sqlSession.selectOne("alram.isChatAlram",memberNo)==null) {
+			return 0;
+		}
 		return sqlSession.selectOne("alram.isChatAlram",memberNo);
 	}
 	

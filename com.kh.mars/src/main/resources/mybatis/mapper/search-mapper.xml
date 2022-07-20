@@ -102,7 +102,7 @@
 	select rownum rn, TMP.* from(
 		select * from (
             select 
-                b.board_no "board_no", min(ba.attach_no) "attach_no" , count(ba.attach_no)"attach_count" , 0 "type"
+                b.board_no "board_no", min(ba.attach_no) "attach_no" , count(ba.attach_no)"attach_count" , 0 "type" ,b.board_date "date"
             from 
                 board_hashtag bh 
                 
@@ -119,10 +119,15 @@
                     inner join board_attach ba on b.board_no = ba.board_no
                 
                 where hashtag_no = #{hashTagNo}
-                group by b.board_no
+                <if test="uptoNo != 0"> 
+			        <![CDATA[
+			        where b.board_no <= #{uptoNo}
+			        ]]>
+		        </if>
+                group by b.board_no, b.board_date
 		union
             select 
-                b.board_ad_no "board_no", min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", 1 "type"
+                b.board_ad_no "board_no", min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", 1 "type", b.board_ad_date "date"
             from 
                 board_ad_hashtag bh 
                 
@@ -138,16 +143,15 @@
                     ) m on b.member_no = m.member_no
                     inner join board_ad_attach ba on b.board_ad_no = ba.board_ad_no
             
-            where hashtag_no = #{hashTagNo}
-            group by b.board_ad_no
+            where hashtag_no = #{hashTagNo} 
+            <if test="uptoNoAd != 0"> 
+        		<![CDATA[
+           		and b.board_ad_no <={uptoNoAd}
+	            ]]>
+	        </if>
+            group by b.board_ad_no, b.board_ad_date
         )fn 
-        
-        <if test="uptoNo != 0"> 
-        <![CDATA[
-        where fn."board_no" <= #{uptoNo}
-        ]]>
-        </if>
-        order by fn."board_no" desc
+        order by fn."date" desc
 	)TMP
 	)fn where rn between ((#{pageCount}-1) * 9 + 1) and (#{pageCount} * 9)
 	</select>

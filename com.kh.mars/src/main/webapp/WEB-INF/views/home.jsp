@@ -207,7 +207,7 @@
                                     </p>
                                 </div>
                                 <hr style="margin-top: 0; margin-bottom: 0;">
-                                <div class="card-body" style="padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
+                                <div v-if="board.boardListVO.boardIsReply==0" class="card-body" style="padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
                                     <span style="position: absolute; left:10px; top: 6px; z-index: 30;">
                                     	<label :for="'focusReply'+index">
 											<i class="fa-solid fa-satellite-dish fa-lg focusInput"></i>
@@ -240,7 +240,7 @@
 	                                            <div v-for="(attach, index2) in adList[((index+1)/3)-1].attachList" :key="index2" class="carousel-item" :class="{'active':index2==0}" style="min-height: 468px; background-color: var(--bs-dark); position:relative;">
 	                                                <img :src="'${pageContext.request.contextPath}/file/download/'+attach.attachNo" class="d-block position-absolute top-50 start-50 translate-middle" style="object-position: left; width: 101%;">
 	                                            </div>
-	                                            <a v-if="adList[((index+1)/3)-1].boardListVO.boardAdLink!=null" :href="adList[((index+1)/3)-1].boardListVO.boardAdLink" class="adLinkOpacity" :class="{'hidelink':detailView}" style="color:white;position:absolute; bottom:0; width:100%; background-color:gray; opacity:0.7;z-index:500;text-decoration:none;height:30px;padding-top: 0.2em;padding-left: 10px;">
+	                                            <a v-if="adList[((index+1)/3)-1].boardListVO.boardAdLink!=null" :href="adList[((index+1)/3)-1].boardListVO.boardAdLink" class="adLinkOpacity" :class="{'hidelink':detailView}" style="color:white;position:absolute; bottom:0; width:100%; background-color:#eb6864; opacity:0.7;z-index:500;text-decoration:none;height:30px;padding-top: 0.2em;padding-left: 10px;">
 	                                            	광고페이지로 이동
 	                                            </a>
                                         </div>
@@ -290,7 +290,7 @@
                                     </p>
                                 </div>
                                 <hr style="margin-top: 0; margin-bottom: 0;">
-                                <div class="card-body" style="padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
+                                <div v-if="adList[((index+1)/3)-1].boardListVO.boardIsReply==0" class="card-body" style="padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
                                     <span style="position: absolute; left:10px; top: 6px; z-index: 30;">
                                     	<label :for="'foucsReplyAd'+((index+1)/3)-1">
 	                                    	<i class="fa-solid fa-satellite-dish fa-lg"></i>
@@ -416,7 +416,7 @@
 	                                	</label>
 	                                </div>
 	                                
-	                                <div v-for="(reply, index) in boardDetailReply" class="card-text show-icon" :class="{'childReply':reply.superNo!=0,'childShow':reply.superNo>0}" style="position:relative;">
+	                                <div v-if="boardDetail.boardListVO.boardIsReply==0" v-for="(reply, index) in boardDetailReply" class="card-text show-icon" :class="{'childReply':reply.superNo!=0,'childShow':reply.superNo>0}" style="position:relative;">
 	                                	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+reply.replyMemberNo" style="text-decoration:none;color:black;position:relative;">
 			                                <img v-if="reply.replyMemberProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+reply.replyMemberProfile" width="30" style="border-radius: 70%;position:absolute;top:10%;">
 		                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -454,7 +454,7 @@
                                         좋아요 {{boardDetail.boardListVO.likecount}}개
                                     </p>
                                 </div>
-	                            <div class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
+	                            <div v-if="boardDetail.boardListVO.boardIsReply==0" class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
 	                                <span style="position: absolute; left:10px; top: 6px; z-index: 999;">
 	                                	<label for="detailReply">
 		                                	<i class="fa-solid fa-satellite-dish fa-lg"></i>
@@ -669,6 +669,13 @@
                         			}else{
                         				this.boardList[index].boardListVO.likecount -= 1
                         			}
+                        			const alram = {
+            	        					type:3,
+            	        					target: this.boardList[index].boardListVO.memberNo,
+            	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+            	        			}
+            	        			const jsonAlram = JSON.stringify(alram);
+            	        			socket.send(jsonAlram);
                         		});
                         	},
                         	//광고 좋아요기능
@@ -688,6 +695,13 @@
                         			}else{
                         				this.adList[index].boardListVO.likecount -= 1
                         			}
+                        			const alram = {
+            	        					type:3,
+            	        					target: this.adList[index].boardListVO.memberNo,
+            	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+            	        			}
+            	        			const jsonAlram = JSON.stringify(alram);
+            	        			socket.send(jsonAlram);
                         		});
                         	},
                         	// 상세보기 모달창 작동 함수
@@ -767,6 +781,13 @@
 	                            	.then(resp=>{
 	                            		this.boardDetailSearch();
 	                            		this.replyContent = "";
+	                            		const alram = {
+                	        					type:3,
+                	        					target: this.boardDetail.boardListVO.memberNo,
+                	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+                	        			}
+                	        			const jsonAlram = JSON.stringify(alram);
+                	        			socket.send(jsonAlram);
 	                            	});
                             	}else{
                             		//광고 댓글 작성
@@ -789,6 +810,13 @@
                    	            		this.replyContent = "";
                    	            		this.superNo = 0;
                    	            		this.replyPlaceholder = "댓글 입력"
+                	            		const alram = {
+                	        					type:3,
+                	        					target: this.boardDetail.boardListVO.memberNo,
+                	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+                	        			}
+                	        			const jsonAlram = JSON.stringify(alram);
+                	        			socket.send(jsonAlram);
                                		});
                             	}
                             },
@@ -814,6 +842,13 @@
             	            		this.replyContent = "";
             	            		this.superNo = 0;
             	            		this.replyPlaceholder = "댓글 입력"
+            	            		const alram = {
+            	        					type:3,
+            	        					target: boardAd.boardListVO.memberNo,
+            	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+            	        			}
+            	        			const jsonAlram = JSON.stringify(alram);
+            	        			socket.send(jsonAlram);
                         		})
                             },
                             //댓글 지정

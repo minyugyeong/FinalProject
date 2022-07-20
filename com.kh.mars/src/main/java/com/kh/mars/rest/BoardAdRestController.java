@@ -68,7 +68,7 @@ public class BoardAdRestController {
 		return boardLikeService.boardAdLike(memberNo, board);
 	}
 	
-	@PostMapping("/ad_count")
+	@PostMapping("/rest/board_ad/ad_count")
 	public void boardAdCount(
 							@RequestParam int boardAdNo,
 							HttpSession session) {
