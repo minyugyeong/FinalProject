@@ -598,12 +598,26 @@
                 		if(resp.data > 0){
                 			this.block == true;
                 			this.confirm = 1;//언팔
+                			const alram = {
+    	        					type:3,
+    	        					target: ${param.memberNo},
+    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+    	        			}
+    	        			const jsonAlram = JSON.stringify(alram);
+    	        			socket.send(jsonAlram);
                 		}else if(resp.data == 0){
                 			this.block == true;
                 			this.confirm = 2;//팔로우
                 		}else{
                 			this.block == true;
                 			this.confirm = 0;//신청
+                			const alram = {
+    	        					type:3,
+    	        					target: ${param.memberNo},
+    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+    	        			}
+    	        			const jsonAlram = JSON.stringify(alram);
+    	        			socket.send(jsonAlram);
                 		}
                 	});
                 },

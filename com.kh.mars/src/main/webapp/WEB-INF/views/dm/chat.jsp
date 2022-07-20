@@ -102,7 +102,7 @@
 				</span>
 			</div>
 			<div class="card col-7" style="border-radius:0;border-left:0;align-content: center;flex-wrap: wrap;flex-direction: row;">
-				<a v-if="dmTarget!=null" :href="'${pageContext.request.contextPath}/member/page?memberNo='+dmTarget.memberNo" style="color:black;text-decoration:none;">
+				<a v-if="dmTarget!=''" :href="'${pageContext.request.contextPath}/member/page?memberNo='+dmTarget.memberNo" style="color:black;text-decoration:none;">
 					<img v-if="dmTarget!=null&&dmTarget.attachNo!=0" :src="'${pageContext.request.contextPath}/file/download/'+dmTarget.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:20%;">
 					<img v-if="dmTarget!=null&&dmTarget.attachNo==0" src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:20%;">
 					<span v-if="dmTarget!=null" style="padding-left:30px;word-wrap:normal;">
