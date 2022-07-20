@@ -430,6 +430,24 @@
 				  </div>
 				</div>
 				
+
+				<!-- 일반 게시글 좋아요 리스트 Modal -->
+                <div class="modal fade" id="boardLikeList" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="exampleModalLabel">좋아요</h5>
+				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				      </div>
+				      <div class="modal-body">
+				        <p v-for="(bll, index) in boardLike" v:bind:key="index">
+				        	<img :src="'${pageContext.request.contextPath }/file/download/'+ bll.attachNo" width="30" height="30" style="border-radius: 70%;">
+				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+bll.memberNo">{{bll.memberNick}}</a>
+				        </p>
+				      </div>
+				    </div>
+				  </div>
+				</div>
 				
 				<!-- 게시글 삭제 Modal -->
 				<div class="modal fade" id="boardDeleteModal" tabindex="200" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -450,41 +468,7 @@
 				  </div>
 				</div>
 				
-				<!-- 일반 게시글 좋아요 리스트 Modal -->
-                <div class="modal fade" id="boardLikeList" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-				  <div class="modal-dialog">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <h5 class="modal-title" id="exampleModalLabel">좋아요</h5>
-				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				      </div>
-				      <div class="modal-body">
-				        <p v-for="(bll, index) in boardLike" v:bind:key="index">
-				        	<img :src="'${pageContext.request.contextPath }/file/download/'+ bll.attachNo" width="30" height="30" style="border-radius: 70%;">
-				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+bll.memberNo">{{bll.memberNick}}</a>
-				        </p>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-				
-				<!-- 광고 게시글 좋아요 리스트 Modal -->
-				<div class="modal fade" id="adBoardLikeList" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-				  <div class="modal-dialog">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <h5 class="modal-title" id="exampleModalLabel">좋아요</h5>
-				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				      </div>
-				      <div class="modal-body">
-				       <p v-for="(ball,index) in boardAdLike" v:bind:key="index">
-				       		<img :src="'${pageContext.request.contextPath }/file/download/'+ ball.attachNo" width="30" height="30" style="border-radius: 70%;">
-				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+ball.memberNo">{{ball.memberNick}}</a>
-				       </p>
-				      </div>
-				    </div>
-				  </div>
-				</div>
+			
 
 </div> 
     <!-- vue js도 lazy loading을 사용한다 -->
@@ -566,8 +550,7 @@
                   	//일반 게시글 좋아요 목록 변수
                     boardLike: [],
                     
-                    //광고 게시글 좋아요 목록 변수
-                    boardAdLike: [],
+               
                     
                 };
             },
@@ -928,31 +911,33 @@
             
           	//일반 게시글 좋아요 목록
             boardLikeList(boardNo){
-        	   axios({
-        		   url : "${pageContext.request.contextPath}/rest/board/board_like",
-        		   method:"get",
-        		   params:{
-        			   boardNo : boardNo
-        		   }
-        	   })
-        	   .then(resp=>{
-        		   this.boardLike=resp.data;
-        	   });
+            	if(this.boardDetailType == 0){
+             	   axios({
+             		   url : "${pageContext.request.contextPath}/rest/board/board_like",
+             		   method:"get",
+             		   params:{
+             			   boardNo : boardNo
+             		   }
+             	   })
+             	   .then(resp=>{
+             		   this.boardLike=resp.data;
+             	   });
+                 }
+                 else{
+                 	axios({
+              		   url : "${pageContext.request.contextPath}/rest/board/board_ad_like",
+              		   method: "get",
+              		   params :{
+              			   boardNo : boardNo
+              		   }
+              	   })
+              	   .then(resp=>{
+              		  this.boardLike=resp.data; 
+              	   });
+                 }
            },
            
-           //광고 게시글 좋아요 목록
-           boardAdLikeList(boardNo){
-        	   axios({
-        		   url : "${pageContext.request.contextPath}/rest/board/board_ad_like",
-        		   method: "get",
-        		   params :{
-        			   boardNo : boardNo
-        		   }
-        	   })
-        	   .then(resp=>{
-        		  this.boardAdLike=resp.data; 
-        	   });
-           }
+       
                 
                 
             },
