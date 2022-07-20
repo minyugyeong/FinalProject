@@ -335,7 +335,7 @@ select * from(
 					
 				</where>
 				
-			)TMP
+			order by board_ad_no desc)TMP
 		)where rn between #{begin} and #{end} order by board_ad_no desc
 		
 	</select>
