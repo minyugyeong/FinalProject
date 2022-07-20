@@ -359,9 +359,6 @@ $(function(){
 		      		
 		      		<div class="col-md-5">
 					    	<div class="row">
-					    		<div class="col-md-2 right">
-						    		<img src="${pageContext.request.contextPath}/file/download/${attachNo}" class="img img-circle">		    		
-					    		</div>
 					    		<div class="col-md-10 left bottom">
 					    			<span class="nickname">${memberNick}</span>
 					    		</div>
@@ -388,15 +385,6 @@ $(function(){
 					    		<input type="text" name="memberNick" class="form-control" placeholder="@사람태그" id="memberTag" autocomplete="off">
 					    	</div>
 					    	
-					    	<!-- <div class="row">
-					    		<div class="col-md-8 offset-md-2">
-					    			<ul class="list-group">
-					    				<li v-for="(nick, index) in nickList" v-bind:key="index" class="list-group-item">
-					    					<div v-on:click="selectNick(index);">{{nick.memberNick}}</div>
-					    				</li>
-					    			</ul>
-					    		</div>
-					    	</div> -->
 					    	
 					    	<div class="row mt-4 form-check form-switch" style="display: flex;">
 					    		
