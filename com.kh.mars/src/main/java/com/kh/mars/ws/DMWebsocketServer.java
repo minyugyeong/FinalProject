@@ -24,7 +24,7 @@ public class DMWebsocketServer extends TextWebSocketHandler{
 	@Autowired
 	private DmDao dmDao;
 	
-	public static final int join = 1, chat = 2;
+	public static final int join = 1, chat = 2, alram = 3;
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -47,6 +47,9 @@ public class DMWebsocketServer extends TextWebSocketHandler{
 			dmDao.roomEnterUpdate(receiveVO.getRoomNo());
 			dmService.dmService(receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget(), user.getMemberNo());
 			manager.broadcastRoom(session, receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget());
+		}
+		else if(receiveVO.getType() == alram) {
+		
 		}
 		
 	}

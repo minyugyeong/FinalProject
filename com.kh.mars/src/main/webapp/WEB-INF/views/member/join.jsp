@@ -24,38 +24,38 @@
             </a>
         </div>
 
-        <div class="mb-2 text-center">
+        <div class="mb-4 text-center">
             <h4>친구들의 사진과 동영상을 보려면 가입하세요.</h4>
         </div>
-
-        <div class="mb-2 text-center"><a href="#">facebook로그인</a></div>
-
-        <div class="mb-4 text-center">또는</div>
+        
+        <div class="text-end mt-3 text-muted">
+        	<span style="color:red;">*</span> 은 필수항목 입니다.
+        </div>
 
         <div class="row form-floating mb-3">
             <input type="email" class="form-control member-email" id="floatingInput" placeholder="name@example.com" name="memberEmail">
             <span style="color:red"></span>
-            <label for="floatingInput">이메일 주소</label>
+            <label for="floatingInput">이메일 주소 <span style="color:red;">*</span></label>
             <div class="invalid-feedback">사용할 수 없는 이메일 입니다</div>
         </div>
 
         <div class="row form-floating mb-3">
             <input type="text" class="form-control" id="floatingInput2" placeholder="memberNick" name="memberNick">
             <span style="color:red"></span>
-            <label for="floatingInput2">닉네임</label>
+            <label for="floatingInput2">닉네임 <span style="color:red;">*</span></label>
             <div class="invalid-feedback">영문 대/소문자,특수문자(-_.) 4~16글자로 작성해주세요</div>
         </div>
         
         <div class="row form-floating mb-3">
             <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="memberPassword">
-            <label for="floatingPassword">비밀번호</label>
+            <label for="floatingPassword">비밀번호 <span style="color:red;">*</span></label>
             <div class="invalid-feedback">영문 대/소문자, 특수문자, 숫자가 반드시 포함된 8~16자로 작성하세요</div>
         </div>
 
         <div class="row form-floating mb-3">
             <input type="text" class="form-control" id="floatingNumber" placeholder="PhoneNumber" name="memberPhone">
             <span style="color:red"></span>
-            <label for="floatingNumber">전화번호</label>
+            <label for="floatingNumber">전화번호 <span style="color:red;">*</span></label>
             <div class="invalid-feedback">올바른 형식이 아닙니다</div>
         </div>
         

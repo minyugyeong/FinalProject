@@ -392,14 +392,12 @@
 			                            	{{boardDetail.boardListVO.memberNick}}
 		                            	</span>
 	                            	</a>
-	                            	<span v-if="detailViewType==1" style="position:absolute;right:10px;">
-	                            		<i v-if="boardDetail.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
-                                        <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
-	                            	</span>
-	                            	<span v-else style="position:absolute;right:10px;">
-	                            		<i v-if="boardDetail.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
-                                        <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
-	                            	</span>
+	                            	<a v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-outline-primary" style="position:absolute; right:50px;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
+										수정
+                            		</a>
+                            		<a v-if="boardDetail.boardListVO.memberNo==${login}" class="btn btn-primary" style="position:absolute; right:0;margin-right: 2px;padding: 5px 5px;font-weight: 100;font-size: 0.9em;">
+										취소
+                            		</a>
 	                            </div>
 	                            <div class="card-body card-scroll" style="height: 60%;">
 	                                <h4 class="card-title"></h4>
@@ -426,17 +424,36 @@
 											{{reply.memberNick}}
 	                                	</p>
 	                                	</a>
-	                                	<p style="padding-left:2.9em;margin-bottom:1px;font-size:0.9em;">
+	                                	<p style="padding-left:2.9em;margin-bottom:5px;font-size:0.9em;">
 			                                {{reply.replyContent}}
 	                                	</p>
-	                                	<p style="padding-left:3.1em;font-size:0.85em;color:grey;">
-	                                		<a v-if="reply.superNo < 1" @click="re_reply(reply.replyNo)">답글달기</a>&nbsp;
+	                                	<p style="padding-left:3.1em;margin-bottom:5px;font-size:0.85em;color:grey;">
+	                                		<a v-if="reply.superNo==0" @click="re_reply(reply.replyNo)">답글달기</a>&nbsp;
 											<i v-if="reply.replyMemberNo == ${memberDto.memberNo}" class="fa-solid fa-xmark" style="display:none;z-index:100;" data-bs-toggle="modal" data-bs-target="#exampleModal" @click.stop="targetInput(reply.replyNo)"></i>
-										<p>
-										<span v-if="reply.superNo < 1" @click="showReply(reply.replyNo,index)" style="padding-left:3.1em;font-size:0.85em;color:grey;">{{replyStatus}}</span>
+										</p>
+										<p v-if="reply.superNo==0">
+											<span @click="showReply(reply.replyNo,index)" style="padding-left:3.1em;font-size:0.85em;color:grey;">{{replyStatus(index)}}</span>
+										</p>
 	                                </div>
 	                                
 	                            </div>
+	                            <hr style="margin-top: 0; margin-bottom: 0;">
+	                            <div class="card-body">
+                                    <p class="card-text">
+                                        <i v-if="detailViewType==1&&boardDetail.boardListVO.isLike==0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+                                        <i v-if="detailViewType==1&&boardDetail.boardListVO.isLike==1" class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+                                        <i v-if="detailViewType==0&&boardDetail.boardListVO.isLike==0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+                                        <i v-if="detailViewType==0&&boardDetail.boardListVO.isLike==1" class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+                                        &nbsp;
+                                        <i class="fa-regular fa-comment fa-lg" style="cursor: pointer;"></i>
+                                        &nbsp;
+                                        <i class="fa-regular fa-newspaper fa-lg"></i>
+
+                                    </p>
+                                    <p class="card-text" v-if="boardDetail.boardListVO.likecount > 0">
+                                        좋아요 {{boardDetail.boardListVO.likecount}}개
+                                    </p>
+                                </div>
 	                            <div class="card-footer" style="background-color: white;height: 2.5em;padding-top: 0px; padding-left: 40px; padding-right: 0; padding-bottom: 0px!important; position: relative;">
 	                                <span style="position: absolute; left:10px; top: 6px; z-index: 999;">
 	                                	<label for="detailReply">
@@ -451,7 +468,6 @@
 	                        </div>
 	                    </div>
 	                </div>
-	                
 	                
 	            </div>
                 <!-- 댓글 Modal -->
@@ -483,7 +499,7 @@
 				      </div>
 				      <div class="modal-body">
 				        <p v-for="(bll, index) in boardLike" v:bind:key="index">
-				        	<img :src="'${pageContext.request.contextPath }/file/download/'+ bll.attachNo" width="25" style="border-radius: 70%;">
+				        	<img :src="'${pageContext.request.contextPath }/file/download/'+ bll.attachNo" width="30" height="30" style="border-radius: 70%;">
 				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+bll.memberNo">{{bll.memberNick}}</a>
 				        </p>
 				      </div>
@@ -501,7 +517,7 @@
 				      </div>
 				      <div class="modal-body">
 				       <p v-for="(ball,index) in boardAdLike" v:bind:key="index">
-				       		<img :src="'${pageContext.request.contextPath }/file/download/'+ ball.attachNo" width="25" style="border-radius: 70%;">
+				       		<img :src="'${pageContext.request.contextPath }/file/download/'+ ball.attachNo" width="30" height="30" style="border-radius: 70%;">
 				        	<a :href="'${pageContext.request.contextPath }/member/page?memberNo='+ball.memberNo">{{ball.memberNick}}</a>
 				       </p>
 				      </div>
@@ -527,7 +543,11 @@
         					//게시글 상세보기용 변수
         					detailView:false,
                             animation:false,
-                            boardDetail:null,
+                            boardDetail:{
+                        		attachList:[],
+                        		boardListVO:{},
+                        		hashtagList:[],
+                       		 },
                             boardDetailReply:[],
                             boardDetailIndex:"",
                             detailViewType:"",
@@ -538,7 +558,6 @@
                             superNo:0,
                             replyTarget:"",
                             replyPlaceholder:"댓글 입력",
-                            replyStatus:"답글 보기",
                            
                             
 							//광고 게시글용 변수 5개씩 랜덤을 불러올 예정
@@ -653,6 +672,11 @@
                             		this.detailViewIndex = "";
                                     this.superNo = 0;
                                     this.replyTarget = "";
+                                    this.boardDetail = {
+                                		attachList:[],
+                                		boardListVO:{},
+                                		hashtagList:[],
+                             		   },
                                     $('html, body').css({'overflow': 'auto', 'height': '100%'});
                                 }   
                             },
@@ -726,6 +750,7 @@
                                			this.boardAdDetailSearch();
                    	            		this.replyContent = "";
                    	            		this.superNo = 0;
+                   	            		this.replyPlaceholder = "댓글 입력"
                                		});
                             	}
                             },
@@ -750,6 +775,7 @@
                         			this.boardAdDetailSearch(boardAd);
             	            		this.replyContent = "";
             	            		this.superNo = 0;
+            	            		this.replyPlaceholder = "댓글 입력"
                         		})
                             },
                             //댓글 지정
@@ -800,57 +826,73 @@
                             		console.log("광고 카운트 끝");
                             	});
                             }, 250),
+                            
                             //답글
                             re_reply(replyNo){
-                           	this.superNo=replyNo;
-                           	this.replyPlaceholder = "답글 입력"
-                           	document.getElementById('detailReply').focus();
+                        	if(replyNo==this.superNo){
+                        		this.superNo=0;
+                               	this.replyPlaceholder = "댓글 입력"
+                        	}else{
+	                           	this.superNo=replyNo;
+	                           	this.replyPlaceholder = "답글 입력"
+	                           	document.getElementById('detailReply').focus();
+                        	}
                            	
                            },
                            
                            //답글 펼치기
                           showReply(replyNo,index){
-                        	   
                         	  
-                        	   this.replyStatus = "답글 숨기기"
                         	  let arrayIndex = [];
                         	  let tmp = index+1;
                         	  if(index!=this.boardDetailReply.length){
                         		  
 	                        	  while(true){
+	                        		  if(this.boardDetailReply[tmp]==null) break;
 	                        		  if(this.boardDetailReply[tmp].superNo==replyNo){
 	                        			  console.log(tmp);
 	                        			  arrayIndex.push(tmp);
 	                        			  tmp++;
 	                        		  }else if(this.boardDetailReply[tmp].superNo==-1||this.boardDetailReply[tmp].superNo==0) break;
 	                        	  }
-	                        	  if(arrayIndex.length > 1){
+	                        	  if(arrayIndex.length >= 1){
 		                        	  for(var i = 0; i<arrayIndex.length; i++){
 		                        		  this.boardDetailReply[arrayIndex[i]].superNo = -1;
 		                        	  }
+		                        	 console.log("-1만들기");
 		                        	 return;
 	                        	  }
 	                        	  
 	                        	  while(true){
+	                        		  if(this.boardDetailReply[tmp]==null) break;
 	                        		  if(this.boardDetailReply[tmp].superNo==-1){
 	                        			  console.log(tmp);
 	                        			  arrayIndex.push(tmp);
 	                        			  tmp++;
-	                        			  this.replyStatus = "답글 보기"
 	                        		  }else if(this.boardDetailReply[tmp]==null||this.boardDetailReply[tmp].superNo==0) break;
 	                        	  }
 	                        	  
 	                        	  for(var i = 0; i<arrayIndex.length; i++){
 	                        		  this.boardDetailReply[arrayIndex[i]].superNo = replyNo;
 	                        	  }
-	                        	  
-	                        	  
+	                        	  console.log("+만들기");
                         	  }
-	
-                        	  
-                        	  
                         	  console.log(arrayIndex);
                            },
+                           
+                           //답글 숨기기 보기 상태변경
+                           replyStatus(index){
+								if(index==this.boardDetailReply.length) return;
+                        	   if(this.boardDetailReply[index+1]!=null&&this.boardDetailReply[index+1].superNo>0){
+                        		   return "답글 보기";
+                        	   }else if(this.boardDetailReply[index+1]!=null&&this.boardDetailReply[index+1].superNo==0){
+                        		   return "";
+                        	   }else if(this.boardDetailReply[index+1]!=null&&this.boardDetailReply[index+1].superNo<0){
+                        		   return "답글 숨기기";
+                        	   }
+                        	  
+                           },
+                           
                             
                             //일반 게시글 좋아요 목록
                             boardLikeList(boardNo){

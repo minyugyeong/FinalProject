@@ -143,6 +143,23 @@ public class FollowDaoImpl implements FollowDao {
 		param.put("memberWho", memberWho);
 		return sqlSession.selectList("follow.followList", param);
 	}
+
+	@Override
+	public void followAccept(int followWho, int followTarget) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("followWho", followWho);
+		param.put("followTarget", followTarget);
+		sqlSession.update("follow.followAccept", param);
+	}
+
+	@Override
+	public void followRefuse(int followWho, int followTarget) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("followWho", followWho);
+		param.put("followTarget", followTarget);
+		sqlSession.delete("follow.followRefuse", param);
+		
+	}
 	
 //	@Override
 //	public List<FollowVO> followList(int memberNo) {
