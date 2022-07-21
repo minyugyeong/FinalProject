@@ -21,7 +21,6 @@ public class HomeController {
 						Model model,
 						HttpSession session
 						) {
-		session.setAttribute("login", 202);
 		int memberNo = (Integer)session.getAttribute("login");
 		MemberDto memberDto = memberDao.myInfo(memberNo);
 		int attachNo = memberDao.memberProfile(memberNo);
