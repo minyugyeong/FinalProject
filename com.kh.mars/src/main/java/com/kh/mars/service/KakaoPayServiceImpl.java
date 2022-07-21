@@ -3,6 +3,7 @@ package com.kh.mars.service;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.jsoup.Connection.Request;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,7 @@ public class KakaoPayServiceImpl implements KakaoPayService{
 //													.fromCurrentContextPath()
 //													.path("/pay")
 //													.toUriString();
-		String prefix = "http://localhost:8080/mars/pay";
+		String prefix = "/mars/pay";
 		body.add("approval_url", prefix+"/approve");
 		body.add("cancel_url", prefix+"/cancel");
 		body.add("fail_url", prefix+"/fail");

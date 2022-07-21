@@ -626,7 +626,7 @@
             methods:{
                 followerList(){
                     axios({
-                        url:"http://localhost:8080/mars/followerList?memberNo="+ ${memberDto.memberNo}+ "&memberWho=" +${login},
+                        url:"${pageContext.request.contextPath}/followerList?memberNo="+ ${memberDto.memberNo}+ "&memberWho=" +${login},
                         method:"get"
                     })
                     .then((resp)=>{
@@ -635,7 +635,7 @@
                 },
                 followList(){
                     axios({
-                        url:"http://localhost:8080/mars/followList?memberNo=" + ${memberDto.memberNo} + "&memberWho=" + ${login}, 
+                        url:"${pageContext.request.contextPath}/followList?memberNo=" + ${memberDto.memberNo} + "&memberWho=" + ${login}, 
                         method:"get"
                     })
                     .then((resp)=>{

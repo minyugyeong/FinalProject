@@ -30,7 +30,6 @@ import com.kh.mars.vo.FollowerVO;
 import com.kh.mars.vo.SearchListVO;
 
 @Controller
-@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class MemberRestController {
 	
 	@Autowired

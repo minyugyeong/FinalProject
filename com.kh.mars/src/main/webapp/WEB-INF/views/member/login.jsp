@@ -24,7 +24,7 @@
                 </a>
             </div>
             <div class="form-floating mb-3 row">
-                <input type="text" class="form-control" id="floatingInput" placeholder="이메일" name="memberEmail">
+                <input type="text" class="form-control" id="floatingInput" placeholder="이메일" name="memberEmail" autocomplete="off">
                 <label for="floatingInput">이메일</label>
             </div>
             <div class="form-floating mb-3 row">

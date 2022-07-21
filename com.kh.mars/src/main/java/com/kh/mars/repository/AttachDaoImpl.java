@@ -18,7 +18,7 @@ public class AttachDaoImpl implements AttachDao {
 	private SqlSession sqlSession;
 	
 	//저장 위치
-	private File directory = new File(System.getProperty("user.home") + "/upload");
+	private File directory = new File("D:/upload/kh9c");
 	public AttachDaoImpl() {
 		directory.mkdirs();
 	}
