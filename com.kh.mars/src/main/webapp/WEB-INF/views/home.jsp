@@ -100,11 +100,11 @@
 			background-color: white;
 		}
 		
-		.hidelink{
-			display:none!important;
-		}
 		.showment{
 			display:block!important;
+		}
+		.hidelink{
+			display:none!important;
 		}
 		.adLinkOpacity:hover{
 			opacity:1!important;
@@ -242,7 +242,7 @@
 	                                            <div v-for="(attach, index2) in adList[((index+1)/3)-1].attachList" :key="index2" class="carousel-item" :class="{'active':index2==0}" style="min-height: 468px; background-color: var(--bs-dark); position:relative;">
 	                                                <img :src="'${pageContext.request.contextPath}/file/download/'+attach.attachNo" class="d-block position-absolute top-50 start-50 translate-middle" style="object-position: left; width: 101%;">
 	                                            </div>
-	                                            <a v-if="adList[((index+1)/3)-1].boardListVO.boardAdLink!=null" :href="adList[((index+1)/3)-1].boardListVO.boardAdLink" class="adLinkOpacity" :class="{'hidelink':detailView}" style="color:white;position:absolute; bottom:0; width:100%; background-color:#eb6864; opacity:0.7;z-index:500;text-decoration:none;height:30px;padding-top: 0.2em;padding-left: 10px;">
+	                                            <a v-if="adList[((index+1)/3)-1].boardListVO.boardAdLink!=null&&adList[((index+1)/3)-1].boardListVO.boardAdLink!=''" :href="adList[((index+1)/3)-1].boardListVO.boardAdLink" class="adLinkOpacity" :class="{'hidelink':detailView}" style="color:white;position:absolute; bottom:0; width:100%; background-color:#eb6864; opacity:0.7;z-index:500;text-decoration:none;height:30px;padding-top: 0.2em;padding-left: 10px;">
 	                                            	광고페이지로 이동
 	                                            </a>
                                         </div>
@@ -374,6 +374,9 @@
                                      <div v-for="(attach, index) in boardDetail.attachList" :key="index" class="carousel-item" :class="{'active':index==0}" style="height:100%;background-color: var(--bs-dark); position:relative;">
                                          <img :src="'${pageContext.request.contextPath}/file/download/'+attach.attachNo" class="d-block position-absolute top-50 start-50 translate-middle" style="object-position: left; width: 101%;transform:translate(-50%,0);">
                                      </div>
+                                     <a v-if="boardDetail.boardListVO.boardAdLink!=null&&boardDetail.boardListVO.boardAdLink!=''" :href="boardDetail.boardListVO.boardAdLink" class="adLinkOpacity" :class="{'hidelink':!detailView}" style="color:white;position:absolute; bottom:0; width:100%; background-color:#eb6864; opacity:0.7;z-index:500;text-decoration:none;height:30px;padding-top: 0.2em;padding-left: 10px;">
+                                     	광고페이지로 이동
+                                     </a>
                                 </div>
                                 <button v-if="boardDetail.attachList.length>1" class="carousel-control-prev" type="button" data-bs-target="#detailCarousel" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
