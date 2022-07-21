@@ -485,36 +485,10 @@ $(function(){
     		this.files = this.files.filter(data => data.number != Number(name));
     	},
     	
-     
-	    /* selectNick(index){
-	    	this.click = true;
-	    	this.keyword = this.nickList[index].memberNick;
-	    	this.nickList = [];
-	    }, */
 	    
     },
     
-    /* watch:{
-    	
-    	keyword:_.throttle(function(){
-    		if(!this.keyword) return;
-    		if(this.click){
-    			this.click = false;
-    			return;
-    		}
-    		
-    		axios({
-    			url: "http://localhost:8080/mars/rest/member/memberNick/"+this.keyword,
-    			method: "get"
-    		})
-    		.then(resp=>{
-    			console.log(resp.data);
-    			this.nickList = resp.data;
-    		})
-    		
-    	},250),
-    	
-    }, */
+    
     
 
   });

@@ -27,7 +27,7 @@ public class FileController {
 														@PathVariable int fileName) throws IOException	{
 		
 		// 1. 파일 객체를 준비
-				File dir = new File(System.getProperty("user.home") + "/upload");
+				File dir = new File("D:/upload/kh9c");
 				File target = new File(dir, String.valueOf(fileName));
 				if(!target.exists()) return ResponseEntity.notFound().build();//사용자에게 직접 404를 반환//throw new Exception()으로 처리하는 방법도 있음 @ControllerAdvice로 전송
 		// 2. 응답 객체를 만들어서 반환
