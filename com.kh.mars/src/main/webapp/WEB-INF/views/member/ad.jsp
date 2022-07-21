@@ -66,7 +66,7 @@
 					<thead class="table-light">
 						<tr class="text-center">
 							<th>번호</th>
-							<th>노출횟수</th>
+							<th>남은 노출횟수</th>
 							<th>가격</th>
 							<th>신청일</th>
 							<th>진행현황</th>
