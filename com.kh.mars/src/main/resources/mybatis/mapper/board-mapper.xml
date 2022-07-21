@@ -116,6 +116,7 @@
 		)
 		where rn between ((#{pageCount}-1) * 3 + 1) and (#{pageCount} * 3)
 	</select>
+	
 	<select id="treeSearchSubquery" resultType="BoardAttachVO" parameterType="int">
 		select ba.board_no, attach.* from (
 		      select * from board_attach where board_no = #{board_no}
@@ -209,7 +210,7 @@
 		                inner join (select b.board_no, count(ba.attach_no)"attach_count", min(ba.attach_no)"attach_no" from board b 
 		               						inner join board_attach ba on b.board_no = ba.board_no group by b.board_no) ba2 on b.board_no = ba2.board_no
 						LEFT OUTER JOIN (SELECT BOARD_NO,count(MEMBER_NO)"like_count"  FROM board_like group BY BOARD_NO) bl ON bl.board_no = b.BOARD_NO 
-						LEFT OUTER JOIN (SELECT BOARD_NO,count(REPLY_NO)"reply_count" FROM BOARD_REPLY group BY BOARD_NO) br ON br.board_no = b.BOARD_NO
+						LEFT OUTER JOIN (SELECT BOARD_NO,count(REPLY_NO)"reply_count" FROM BOARD_REPLY where board_no in(select board_no from board where board_is_reply = 0) group BY BOARD_NO) br ON br.board_no = b.BOARD_NO
 		                where b.member_no = #{memberNo} 
 		                <if test="uptoNo != 0"> 
 					        <![CDATA[
@@ -221,7 +222,7 @@
 		                inner join (select bad.board_ad_no, count(bada.attach_no)"attach_count", min(bada.ATTACH_NO)"attach_no" from board_ad bad 
 		                					inner join board_ad_attach bada on bad.board_ad_no = bada.board_ad_no group by bad.board_ad_no) bada2 on bad.board_ad_no = bada2.board_ad_no
 		                LEFT OUTER JOIN (SELECT board_ad_no, count(member_no)"like_count" FROM board_ad_like GROUP BY BOARD_AD_NO) badl ON badl.board_ad_no = bad.board_ad_no
-		                LEFT OUTER JOIN (SELECT board_ad_no, count(reply_no)"reply_count" FROM BOARD_AD_REPLY group BY board_ad_no)badr ON badr.board_ad_no = bad.board_ad_no
+		                LEFT OUTER JOIN (SELECT board_ad_no, count(reply_no)"reply_count" FROM BOARD_AD_REPLY where board_ad_no in (select board_ad_no from board_ad where board_ad_is_reply = 0) group BY board_ad_no)badr ON badr.board_ad_no = bad.board_ad_no
 		                where bad.member_no = #{memberNo} 
 		                <if test="uptoNoAd != 0"> 
 			        		<![CDATA[

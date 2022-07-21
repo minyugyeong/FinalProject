@@ -92,7 +92,7 @@ public class RoomManager {
 																.roomNo(roomNo)
 																.dmContent(message)
 																.dmRecordTime(new Date())
-																.messageType(messageType)
+																.dmType(messageType)
 															.build();
 		//dmDao.insertDmRecordDto(messageVO);
 		String json = mapper.writeValueAsString(messageVO);
@@ -114,7 +114,7 @@ public class RoomManager {
 	public void alramRoom(WebSocketSession session, int memberNo,int messageType) throws IOException {
 		MessageVO messageVO = MessageVO.builder()
 				.who(memberNo)
-				.messageType(messageType)
+				.dmType(messageType)
 			.build();
 		String json = mapper.writeValueAsString(messageVO);
 		TextMessage textMessage = new TextMessage(json);

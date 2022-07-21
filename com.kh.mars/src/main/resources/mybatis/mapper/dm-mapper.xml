@@ -43,8 +43,8 @@
 	
 	<!-- 메세지 등록 -->
 	<insert id="insertDm" parameterType="DmDto">
-		insert into dm (dm_no, dm_content)
-		values (#{dmNo}, #{dmContent})
+		insert into dm (dm_no, dm_content, dm_type)
+		values (#{dmNo}, #{dmContent}, ${dmType})
 	</insert>
 	
 	<!-- 메세지 기록 등록 -->
@@ -56,7 +56,7 @@
 	
 	<!-- 방 리스트 마지막 content 조회 -->
 	<select id="roomList" parameterType="int" resultType="RoomVO">
-		select re2.*, m.member_nick, mp.attach_no, d.dm_no, d.dm_content, d.dm_record_time, d.dm_record_check, d.target, ur."unreadcount" from room_enter re 
+		select re2.*, m.member_nick, mp.attach_no, d.dm_no, d.dm_content, d.dm_type, d.dm_record_time, d.dm_record_check, d.target, ur."unreadcount" from room_enter re 
 		    
 		    inner join room_enter re2 on re.room_no = re2.room_no
 		    inner join (
@@ -84,7 +84,7 @@
 		select * from (
 		    select rownum "rn", tmp.* from (
 		        select 
-					dr.*, d.dm_content 
+					dr.*, d.dm_content , d.dm_type
 				from 
 					dm_record dr
 					    inner join dm d on dr.dm_no = d.dm_no

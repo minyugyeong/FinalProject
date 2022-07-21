@@ -20,6 +20,7 @@ public class RoomVO {
 	private int attachNo;
 	private int dmNo;
 	private String dmContent;
+	private int dmType;
 	private Date dmRecordTime;
 	private int dmRecordCheck;
 	private int target;

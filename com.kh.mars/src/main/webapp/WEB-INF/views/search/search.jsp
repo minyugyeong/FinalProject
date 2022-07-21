@@ -89,6 +89,9 @@
 		.childShow{
 		display: none;
 		}
+		.imgHover:hover{
+			opacity:1!important;
+		}
             
         
 </style>
@@ -106,26 +109,68 @@
     			</div>
     			<br>
 	            <div style="margin-bottom:10px;display: flex;flex-direction: row; width: 100%;">
-	                <div v-if="searchLikeList[0] != null" class="media-height" style="margin-right: 10px;">
+	                <div v-if="searchLikeList[0] != null" class="media-height" style="margin-right: 10px;position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchLikeList[0].attachNo" style="width:100%; height:250px;" @click="promise(searchLikeList[0].boardNo,searchLikeList[0].type)">
+	                    <i v-if="searchLikeList[0].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchLikeList[0].boardNo,searchLikeList[0].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchLikeList[0].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchLikeList[0].replyCount}}</span>
+	                    </div>
 	                </div>
-	                <div v-if="searchLikeList[1] != null" class="media-height">
+	                <div v-if="searchLikeList[1] != null" class="media-height" style="position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchLikeList[1].attachNo" style="width:100%; height:250px;" @click="promise(searchLikeList[1].boardNo,searchLikeList[1].type)">
+	                    <i v-if="searchLikeList[1].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchLikeList[1].boardNo,searchLikeList[1].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchLikeList[1].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchLikeList[1].replyCount}}</span>
+	                    </div>
 	                </div>
-	                <div v-if="searchLikeList[2] != null" class="media-height" style="margin-left: 10px;">
+	                <div v-if="searchLikeList[2] != null" class="media-height" style="margin-left: 10px;position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchLikeList[2].attachNo" style="width:100%; height:250px;" @click="promise(searchLikeList[2].boardNo,searchLikeList[2].type)">
+	                    <i v-if="searchLikeList[2].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchLikeList[2].boardNo,searchLikeList[2].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchLikeList[2].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchLikeList[2].replyCount}}</span>
+	                    </div>
 	                </div>
 	            </div>
         	<div v-for="(board, index) in searchLikeList" :key="index">
 	            <div v-if="index%3==2" style="margin-bottom:10px;display: flex;flex-direction: row; width: 100%;">
-	                <div v-if="searchLikeList[index+1] != null" class="media-height" style="margin-right: 10px;">
+	                <div v-if="searchLikeList[index+1] != null" class="media-height" style="margin-right: 10px;position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchLikeList[index+1].attachNo" style="width:100%; height:250px;" @click="promise(searchLikeList[index+1].boardNo,searchLikeList[index+1].type)">
+	                    <i v-if="searchLikeList[index+1].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchLikeList[index+1].boardNo,searchLikeList[index+1].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchLikeList[index+1].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchLikeList[index+1].replyCount}}</span>
+	                    </div>
 	                </div>
-	                <div v-if="searchLikeList[index+2] != null" class="media-height">
+	                <div v-if="searchLikeList[index+2] != null" class="media-height" style="position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchLikeList[index+2].attachNo" style="width:100%; height:250px;" @click="promise(searchLikeList[index+2].boardNo,searchLikeList[index+2].type)">
+	                    <i v-if="searchLikeList[index+2].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchLikeList[index+2].boardNo,searchLikeList[index+2].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchLikeList[index+2].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchLikeList[index+2].replyCount}}</span>
+	                    </div>
 	                </div>
-	                <div v-if="searchLikeList[index+3] != null" class="media-height" style="margin-left: 10px;">
+	                <div v-if="searchLikeList[index+3] != null" class="media-height" style="margin-left: 10px;position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchLikeList[index+3].attachNo" style="width:100%; height:250px;" @click="promise(searchLikeList[index+3].boardNo,searchLikeList[index+3].type)">
+	                    <i v-if="searchLikeList[index+3].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchLikeList[index+3].boardNo,searchLikeList[index+3].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchLikeList[index+3].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchLikeList[index+3].replyCount}}</span>
+	                    </div>
 	                </div>
 	            </div>
         	</div>
@@ -134,26 +179,68 @@
 	        		최근 게시글
         		</div>
 	            <div style="margin-bottom:10px;display: flex;flex-direction: row; width: 100%;">
-	                <div v-if="searchList[0] != null" class="media-height" style="margin-right: 10px; ">
-	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchList[0].attachNo" style="width:100%; height:250px;" @click="promise(searchList[0].boardNo,searchList[0].type)">
+	                <div v-if="searchList[0] != null" class="media-height" style="margin-right: 10px;position:relative;">
+	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchList[0].attachNo" style="width:100%; height:250px;"  @click="promise(searchList[0].boardNo,searchList[0].type)">
+	                    <i v-if="searchList[0].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchList[0].boardNo,searchList[0].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchList[0].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchList[0].replyCount}}</span>
+	                    </div>
 	                </div>
-	                <div v-if="searchList[1] != null" class="media-height" >
+	                <div v-if="searchList[1] != null" class="media-height" style="position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchList[1].attachNo" style="width:100%; height:250px;" @click="promise(searchList[1].boardNo,searchList[1].type)">
+	                    <i v-if="searchList[1].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchList[1].boardNo,searchList[1].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchList[1].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchList[1].replyCount}}</span>
+	                    </div>
 	                </div>
-	                <div v-if="searchList[2] != null" class="media-height" style="margin-left: 10px;">
+	                <div v-if="searchList[2] != null" class="media-height" style="margin-left: 10px;position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchList[2].attachNo" style="width:100%; height:250px;" @click="promise(searchList[2].boardNo,searchList[2].type)">
+	                    <i v-if="searchList[2].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchList[2].boardNo,searchList[2].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchList[2].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchList[2].replyCount}}</span>
+	                    </div>
 	                </div>
 	            </div>
         	<div v-for="(board, index) in searchList" :key="index">
 	            <div v-if="index%3==2" style="margin-bottom:10px;display: flex;flex-direction: row; width: 100%;">
-	                <div v-if="searchList[index+1] != null" class="media-height" style="margin-right: 10px;">
+	                <div v-if="searchList[index+1] != null" class="media-height" style="margin-right: 10px;position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchList[index+1].attachNo" style="width:100%; height:250px;" @click="promise(searchList[index+1].boardNo,searchList[index+1].type)">
+	                    <i v-if="searchList[index+1].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchList[index+1].boardNo,searchList[index+1].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchList[index+1].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchList[index+1].replyCount}}</span>
+	                    </div>
 	                </div>
-	                <div v-if="searchList[index+2] != null" class="media-height">
+	                <div v-if="searchList[index+2] != null" class="media-height" style="position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchList[index+2].attachNo" style="width:100%; height:250px;" @click="promise(searchList[index+2].boardNo,searchList[index+2].type)">
+	                    <i v-if="searchList[index+2].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchList[index+2].boardNo,searchList[index+2].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchList[index+2].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchList[index+2].replyCount}}</span>
+	                    </div>
 	                </div>
-	                <div v-if="searchList[index+3] != null" class="media-height" style="margin-left: 10px;">
+	                <div v-if="searchList[index+3] != null" class="media-height" style="margin-left: 10px;position:relative;">
 	                    <img :src="'${pageContext.request.contextPath}/file/download/'+searchList[index+3].attachNo" style="width:100%; height:250px;" @click="promise(searchList[index+3].boardNo,searchList[index+3].type)">
+	                    <i v-if="searchList[index+3].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                    <div class="imgHover" @click="promise(searchList[index+3].boardNo,searchList[index+3].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                    	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+		                    <span style="position:absolute;top:45%;left:35%;">{{searchList[index+3].likeCount}}</span>
+		                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+		                    <span style="position:absolute;top:45%;left:60%;">{{searchList[index+3].replyCount}}</span>
+	                    </div>
 	                </div>
 	            </div>
         	</div>
@@ -254,9 +341,13 @@
                                         <i v-if="boardDetail.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo)"></i>
                                         <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo)"></i>
                                         &nbsp;
+                                        <label for="detailReply">
                                         <i class="fa-regular fa-comment fa-lg" style="cursor: pointer;"></i>
+                                        </label>
                                         &nbsp;
+                                        <a :href="'${pageContext.request.contextPath}/dm?targetNo='+boardDetail.boardListVO.memberNo" style="color:black;">
                                         <i class="fa-regular fa-newspaper fa-lg"></i>
+										</a>
 
                                     </p>
                                     <p class="card-text" v-if="boardDetail.boardListVO.likecount > 0">
@@ -543,16 +634,16 @@
 	        			this.boardDetail.boardListVO.isLike = resp.data;
 	        			if(resp.data > 0){
 	        				this.boardDetail.boardListVO.likecount += 1
+		        			const alram = {
+		        					type:3,
+		        					target: this.boardDetail.boardListVO.memberNo,
+		        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+		        			}
+		        			const jsonAlram = JSON.stringify(alram);
+		        			socket.send(jsonAlram);
 	        			}else{
 	        				this.boardDetail.boardListVO.likecount -= 1
 	        			}
-	        			const alram = {
-	        					type:3,
-	        					target: this.boardDetail.boardListVO.memberNo,
-	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
-	        			}
-	        			const jsonAlram = JSON.stringify(alram);
-	        			socket.send(jsonAlram);
 	        		});
             	}else{
             		const boardNo = likeNo;
@@ -567,16 +658,16 @@
             			this.boardDetail.boardListVO.isLike = resp.data;
             			if(resp.data > 0){
             				this.boardDetail.boardListVO.likecount += 1
+	            			const alram = {
+		        					type:3,
+		        					target: this.boardDetail.boardListVO.memberNo,
+		        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+		        			}
+		        			const jsonAlram = JSON.stringify(alram);
+		        			socket.send(jsonAlram);
             			}else{
             				this.boardDetail.boardListVO.likecount -= 1
             			}
-            			const alram = {
-	        					type:3,
-	        					target: this.boardDetail.boardListVO.memberNo,
-	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
-	        			}
-	        			const jsonAlram = JSON.stringify(alram);
-	        			socket.send(jsonAlram);
             		});
             	}
         	},

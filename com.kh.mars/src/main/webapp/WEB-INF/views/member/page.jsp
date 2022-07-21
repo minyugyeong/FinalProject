@@ -76,6 +76,9 @@
 		.childShow{
 		display: none;
 		}
+		.imgHover:hover{
+			opacity:1!important;
+		}
 </style>        
 
 <!-- 특정 영역을 생성하여 이 부분만 vue로 제어한다 -->
@@ -261,26 +264,68 @@
 <c:if test="${!isPrivate || isPrivate && isFollower || isOwner}">
 	<div class="position-absolute mt-5 start-50 translate-middle-x media-width" style="display: flex; flex-direction: column; width: 770px;">
 		<div style="margin-bottom:10px;display: flex;flex-direction: row; width: 100%;">     
-		    <div v-if="pageBoardList[0] != null" class="media-height" style="margin-right: 10px; ">
+		    <div v-if="pageBoardList[0] != null" class="media-height" style="margin-right: 10px; position:relative;">
 		        <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[0].attachNo" style="width:100%; height:250px;" @click="promise(pageBoardList[0].boardNo,pageBoardList[0].type)">
+		        <i v-if="pageBoardList[0].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+		        <div class="imgHover" @click="promise(pageBoardList[0].boardNo,pageBoardList[0].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+                   	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+                    <span style="position:absolute;top:45%;left:35%;">{{pageBoardList[0].likeCount}}</span>
+                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+                    <span style="position:absolute;top:45%;left:60%;">{{pageBoardList[0].replyCount}}</span>
+                </div>
 		    </div>
-		    <div v-if="pageBoardList[1] != null" class="media-height " >
+		    <div v-if="pageBoardList[1] != null" class="media-height " style="position:relative;">
 		        <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[1].attachNo" style="width:100%; height:250px;" @click="promise(pageBoardList[1].boardNo,pageBoardList[1].type)">
+		        <i v-if="pageBoardList[1].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+		        <div class="imgHover" @click="promise(pageBoardList[1].boardNo,pageBoardList[1].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+                   	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+                    <span style="position:absolute;top:45%;left:35%;">{{pageBoardList[1].likeCount}}</span>
+                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+                    <span style="position:absolute;top:45%;left:60%;">{{pageBoardList[1].replyCount}}</span>
+                </div>
 		    </div>
-		    <div v-if="pageBoardList[2] != null" class="media-height " style="margin-left: 10px;">
+		    <div v-if="pageBoardList[2] != null" class="media-height " style="margin-left: 10px;position:relative;">
 		        <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[2].attachNo" style="width:100%; height:250px;" @click="promise(pageBoardList[2].boardNo,pageBoardList[2].type)">
+		        <i v-if="pageBoardList[2].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+		        <div class="imgHover" @click="promise(pageBoardList[2].boardNo,pageBoardList[2].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+                   	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+                    <span style="position:absolute;top:45%;left:35%;">{{pageBoardList[2].likeCount}}</span>
+                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+                    <span style="position:absolute;top:45%;left:60%;">{{pageBoardList[2].replyCount}}</span>
+                </div>
 		    </div>
 		</div>
 		<div v-for="(board, index) in pageBoardList" :key="index">
 	         <div v-if="index%3==2" style="margin-bottom:10px;display: flex;flex-direction: row; width: 100%;">
-	             <div v-if="pageBoardList[index+1] != null" class="media-height " style="margin-right: 10px;">
+	             <div v-if="pageBoardList[index+1] != null" class="media-height " style="margin-right: 10px;position:relative;">
 	                 <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[index+1].attachNo" style="width:100%; height:250px;" @click="promise(pageBoardList[index+1].boardNo,pageBoardList[index+1].type)">
+	                 <i v-if="pageBoardList[index+1].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                 <div class="imgHover" @click="promise(pageBoardList[index+1].boardNo,pageBoardList[index+1].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                   	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+	                    <span style="position:absolute;top:45%;left:35%;">{{pageBoardList[index+1].likeCount}}</span>
+	                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+	                    <span style="position:absolute;top:45%;left:60%;">{{pageBoardList[index+1].replyCount}}</span>
+	                </div>
 	             </div>
-	             <div v-if="pageBoardList[index+2] != null" class="media-height ">
+	             <div v-if="pageBoardList[index+2] != null" class="media-height "style="position:relative;">
 	                 <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[index+2].attachNo" style="width:100%; height:250px;" @click="promise(pageBoardList[index+2].boardNo,pageBoardList[index+2].type)">
+	                 <i v-if="pageBoardList[index+2].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                 <div class="imgHover" @click="promise(pageBoardList[index+2].boardNo,pageBoardList[index+2].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                   	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+	                    <span style="position:absolute;top:45%;left:35%;">{{pageBoardList[index+2].likeCount}}</span>
+	                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+	                    <span style="position:absolute;top:45%;left:60%;">{{pageBoardList[index+2].replyCount}}</span>
+	                </div>
 	             </div>
-	             <div v-if="pageBoardList[index+3] != null" class="media-height " style="margin-left: 10px;">
+	             <div v-if="pageBoardList[index+3] != null" class="media-height " style="margin-left: 10px;position:relative;">
 	                 <img :src="'${pageContext.request.contextPath}/file/download/'+pageBoardList[index+3].attachNo" style="width:100%; height:250px;" @click="promise(pageBoardList[index+3].boardNo,pageBoardList[index+3].type)">
+	                 <i v-if="pageBoardList[index+3].attachCount>1" class="fa-solid fa-note-sticky fa-lg" style="color:white;position:absolute;right:0;top:20px;"></i>
+	                 <div class="imgHover" @click="promise(pageBoardList[index+3].boardNo,pageBoardList[index+3].type)" style="cursor:pointer;position:absolute;background-color:#22222221;left:0;right:0;top:0;bottom:0;opacity:0;color:white;" >
+	                   	<i class="fa-solid fa-heart fa-lg" style="position:absolute;top:50%;left:25%;"></i>
+	                    <span style="position:absolute;top:45%;left:35%;">{{pageBoardList[index+3].likeCount}}</span>
+	                    <i class="fa-regular fa-comment fa-lg" style="position:absolute;top:50%;left:50%;"></i>
+	                    <span style="position:absolute;top:45%;left:60%;">{{pageBoardList[index+3].replyCount}}</span>
+	                </div>
 	             </div>
 	         </div>
 	 	</div>
@@ -374,7 +419,7 @@
 	                                	</p>
 	                                	<p style="padding-left:3.1em;font-size:0.85em;color:grey;">
 	                                		<a v-if="reply.superNo==0" @click="re_reply(reply.replyNo)">답글</a>&nbsp;
-											<i v-if="reply.replyMemberNo == ${memberDto.memberNo}" class="fa-solid fa-xmark" style="display:none;z-index:100;" data-bs-toggle="modal" data-bs-target="#exampleModal" @click.stop="targetInput(reply.replyNo)"></i>
+											<i v-if="reply.replyMemberNo == ${memberDto.memberNo}" class="fa-solid fa-xmark" style="display:none;z-index:100;" data-bs-toggle="modal" data-bs-target="#exampleModal3" @click.stop="targetInput(reply.replyNo)"></i>
 										<p>
 										<p v-if="reply.superNo==0">
 											<span @click="showReply(reply.replyNo,index)" style="padding-left:3.1em;font-size:0.85em;color:grey;">{{replyStatus(index)}}</span>
@@ -387,9 +432,13 @@
                                         <i v-if="boardDetail.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo)"></i>
                                         <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo)"></i>
                                         &nbsp;
+                                        <label for="detailReply">
                                         <i class="fa-regular fa-comment fa-lg" style="cursor: pointer;"></i>
+                                        </label>
                                         &nbsp;
+                                        <a :href="'${pageContext.request.contextPath}/dm?targetNo='+boardDetail.boardListVO.memberNo" style="color:black;">
                                         <i class="fa-regular fa-newspaper fa-lg"></i>
+										</a>
 
                                     </p>
                                     <p class="card-text" v-if="boardDetail.boardListVO.likecount > 0" @click="boardLikeList(boardDetail.boardListVO.boardNo)" data-bs-toggle="modal" data-bs-target="#boardLikeList">
@@ -414,7 +463,7 @@
 	                
 	            </div>
                 <!-- 댓글 Modal -->
-				<div class="modal fade" id="exampleModal" tabindex="200" aria-labelledby="exampleModalLabel" aria-hidden="true" @click.stop="targetInput('')">
+				<div class="modal fade" id="exampleModal3" tabindex="200" aria-labelledby="exampleModalLabel" aria-hidden="true" @click.stop="targetInput('')">
 				  <div class="modal-dialog">
 				    <div class="modal-content" style="width:400px;">
 				      <div class="modal-header">
@@ -825,7 +874,7 @@
     	            		method : "delete",
     	            	})
     	            	.then(resp=>{
-    	            		$('#exampleModal').modal('hide');
+    	            		$('#exampleModal3').modal('hide');
     	            		this.replyTarget = "";
     	            		this.boardDetailReplySearch(boardNo, this.boardDetailType);
     	            	});
@@ -853,16 +902,16 @@
     	        			this.boardDetail.boardListVO.isLike = resp.data;
     	        			if(resp.data > 0){
     	        				this.boardDetail.boardListVO.likecount += 1
+	    	        			const alram = {
+	    	        					type:3,
+	    	        					target: this.boardDetail.boardListVO.memberNo,
+	    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+	    	        			}
+	    	        			const jsonAlram = JSON.stringify(alram);
+	    	        			socket.send(jsonAlram);
     	        			}else{
     	        				this.boardDetail.boardListVO.likecount -= 1
     	        			}
-    	        			const alram = {
-    	        					type:3,
-    	        					target: this.boardDetail.boardListVO.memberNo,
-    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
-    	        			}
-    	        			const jsonAlram = JSON.stringify(alram);
-    	        			socket.send(jsonAlram);
     	        		});
                 	}else{
                 		const boardNo = likeNo;
@@ -877,16 +926,16 @@
                 			this.boardDetail.boardListVO.isLike = resp.data;
                 			if(resp.data > 0){
                 				this.boardDetail.boardListVO.likecount += 1
+	                			const alram = {
+	    	        					type:3,
+	    	        					target: this.boardDetail.boardListVO.memberNo,
+	    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+	    	        			}
+	    	        			const jsonAlram = JSON.stringify(alram);
+	    	        			socket.send(jsonAlram);
                 			}else{
                 				this.boardDetail.boardListVO.likecount -= 1
                 			}	
-                			const alram = {
-    	        					type:3,
-    	        					target: this.boardDetail.boardListVO.memberNo,
-    	        					messageType:4,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
-    	        			}
-    	        			const jsonAlram = JSON.stringify(alram);
-    	        			socket.send(jsonAlram);
                 		});
                 	}
             	},
@@ -1027,8 +1076,57 @@
             		if(scrT > bottom){
             			this.boardList();
             		}
-            	})
+            	});
+            	if(${param.boardNo!=null&&(param.type==0||param.type==3)}){
+            		console.log("실행되나");
+            		var memberNo = ${param.memberNo};
+            		axios({
+	            		url: "${pageContext.request.contextPath}/rest/search/detail",
+	            		method : "get",
+	            		params:{
+	            			boardNo : "${param.boardNo}",
+	            		}
+	            	})
+	            	.then(resp=>{
+	            		console.log(resp.data);
+	            		this.boardDetail = resp.data;
+	            	});
+            		axios({
+	            		url: "${pageContext.request.contextPath}/rest/board/detail_reply/" + "${param.boardNo}",
+	            		method: "get"
+	            	})
+	            	.then(resp=>{
+	            		this.boardDetailReply = resp.data;
+	            	});
+            		this.detailViewOn();
+            		history.replaceState(null,null,'page?memberNo='+memberNo);
+            	}
+            	if(${param.boardNo!=null&&(param.type==1||param.type==4)}){
+            		console.log("실행되나");
+            		var memberNo = ${param.memberNo};
+            		axios({
+            			url: "${pageContext.request.contextPath}/rest/search/detail_ad",
+            			method : "get",
+            			params:{
+            				boardNo : "${param.boardNo}",
+            			}
+            		})
+            		.then(resp=>{
+            			this.boardDetail = resp.data;
+            		});
+            		axios({
+            			url : "${pageContext.request.contextPath}/rest/board_ad/detail_reply/" + "${param.boardNo}",
+            			method: "get",
+            		})
+            		.then(resp=>{
+            			this.boardDetailReply = resp.data;
+            		});
+            		this.detailViewOn();
+            		history.replaceState(null,null,'page?memberNo='+memberNo);
+            	}
             },
+            updated(){
+            }
   
         });
         app.mount("#app");
