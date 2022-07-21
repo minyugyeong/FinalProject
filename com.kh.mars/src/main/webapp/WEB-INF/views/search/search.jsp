@@ -92,6 +92,13 @@
 		.imgHover:hover{
 			opacity:1!important;
 		}
+		.hidelink{
+			display:none!important;
+		}
+		.adLinkOpacity:hover{
+			opacity:1!important;
+			transition: all ease 0.3s 0s;
+		}
             
         
 </style>
@@ -268,6 +275,10 @@
                                      <div v-if="boardDetail!=null" v-for="(attach, index) in boardDetail.attachList" :key="index" class="carousel-item" :class="{'active':index==0}" style="height:100%;background-color: var(--bs-dark); position:relative;">
                                          <img :src="'${pageContext.request.contextPath}/file/download/'+attach.attachNo" class="d-block position-absolute top-50 start-50 translate-middle" style="object-position: left; width: 101%;transform:translate(-50%,0);">
                                      </div>
+                                     <a v-if="boardDetail.boardListVO.boardAdLink!=null&&boardDetail.boardListVO.boardAdLink!=''" :href="boardDetail.boardListVO.boardAdLink" class="adLinkOpacity" :class="{'hidelink':!detailView}" style="color:white;position:absolute; bottom:0; width:100%; background-color:#eb6864; opacity:0.7;z-index:500;text-decoration:none;height:30px;padding-top: 0.2em;padding-left: 10px;">
+                                     	광고페이지로 이동
+                                     </a>
+                                     
                                 </div>
                                 <button v-if="boardDetail!=null&&boardDetail.attachList.length>1" class="carousel-control-prev" type="button" data-bs-target="#detailCarousel" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
