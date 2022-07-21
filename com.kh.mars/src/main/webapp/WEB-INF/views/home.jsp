@@ -770,6 +770,8 @@
                             		this.type = 1;
                             	});
                             },
+                            
+                            
                             //댓글 입력
                             replyEnter(boardNo){
 	                            	let boardNo2;
@@ -791,6 +793,8 @@
 	                            	.then(resp=>{
 	                            		this.boardDetailSearch();
 	                            		this.replyContent = "";
+	                            		this.superNo = 0;
+                   	            		this.replyPlaceholder = "댓글 입력"
 	                            		const alram = {
                 	        					type:3,
                 	        					target: this.boardDetail.boardListVO.memberNo,
@@ -930,7 +934,7 @@
                         	  let arrayIndex = [];
                         	  let tmp = index+1;
                         	  if(index!=this.boardDetailReply.length){
-                        		  
+                        		  console.log(replyNo);
 	                        	  while(true){
 	                        		  if(this.boardDetailReply[tmp]==null) break;
 	                        		  if(this.boardDetailReply[tmp].superNo==replyNo){

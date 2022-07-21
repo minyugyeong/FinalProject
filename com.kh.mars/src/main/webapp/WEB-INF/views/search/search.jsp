@@ -564,6 +564,7 @@
 	            		this.boardDetailReplySearch(boardNo, this.boardDetailType);
 	            		this.replyContent = "";
 	            		this.superNo = 0;
+   	            		this.replyPlaceholder = "댓글 입력"
 	            		const alram = {
 	        					type:3,
 	        					target: this.boardDetail.boardListVO.memberNo,
@@ -586,6 +587,7 @@
             			this.boardDetailReplySearch(boardNo, this.boardDetailType);
 	            		this.replyContent = "";
 	            		this.superNo = 0;
+   	            		this.replyPlaceholder = "댓글 입력"
 	            		const alram = {
 	        					type:3,
 	        					target: this.boardDetail.boardListVO.memberNo,

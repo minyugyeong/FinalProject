@@ -155,10 +155,10 @@
 			                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:0;">
 												<span style="padding-left:35px;font-weight:600;">{{alram.memberNick}}</span>
                                           	</a>
-											<span v-if="alram.type==0&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">게시글에 좋아요를 누르셨습니다!</a></span>
-											<span v-if="alram.type==0&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">{{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</a></span>
-											<span v-if="alram.type==1&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">게시글에 좋아요를 누르셨습니다!</a></span>
-											<span v-if="alram.type==1&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">{{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</a></span>
+											<span v-if="alram.type==0&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type" style="text-decoration:none;">게시글에 좋아요를 누르셨습니다!</a></span>
+											<span v-if="alram.type==0&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type" style="text-decoration:none;">{{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</a></span>
+											<span v-if="alram.type==1&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type" style="text-decoration:none;">게시글에 좋아요를 누르셨습니다!</a></span>
+											<span v-if="alram.type==1&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type" style="text-decoration:none;">{{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</a></span>
 											<span v-if="alram.type==2&&alram.etc==0">
 												<span>님이 팔로우 요청을 하셨습니다!</span>
 												<span style="position:absolute; right:0;">
@@ -167,10 +167,10 @@
 												</span>
 											</span>
 											<span v-if="alram.type==2&&alram.etc==1">님이 팔로우 하셨습니다!</span>
-											<span v-if="alram.type==3&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">게시글에 댓글을 작성하셨습니다!</a></span>
-											<span v-if="alram.type==3&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">{{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</a></span>
-											<span v-if="alram.type==4&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">게시글에 댓글을 작성하셨습니다!</a></span>
-											<span v-if="alram.type==4&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">{{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</a></span>
+											<span v-if="alram.type==3&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type" style="text-decoration:none;">게시글에 댓글을 작성하셨습니다!</a></span>
+											<span v-if="alram.type==3&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type" style="text-decoration:none;">{{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</a></span>
+											<span v-if="alram.type==4&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type" style="text-decoration:none;">게시글에 댓글을 작성하셨습니다!</a></span>
+											<span v-if="alram.type==4&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type" style="text-decoration:none;">{{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</a></span>
 											
                                           </div>
                                         </div>
