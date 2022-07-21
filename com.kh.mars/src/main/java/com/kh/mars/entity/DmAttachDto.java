@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data@NoArgsConstructor@AllArgsConstructor@Builder
-public class DmDto {
+@Data @AllArgsConstructor @NoArgsConstructor @Builder
+public class DmAttachDto {
 	private int dmNo;
-	private String dmContent;
-	private int dmType;
+	private int attachNo;
+
 }

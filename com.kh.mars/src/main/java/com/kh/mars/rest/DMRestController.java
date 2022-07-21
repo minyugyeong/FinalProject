@@ -1,10 +1,14 @@
 package com.kh.mars.rest;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.mars.entity.DmDto;
 import com.kh.mars.entity.DmRecordDto;
 import com.kh.mars.entity.RoomEnterDto;
@@ -121,6 +128,11 @@ public class DMRestController {
 						) {
 		int memberNo = (Integer) session.getAttribute("login");
 		dmDao.roomExit(memberNo, roomNo);
+	}
+	
+	@PostMapping(value = "/photo",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+	public int fileUpload(@RequestParam MultipartFile photo) throws IllegalStateException, IOException {
+		return dmService.sendPhoto(photo);
 	}
 	
 }

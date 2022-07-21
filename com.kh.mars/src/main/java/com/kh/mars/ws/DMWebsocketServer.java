@@ -49,8 +49,11 @@ public class DMWebsocketServer extends TextWebSocketHandler{
 		}
 		else if(receiveVO.getType() == chat) {
 			dmDao.roomEnterUpdate(receiveVO.getRoomNo());
-			if(receiveVO.getMessageType()==1) {
+			if(receiveVO.getMessageType()==0) {
 				dmService.dmService(receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget(), user.getMemberNo());
+			}
+			if(receiveVO.getMessageType()==1) {
+				dmService.dmPhoto(receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget(), user.getMemberNo());
 			}
 			manager.broadcastRoom(session, receiveVO.getRoomNo(), receiveVO.getMessage(), receiveVO.getTarget(),receiveVO.getMessageType());
 		}

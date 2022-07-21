@@ -33,7 +33,10 @@
 			    from (
 			        (select * from member 
 			                        minus
-			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo}
+			                        minus
+			                        select * from member where member_grade = '관리자'
+			                        )
 			        ) m 
 			        left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
 			        left outer join member_profile mp on mp.member_no = m.member_no 
@@ -44,7 +47,10 @@
 			    from (
 			        (select * from member 
 			                        minus
-			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo})
+			                        select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo}
+			                        minus
+			                        select * from member where member_grade = '관리자'
+			                        )
 			        ) m 
 			        left outer join (select follow_target from follow where follow_who = #{memberNo})f on f.follow_target = m.member_no 
 			        left outer join member_profile mp on mp.member_no = m.member_no 
@@ -90,11 +96,11 @@
 	</select>
 	
 	<select id="tagSearch" resultType="searchListVO" parameterType="map">
-	select fn."board_no", fn."attach_no",fn."attach_count",fn."type" from (
+	select fn."board_no", fn."attach_no",fn."attach_count",fn."like_count",fn."reply_count" ,fn."type" from (
 	select rownum rn, TMP.* from(
 		select * from (
             select 
-                b.board_no "board_no", min(ba.attach_no) "attach_no" , count(ba.attach_no)"attach_count" , 0 "type" ,b.board_date "date"
+                b.board_no "board_no", min(ba.attach_no) "attach_no" , count(ba.attach_no)"attach_count", bl."like_count",br."reply_count" , 0 "type" ,b.board_date "date"
             from 
                 board_hashtag bh 
                 
@@ -109,6 +115,8 @@
                                 where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
                         ) m on b.member_no = m.member_no
                     inner join board_attach ba on b.board_no = ba.board_no
+                    left outer join (select board_no, count(member_no) "like_count" from board_like group by board_no) bl on bl.board_no = b.board_no
+                    LEFT OUTER JOIN (SELECT BOARD_NO,count(REPLY_NO)"reply_count" FROM BOARD_REPLY where board_no in(select board_no from board where board_is_reply = 0) group BY BOARD_NO) br ON br.board_no = b.BOARD_NO
                 
                 where hashtag_no = #{hashTagNo}
                 <if test="uptoNo != 0"> 
@@ -116,10 +124,10 @@
 			        where b.board_no <= #{uptoNo}
 			        ]]>
 		        </if>
-                group by b.board_no, b.board_date
+                group by b.board_no, b.board_date, bl."like_count",br."reply_count"
 		union
             select 
-                b.board_ad_no "board_no", min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", 1 "type", b.board_ad_date "date"
+                b.board_ad_no "board_no", min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count",bl."like_count",br."reply_count" , 1 "type", b.board_ad_date "date"
             from 
                 board_ad_hashtag bh 
                 
@@ -134,14 +142,16 @@
                             where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
                     ) m on b.member_no = m.member_no
                     inner join board_ad_attach ba on b.board_ad_no = ba.board_ad_no
-            
+                    left outer join (select board_ad_no, count(member_no) "like_count" from board_ad_like group by board_ad_no) bl on bl.board_ad_no = b.board_ad_no
+            		LEFT OUTER JOIN (SELECT board_ad_no, count(reply_no)"reply_count" FROM BOARD_AD_REPLY where board_ad_no in (select board_ad_no from board_ad where board_ad_is_reply = 0) group BY board_ad_no) br ON br.board_ad_no = b.board_ad_no
+            		
             where hashtag_no = #{hashTagNo} 
             <if test="uptoNoAd != 0"> 
         		<![CDATA[
            		and b.board_ad_no <={uptoNoAd}
 	            ]]>
 	        </if>
-            group by b.board_ad_no, b.board_ad_date
+            group by b.board_ad_no, b.board_ad_date, bl."like_count",br."reply_count"
         )fn 
         order by fn."date" desc
 	)TMP
@@ -149,8 +159,8 @@
 	</select>
 	
 	<select id="tagSearchLike" resultType="searchListVO" parameterType="map">
-		select fn.board_no, fn."attach_no", fn."attach_count", fn."type" from(
-		    select b.board_no, min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", bl."likecount" , 0 "type" from board_hashtag bh 
+		select fn.board_no, fn."attach_no", fn."attach_count",fn."like_count",fn."reply_count", fn."type" from(
+		    select b.board_no, min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", bl."like_count",br."reply_count" , 0 "type" from board_hashtag bh 
 		    
 		    inner join board b on b.board_no = bh.board_no 
 		    inner join (
@@ -163,12 +173,13 @@
 			            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 			    ) m on b.member_no = m.member_no
 		    inner join board_attach ba on b.board_no = ba.board_no
-		    left outer join (select board_no, count(member_no) "likecount" from board_like group by board_no) bl on bl.board_no = b.board_no
+		    left outer join (select board_no, count(member_no) "like_count" from board_like group by board_no) bl on bl.board_no = b.board_no
+		    LEFT OUTER JOIN (SELECT BOARD_NO,count(REPLY_NO)"reply_count" FROM BOARD_REPLY group BY BOARD_NO) br ON br.board_no = b.BOARD_NO
 		    
-		    where bh.hashtag_no = #{hashTagNo} and bl."likecount" is not null
-		    group by b.board_no, bl."likecount"
+		    where bh.hashtag_no = #{hashTagNo} and bl."like_count" is not null
+		    group by b.board_no, bl."like_count",br."reply_count"
 		union
-		    select b.board_ad_no, min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", bl."likecount", 1 "type" from board_ad_hashtag bh 
+		    select b.board_ad_no, min(ba.attach_no) "attach_no", count(ba.attach_no)"attach_count", bl."like_count",br."reply_count" , 1 "type" from board_ad_hashtag bh 
 		    
 		    inner join board_ad b on b.board_ad_no = bh.board_ad_no 
 		    inner join (
@@ -181,12 +192,12 @@
 			            where m.member_private = 1 and f.follow_who = #{memberNo} and follow_confirm = 1
 			    ) m on b.member_no = m.member_no
 		    inner join board_ad_attach ba on b.board_ad_no = ba.board_ad_no
-		    left outer join (select board_ad_no, count(member_no) "likecount" from board_ad_like group by board_ad_no) bl on bl.board_ad_no = b.board_ad_no
-		    
-		    where hashtag_no = #{hashTagNo} and bl."likecount" is not null
-		    group by b.board_ad_no, bl."likecount"
+		    left outer join (select board_ad_no, count(member_no) "like_count" from board_ad_like group by board_ad_no) bl on bl.board_ad_no = b.board_ad_no
+		    LEFT OUTER JOIN (SELECT board_ad_no, count(reply_no)"reply_count" FROM BOARD_AD_REPLY group BY board_ad_no) br ON br.board_ad_no = b.board_ad_no
+		    where hashtag_no = #{hashTagNo} and bl."like_count" is not null
+		    group by b.board_ad_no, bl."like_count",br."reply_count"
 		    <![CDATA[
-		)fn where rownum <= 9 order by fn."likecount" desc
+		)fn where rownum <= 9 order by fn."like_count" desc
 		    ]]>
 	</select>
 	

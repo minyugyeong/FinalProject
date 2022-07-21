@@ -74,6 +74,12 @@
     .dateShow{
     	display:block!important;
     }
+    .imgPlus:hover{
+    	transform: scale(1.2);
+    	z-index:1000;
+    	transition: transform .3s;
+    	
+    }
 </style>
 
 <%-- <h2>로그인? ${login}</h2> --%>
@@ -133,8 +139,11 @@
 			   					</span>
 			   				</div>
 			   				<div style="word-wrap:normal;margin-top:3px;">
-			   					<span style="font-size:0.73em;word-wrap:normal;display: inline-block;width: 50%;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;vertical-align: bottom;">
+			   					<span v-if="room.dmType==0" style="font-size:0.73em;word-wrap:normal;display: inline-block;width: 50%;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;vertical-align: bottom;">
 				   					{{room.dmContent}} &nbsp;
+			   					</span>
+			   					<span v-else style="font-size:0.73em;word-wrap:normal;display: inline-block;width: 50%;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;vertical-align: bottom;">
+				   					사진 &nbsp;
 			   					</span>
 			   					<span style="font-size:1em;">
 			   						·
@@ -160,8 +169,11 @@
 								<span style="margin-right:5px; font-size:0.7em;vertical-align: bottom;display:inline-block;">
 										<span :class="{'hide':myNum!=dm.who||timeCheck(index)}">{{dateFormat(dm.dmRecordTime)}}</span>
 								</span>
-								<span class="badge bg-light messageList" :class="{'receive':myNum==dm.who}" style="max-width:300px; word-break:break-all;white-space:normal;word-wrap:break-word;font-weight:100!important;">
+								<span v-if="dm.dmType==0" class="badge bg-light messageList" :class="{'receive':myNum==dm.who}" style="max-width:300px; word-break:break-all;white-space:normal;word-wrap:break-word;font-weight:100!important;">
 									{{dm.dmContent}}
+								</span>
+								<span v-else class="badge bg-light messageList imgPlus" :class="{'receive':myNum==dm.who}" style="max-width:300px; boarder:none; padding:0;">
+									<img :src="'${pageContext.request.contextPath}/file/download/'+dm.dmContent" width="150" @click="dmImageNo=dm.dmContent" data-bs-toggle="modal" data-bs-target="#dmPhotoModal">
 								</span>
 								<span style="margin-left:5px; font-size:0.7em;vertical-align: bottom;display:inline-block;">
 										<span :class="{'hide':myNum==dm.who}" style="color:var(--bs-primary);">{{dmCheck(dm.dmRecordCheck)}}</span>
@@ -177,6 +189,10 @@
 					
 					<div class="row justify-content-between" style="margin-top:10px;margin-bottom:10px;padding-left:calc(var(--bs-gutter-x) * .5);padding-right:calc(var(--bs-gutter-x) * .5);height:38px;">
 						<input v-if="roomNo!=''" type="text" v-model="inputMessage" class="send-input form-control" placeholder="메세지 입력" style="border-radius: 3rem;width:75%;" @keyup.enter="send">
+						<label v-if="roomNo!=''" for="fileDm" style="display: contents;">
+							<i class="fa-solid fa-image" style="font-size: xx-large;color: #eb6864;padding-top: 3px;"></i>
+						</label>
+							<input v-if="roomNo!=''" type="file" name="fileDm" id="fileDm" @input="picSend()" style="display:none;" accept=".png, .jpg">
 						<input v-if="roomNo!=''" type="button" class="btn-send btn btn-outline-light dm-btn col-2" style="border-radius: 3rem;" value="전송" @click="send">
 						<!-- <button class="btn-send btn btn-primary">전송</button> -->
 					</div>
@@ -246,6 +262,18 @@
 			    </div>
 			  </div>
 			</div>
+			
+			<!-- 사진확대 -->
+			<div class="modal fade" id="dmPhotoModal" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+			      	<img :src="'${pageContext.request.contextPath}/file/download/'+dmImageNo" width="500">
+			    </div>
+			  </div>
+			</div>
 </div>
 
 </article>
@@ -287,6 +315,11 @@ const app = Vue.createApp({
 			//메세지 상대 검색
 			searchDmList:[],
 			keyword:"",
+			
+			//사진보내기
+			picture:null,
+			dmImageNo:"",
+			
         };
     },
     //computed : data를 기반으로 하여 실시간 계산이 필요한 경우 작성한다.
@@ -378,7 +411,7 @@ const app = Vue.createApp({
     					target: this.roomMember[i],
     					roomNo:this.roomNo,
     					message:this.inputMessage,
-    					messageType:1,
+    					messageType:0,
     			}
     			const json = JSON.stringify(message);
     			socket.send(json);//전송 명령
@@ -393,6 +426,43 @@ const app = Vue.createApp({
     		}
     		
     		this.inputMessage = "";
+    	},
+    	
+    	//사진전송
+    	picSend(){
+    		var frm = new FormData();
+    		var photoFile = document.getElementById("fileDm");
+    		frm.append("photo",photoFile.files[0]);
+    		console.log(frm);
+    		console.log("222" + photoFile.files[0]);
+    		axios.post("${pageContext.request.contextPath}/rest/dm/photo", frm,{
+    			headers: {
+    				'Content-Type': 'multipart/form-data'
+    			}
+    		})
+    		.then(resp=>{
+    			console.log(resp.data);
+    			for(let i = 0; i < this.roomMember.length; i++){
+        			const message = {
+        					type:2,
+        					target: this.roomMember[i],
+        					roomNo:this.roomNo,
+        					message:resp.data,
+        					messageType:1,
+        			}
+        			const json = JSON.stringify(message);
+        			socket.send(json);//전송 명령
+        			
+        			const alram = {
+        					type:3,
+        					target: this.roomMember[i],
+        					messageType:2,//메세지타입 정리 1-그냥 메세지 2-사진메세지 3-dm알람 4-그외 알람
+        			}
+        			const jsonAlram = JSON.stringify(alram);
+        			socket.send(jsonAlram);
+        		}
+    		});
+    		
     	},
     	
     	//시간변환
@@ -418,8 +488,8 @@ const app = Vue.createApp({
     	scrollCheck(){
     		let pointer = $('.message-wrapper').scrollTop();
     		let totalHeight = $('.message-wrapper').prop('scrollHeight')-500;
-    		//console.log($('.message-wrapper').scrollTop());
-    		//console.log("높이" + $('.message-wrapper').prop('scrollHeight'));
+    		console.log($('.message-wrapper').scrollTop());
+    		console.log("높이" + $('.message-wrapper').prop('scrollHeight'));
     		const movePoint = $('.message-wrapper').prop('scrollHeight');
     		if(pointer >= totalHeight){
     			this.bottomFlag=true;
@@ -430,7 +500,6 @@ const app = Vue.createApp({
     		if(pointer<=0&&!this.bottomFlag){
     			this.plusDm();
     		}
-    		
     	},
     	
     	//특정포인트로 이동
@@ -611,12 +680,14 @@ const app = Vue.createApp({
     watch:{
     	
 		scrollHeight(){
-			if(this.bottomFlag){
-				this.scrollMove();
-			}else if(!this.bottomFlag&&this.isPlusDm==true) {
-				this.movePoint(this.pointTarget);
-				this.isPlusDm = false;
-			}
+			setTimeout(resp=>{
+				/* if(this.bottomFlag){
+					this.scrollMove();
+				} else */  if(!this.bottomFlag&&this.isPlusDm==true) {
+					this.movePoint(this.pointTarget);
+					this.isPlusDm = false;
+				}
+			}, 5);
 		},
 		
 		keyword:_.throttle(function(){
@@ -642,7 +713,32 @@ const app = Vue.createApp({
 			
 			console.log("메세지가 올텐데요");
 			console.log(data.messageType);
-			if(data.roomNo==this.roomNo&&data.messageType==1){
+			if(data.roomNo==this.roomNo&&data.dmType==0){
+				console.log("여기까지 못오는거같은데");
+				this.messageList.push(data);
+				
+					axios({
+		    			url: "${pageContext.request.contextPath}/rest/dm/dm_check",
+		    			method: "Post",
+		    			params: {
+		    				roomNo:this.roomNo, 
+		    			}
+		    		})
+		    		.then(resp=>{
+		    			console.log("다읽음");
+		    			axios({
+				    		url: "${pageContext.request.contextPath}/rest/dm/room",
+				    		method: "get"
+				    	})
+				    	.then(resp=>{
+							this.roomList = resp.data;
+							const index = this.roomList.findIndex(v => v.roomNo == this.roomNo);
+							this.selectIndex = index;
+				    	});
+		    		});
+				return;
+			}
+			if(data.roomNo==this.roomNo&&data.dmType==1){
 				console.log("여기까지 못오는거같은데");
 				this.messageList.push(data);
 				
@@ -732,6 +828,13 @@ const app = Vue.createApp({
 		
     },
     updated(){
+    	if(this.bottomFlag){
+			this.scrollMove();
+		}/* else if(!this.bottomFlag&&this.isPlusDm==true) {
+			this.movePoint(this.pointTarget);
+			this.isPlusDm = false;
+		} */
+    	
     },
 });
 

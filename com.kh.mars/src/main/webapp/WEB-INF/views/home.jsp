@@ -145,7 +145,7 @@
                             <div class="card mb-3" style="width: 470px; padding: 0px 0px;">
                                 <div class="card-body">
                                     <p class="card-text">
-                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+board.boardListVO.memberNo" style="color:black;text-decoration:none;">
+                                    	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+board.boardListVO.memberNo" style="color:black;text-decoration:none;font-weight:900;">
 	                                    	<img v-if="board.boardListVO.writerProfile > 0" :src="'${pageContext.request.contextPath}/file/download/'+board.boardListVO.writerProfile" width="30" height="30" style="border-radius: 70%">
 	                                    	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;">
 	                                        {{board.boardListVO.memberNick}}
@@ -171,20 +171,22 @@
                                         </button>
                                     </div>
                                 
-                                <div class="card-body">
-                                    <p class="card-text">
+                                <div class="card-body" >
+                                    <p class="card-text" style="margin-bottom:5px;">
                                         <i v-if="board.boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="like(board.boardListVO.boardNo,index)"></i>
                                         <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(board.boardListVO.boardNo,index)"></i>
                                         &nbsp;
                                         <i class="fa-regular fa-comment fa-lg" @click="detailViewOn(0,index),boardDetailSearch(index)" style="cursor: pointer;"></i>
                                         &nbsp;
-                                        <i class="fa-regular fa-newspaper fa-lg"></i>
+                                        <a :href="'${pageContext.request.contextPath}/dm?targetNo='+board.boardListVO.memberNo" style="color:black;">
+	                                        <i class="fa-regular fa-newspaper fa-lg"></i>
+                                        </a>
 
                                     </p>
                                     <p class="card-text" v-if="board.boardListVO.likecount > 0" data-bs-toggle="modal" data-bs-target="#boardLikeList" @click="boardLikeList(board.boardListVO.boardNo)">
                                         좋아요 {{board.boardListVO.likecount}}개
                                     </p>
-                                    <p class="card-text" style="font-weight:900;">
+                                    <p class="card-text" style="font-weight:900;margin-bottom:3px;">
                                     	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+board.boardListVO.memberNo" style="color:black;text-decoration:none;">
                                         {{board.boardListVO.memberNick}}
                                         </a>
@@ -200,7 +202,7 @@
                                     <a style="color:grey;cursor: pointer;display:none;margin-bottom:10px;text-decoration:none;font-size:0.8em;">더보기</a>
                                     
                                     <p class="card-text">
-                                       <button v-if="board.boardListVO" class="btn" @click="detailViewOn(0,index),boardDetailSearch(index)" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
+                                       <button v-if="board.boardListVO" class="btn" @click="detailViewOn(0,index),boardDetailSearch(index)" style="font-size:12px;font-weight:normal;padding: 0 0;color:grey;">댓글모두보기</button>
                                     </p>
                                     <p class="card-text text-muted" style="font-size: 0.4em;">
                                     	{{dateCount(board.boardListVO.boardDate)}}
@@ -214,7 +216,7 @@
                                     	</label>
 									</span>
                                     <div class="input-group">
-                                        <input :id="'focusReply'+index" type="text" class="form-control" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @focus="replyContent = $event.target.value" @input="replyContent = $event.target.value" @keyup.enter="promise(index),$event.target.value = ''">
+                                        <input :id="'focusReply'+index" type="text" class="form-control" placeholder="댓글 달기..." style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @focus="replyContent = $event.target.value" @input="replyContent = $event.target.value" @keyup.enter="promise(index),$event.target.value = ''">
                                         <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="promise(index)">작성</button>
                                       </div>
                                 </div>
@@ -255,19 +257,21 @@
                                     </div>
                                 
                                 <div class="card-body">
-                                    <p class="card-text">
+                                    <p class="card-text" style="margin-bottom:5px;">
                                         <i v-if="adList[((index+1)/3)-1].boardListVO.isLike == 0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="likeAd(adList[((index+1)/3)-1].boardListVO.boardNo,((index+1)/3)-1)"></i>
                                         <i v-else class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="likeAd(adList[((index+1)/3)-1].boardListVO.boardNo,((index+1)/3)-1)"></i>
                                         &nbsp;
                                         <i class="fa-regular fa-comment fa-lg" @click="detailViewOn(1,((index+1)/3)-1),boardAdDetailSearch(adList[((index+1)/3)-1])" style="cursor: pointer;"></i>
                                         &nbsp;
+                                        <a :href="'${pageContext.request.contextPath}/dm?targetNo='+adList[((index+1)/3)-1].boardListVO.memberNo" style="color:black;">
                                         <i class="fa-regular fa-newspaper fa-lg"></i>
+                                        </a>
 
                                     </p>
                                     <p class="card-text" v-if="adList[((index+1)/3)-1].boardListVO.likecount > 0" data-bs-toggle="modal" data-bs-target="#adBoardLikeList" @click="boardAdLikeList(adList[((index+1)/3)-1].boardListVO.boardNo)">
                                         좋아요 {{adList[((index+1)/3)-1].boardListVO.likecount}}개
                                     </p>
-                                    <p class="card-text" style="font-weight:900;">
+                                    <p class="card-text" style="font-weight:900;margin-bottom:3px;">
                                     	<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+adList[((index+1)/3)-1].boardListVO.memberNo" style="color:black;text-decoration:none;">
                                         {{adList[((index+1)/3)-1].boardListVO.memberNick}}
                                         </a>
@@ -283,7 +287,7 @@
                                        <a style="color:grey;cursor: pointer;display:none;margin-bottom:10px;text-decoration:none;font-size:0.8em;">더보기</a>
                                        
                                     <p class="card-text">
-                                       <button class="btn" @click="detailViewOn(1,((index+1)/3)-1),boardAdDetailSearch(adList[((index+1)/3)-1])" style="font-size:12px;font-weight:normal;padding: 0 0;">댓글모두보기</button>
+                                       <button class="btn" @click="detailViewOn(1,((index+1)/3)-1),boardAdDetailSearch(adList[((index+1)/3)-1])" style="font-size:12px;font-weight:normal;padding: 0 0;color:grey;">댓글모두보기</button>
                                     </p>
                                     <p class="card-text text-muted" style="font-size: 0.4em;">
                                     	{{dateCount(adList[((index+1)/3)-1].boardListVO.boardDate)}}
@@ -297,7 +301,7 @@
                                     	</label>
                                     </span>
                                     <div class="input-group">
-                                        <input :id="'foucsReplyAd'+((index+1)/3)-1" type="text" class="form-control" placeholder="댓글" style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @focus="replyContent = $event.target.value"  @input="replyContent = $event.target.value" @keyup.enter="promiseAd(((index+1)/3)-1),$event.target.value = ''">
+                                        <input :id="'foucsReplyAd'+((index+1)/3)-1" type="text" class="form-control" placeholder="댓글 달기..." style="border: none;" aria-label="Recipient's username" aria-describedby="button-addon2" @focus="replyContent = $event.target.value"  @input="replyContent = $event.target.value" @keyup.enter="promiseAd(((index+1)/3)-1),$event.target.value = ''">
                                         <button class="btn btn-outline-light reply-btn" type="button" id="button-addon2" style="border-top-right-radius: 0!important;" @click="promiseAd(((index+1)/3)-1)">작성</button>
                                       </div>
                                 </div>
@@ -326,7 +330,7 @@
                         	</a>
                         </div>
                         <div class="card-body">
-                          <h4 class="card-title">회원 추천</h4>
+                          <h4 class="card-title" style="font-size: 1em;color: gray;font-weight: 100;">회원님을 위한 추천</h4>
                           <div v-for="(recommend, index) in recommendList" class="card-text">
                           		<a :href="'${pageContext.request.contextPath}/member/page?memberNo='+recommend.followTarget" style="text-decoration:none;color:black;position:relative;">
 	                          		<img v-if="recommend.targetAttach > 0" :src="'${pageContext.request.contextPath}/file/download/'+recommend.targetAttach" width="30" height="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -441,14 +445,17 @@
 	                            <div class="card-body">
                                     <p class="card-text">
                                         <i v-if="detailViewType==1&&boardDetail.boardListVO.isLike==0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
-                                        <i v-if="detailViewType==1&&boardDetail.boardListVO.isLike==1" class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+                                        <i v-if="detailViewType==1&&boardDetail.boardListVO.isLike>0" class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="likeAd(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
                                         <i v-if="detailViewType==0&&boardDetail.boardListVO.isLike==0" class="fa-regular fa-heart fa-lg" style="cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
-                                        <i v-if="detailViewType==0&&boardDetail.boardListVO.isLike==1" class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
+                                        <i v-if="detailViewType==0&&boardDetail.boardListVO.isLike>0" class="fa-solid fa-heart fa-lg" style="width: 15px!important;cursor: pointer;" @click="like(boardDetail.boardListVO.boardNo,detailViewIndex)"></i>
                                         &nbsp;
+                                        <label for="detailReply">
                                         <i class="fa-regular fa-comment fa-lg" style="cursor: pointer;"></i>
+                                        </label>
                                         &nbsp;
+                                        <a :href="'${pageContext.request.contextPath}/dm?targetNo='+boardDetail.boardListVO.memberNo" style="color:black;">
                                         <i class="fa-regular fa-newspaper fa-lg"></i>
-
+										</a>
                                     </p>
                                     <p class="card-text" v-if="boardDetail.boardListVO.likecount > 0"  @click="boardDetailLikeList(boardDetail.boardListVO.boardNo)" data-bs-toggle="modal" data-bs-target="#boardDetailLikeList">
                                         좋아요 {{boardDetail.boardListVO.likecount}}개
@@ -858,6 +865,7 @@
                             targetInput(replyNo){
                             	this.replyTarget = replyNo;
                             },
+                            
                             deleteReply(type){
                             	axios({
                             		url : "${pageContext.request.contextPath}/rest/reply/delete/"+this.replyTarget,

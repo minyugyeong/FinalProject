@@ -76,11 +76,11 @@
                             <div v-if="searchValue" :class="{'show':searchValue}" style="position: absolute; top: 50px; right: -70px; width: 350px; height: 300px; overflow: auto; border-radius: 0.2em; box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;background-color:white;display:none;" @click.stop="">
                                 <div class="card border-light" style="border:none!important;">
                                     <div v-if="keyword == ''" class="card-body">
-                                      <h5 class="card-title">검색어를 입력해주세요</h5>
+                                      <h5 class="card-title" style="text-align: center;padding-top: 30%;">검색어를 입력해주세요</h5>
                                       <p class="card-text"></p>
                                     </div>
                                     <div v-else class="card-body" style="padding-bottom:0;">
-	                                    <p v-if="searchList.length == 0" class="card-text">검색 결과가 없습니다.</p>
+	                                    <p v-if="searchList.length == 0" class="card-text" style="text-align: center;padding-top: 30%;">검색 결과가 없습니다.</p>
 	                                    <div v-for="(search, index) in searchList" class="card-text">
 		                                    <a v-if="search.type == 0" :href="'${pageContext.request.contextPath}/member/page?memberNo='+search.no" style="text-decoration:none;color:black;position:relative;">
 		                                      <img v-if="search.attachNo != 0" :src="'${pageContext.request.contextPath}/file/download/'+search.attachNo" width="30" height="30" style="border-radius: 70%;position:absolute;top:10%;">
@@ -99,7 +99,7 @@
 		                                      </p>
 		                                      <p style="font-weight:normal;margin-bottom:1;font-size:0.8em;color:grey;padding-left:3em;">
 		                                       게시글 개수 : {{search.sub}} 개
-		                                       </p>
+	                                       	  </p>
 		                                    </a>
 	                                    </div>
                                     </div>
@@ -155,10 +155,10 @@
 			                                	<img v-else src="${pageContext.request.contextPath}/image/user.jpg" width="30" style="border-radius: 70%;position:absolute;top:0;">
 												<span style="padding-left:35px;font-weight:600;">{{alram.memberNick}}</span>
                                           	</a>
-											<span v-if="alram.type==0&&alram.etc==1">님이 게시글에 좋아요를 누르셨습니다!</span>
-											<span v-if="alram.type==0&&alram.etc>1">님 외 {{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</span>
-											<span v-if="alram.type==1&&alram.etc==1">님이 게시글에 좋아요를 누르셨습니다!</span>
-											<span v-if="alram.type==1&&alram.etc>1">님 외 {{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</span>
+											<span v-if="alram.type==0&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">게시글에 좋아요를 누르셨습니다!</a></span>
+											<span v-if="alram.type==0&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">{{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</a></span>
+											<span v-if="alram.type==1&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">게시글에 좋아요를 누르셨습니다!</a></span>
+											<span v-if="alram.type==1&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">{{alram.etc-1}}명이 게시글에 좋아요를 누르셨습니다!</a></span>
 											<span v-if="alram.type==2&&alram.etc==0">
 												<span>님이 팔로우 요청을 하셨습니다!</span>
 												<span style="position:absolute; right:0;">
@@ -167,10 +167,10 @@
 												</span>
 											</span>
 											<span v-if="alram.type==2&&alram.etc==1">님이 팔로우 하셨습니다!</span>
-											<span v-if="alram.type==3&&alram.etc==1">님이 게시글에 댓글을 작성하셨습니다!</span>
-											<span v-if="alram.type==3&&alram.etc>1">님 외 {{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</span>
-											<span v-if="alram.type==4&&alram.etc==1">님이 게시글에 댓글을 작성하셨습니다!</span>
-											<span v-if="alram.type==4&&alram.etc>1">님 외 {{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</span>
+											<span v-if="alram.type==3&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">게시글에 댓글을 작성하셨습니다!</a></span>
+											<span v-if="alram.type==3&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">{{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</a></span>
+											<span v-if="alram.type==4&&alram.etc==1">님이 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">게시글에 댓글을 작성하셨습니다!</a></span>
+											<span v-if="alram.type==4&&alram.etc>1">님 외 <a :href="'${pageContext.request.contextPath}/member/page?memberNo='+${login}+'&boardNo='+alram.boardNo+'&type='+alram.type">{{alram.etc-1}}명이 게시글에 댓글을 작성하셨습니다!</a></span>
 											
                                           </div>
                                         </div>
@@ -413,11 +413,11 @@
         			console.log("메세지가 올텐데요");
         			console.log(data.who);
         			console.log(${login});
-        			if(data.who==${login}&&data.messageType==3){
+        			if(data.who==${login}&&data.dmType==3){
         				console.log("알람 수신 (채팅)");
         				this.chatAlram = true;
         			}
-        			if(data.who==${login}&&data.messageType==4){
+        			if(data.who==${login}&&data.dmType==4){
         				console.log("알람 수신 (로켓)");
         				this.rocketAlram = true;
         			}

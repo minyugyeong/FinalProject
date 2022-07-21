@@ -12,7 +12,8 @@ public class MemberNonLoginInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		Integer memberNo = (Integer) request.getSession().getAttribute("login");
+		//Integer memberNo = (Integer) request.getSession().getAttribute("login");
+		Integer memberNo=202;
 		
 		if(memberNo == null) {
 			response.sendRedirect(request.getContextPath()+"/member/login");

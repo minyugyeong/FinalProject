@@ -16,4 +16,5 @@ public class RoomRecordVO {
 	private int dmRecordCheck;
 	private int roomNo;
 	private String dmContent;
+	private int dmType;
 }

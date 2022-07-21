@@ -53,6 +53,8 @@
                 select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
                 minus
                 select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo}
+                minus
+			    select * from member where member_grade = '관리자'
 		        ) m on m.member_no = ab.follow_target
 		        )abc
 		        inner join member mm on mm.member_no = abc."who_no"
@@ -61,6 +63,8 @@
                 select m2.member_no, m2.member_nick,-1 "followcount", m2.member_university"who_nick", mp.attach_no from member m
                     inner join(
                         select * from member
+                        minus
+			            select * from member where member_grade = '관리자'
                         minus
                         select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
                         minus
@@ -85,6 +89,8 @@
                 select m2.member_no, m2.member_nick,-1 "followcount", m2.member_highschool"who_nick", mp.attach_no from member m
                         inner join(
                             select * from member
+                            minus
+			                select * from member where member_grade = '관리자'
                             minus
                             select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
                             minus
@@ -117,6 +123,8 @@
         select m.* from member m left outer join block b on b.member_no = m.member_no where b.block_no = #{memberNo} 
         minus
         select m.* from member m left outer join block b on b.block_no = m.member_no where b.member_no = #{memberNo}
+        minus
+		select * from member where member_grade = '관리자'
         ) order by DBMS_RANDOM.value
         )m 
         left outer join member_profile mp on m.member_no = mp.member_no
