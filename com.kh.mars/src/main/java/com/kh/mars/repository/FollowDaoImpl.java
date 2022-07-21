@@ -119,7 +119,7 @@ public class FollowDaoImpl implements FollowDao {
 		param.put("followWho", followWho);
 		param.put("memberNo", memberNo);
 		
-		return sqlSession.delete("follow.followDelete", param);
+		return sqlSession.delete("follow.followingDelete", param);
 	}
 
 	@Override
