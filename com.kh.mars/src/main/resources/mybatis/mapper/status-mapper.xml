@@ -96,7 +96,7 @@
 	<!-- 광고별 매출액 -->
 	<select id="adSum" resultType="StatusVO">
 		select * from (
-			select nvl(member_interest, '없음') member_interest, board_ad_price from board_ad B
+			select member_interest, board_ad_price from board_ad B
 			    left outer join member M on B.member_no = M.member_no where board_ad_check='광고 진행' or board_ad_check='광고 마감'
 			) pivot (sum(board_ad_price) for member_interest in(
 			    '예술' as sumArt, 
@@ -104,8 +104,7 @@
 			    '여행' as sumTravel,
 			    '뷰티' as sumBeauty, 
 			    '패션' as sumFashion,
-			    '요리' as sumCook, 
-			    '없음' as sumNull))
+			    '요리' as sumCook))
 	</select>
 	
 	<!-- 연도별 매출액 -->

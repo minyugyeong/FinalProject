@@ -212,7 +212,6 @@ $(function(){
 			labels.push('뷰티');
 			labels.push('패션');
 			labels.push('요리');
-			labels.push('없음');
 			 
 			let sumArt = [];
 			let sumSport = [];
@@ -220,7 +219,6 @@ $(function(){
 			let sumBeauty = [];
 			let sumFashion = [];
 			let sumCook = [];
-			let sumNull = [];
 			
 			for(let i = 0; i < resp.length; i++){
 				sumArt.push(resp[i].sumArt);
@@ -229,21 +227,19 @@ $(function(){
 				sumBeauty.push(resp[i].sumBeauty);
 				sumFashion.push(resp[i].sumFashion);
 				sumCook.push(resp[i].sumCook);
-				sumNull.push(resp[i].sumNull);
 			}
 			
 			let data = {
 				labels: labels,
 				datasets: [{
 						label: '',
-						data: [sumArt, sumSport, sumTravel, sumBeauty, sumFashion, sumCook, sumNull],
+						data: [sumArt, sumSport, sumTravel, sumBeauty, sumFashion, sumCook],
 						backgroundColor: [
 							'#e74b46',
 	        	  '#cf201a',
 	        	  '#941613',
 	            '#eb6864',
-	            '#590d0b',
-	            '#3b0907'
+	            '#590d0b'
 						],
 						borderColor: 'white',
 					},
